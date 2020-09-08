@@ -82,7 +82,7 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             this.finish();
             return;
         }
-        mWalletUtil = TBController.getInstance().getWalletUtil((int) mBlockChainId);
+        mWalletUtil = TBController.getInstance().getWalletUtil();
         if (mWalletUtil == null) {
             this.finish();
             return;
@@ -171,7 +171,6 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             }
         } catch (Throwable e) {
         }
-
         return false;
     }
 

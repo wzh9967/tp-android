@@ -20,6 +20,8 @@ import com.tokenbank.utils.NetUtil;
 import com.tokenbank.utils.PermissionUtil;
 import com.tokenbank.utils.ToastUtil;
 
+
+//pass
 public class SplashActivity extends BaseActivity implements View.OnClickListener {
 
     private final static String TAG = "SplashActivity";
@@ -164,5 +166,4 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
             playAlphaAnim();
         }
     }
-
 }

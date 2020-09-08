@@ -75,11 +75,13 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             this.finish();
             return;
         }
-        mWalletUtil = TBController.getInstance().getWalletUtil(mWalletData.type);
+        mWalletUtil = TBController.getInstance().getWalletUtil();
 
         defaultToken = TextUtils.equals(mWalletUtil.getDefaultTokenSymbol(), mTokenSymbol);
 
-        mBlockChain = WalletInfoManager.getInstance().getWalletType();
+
+        //??
+        //mBlockChain = WalletInfoManager.getInstance().getWalletType();
         initView();
     }
 
@@ -202,12 +204,10 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
 
     private void pwdRight() {
         updateBtnToTranferingState();
-        if (mBlockChain == TBController.SWT_INDEX) {
-            swtTokenTransfer();
-        }
+        TokenTransfer();
     }
 
-    private void swtTokenTransfer() {
+    private void TokenTransfer() {
         //首先获取isuer con
         new RequestPresenter().loadJtData(new JTBalanceRequest(mWalletData.waddress), new RequestPresenter.RequestCallback() {
             @Override
@@ -230,7 +230,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                                     ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_insufficient_balance) + 1003);
                                     return;
                                 }
-                                signedSwtTransaction(mGas, sequence, mWalletData.waddress,
+                                signedTransaction(mGas, sequence, mWalletData.waddress,
                                         mEdtWalletAddress.getText().toString(), Util.parseDouble(mEdtTransferNum.getText().toString()),
                                         mWalletData.wpk, currency, issuer);
                             }
@@ -246,8 +246,9 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     }
 
 
-    private void signedSwtTransaction(double fee, long sequence, String senderAddress, String receiverAddress,
-                                      double value, String seed, String currency, String issuer) {
+    //update
+    private void signedTransaction(double fee, long sequence, String senderAddress, String receiverAddress,
+                                   double value, String seed, String currency, String issuer) {
         GsonUtil swtSigned = new GsonUtil("{}");
         swtSigned.putDouble("fee", fee);
         swtSigned.putDouble("value", value);
@@ -262,6 +263,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             public void onGetWResult(int ret, GsonUtil extra) {
                 if (ret == 0) {
                     final String rawTransaction = extra.getObject("signedTransaction", "{}").getString("rawTransaction", "");
+                    //签名过后通过api发送（从原生这边）
                     sendSignedTransaction(rawTransaction);
                 } else {
                     resetTranferBtn();
@@ -278,6 +280,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_transfer_failed) + 3);
             return;
         }
+        //rawTransaction为签名后的挂单
         mWalletUtil.sendSignedTransaction(rawTransaction, new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
@@ -298,10 +301,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         String address = mEdtWalletAddress.getText().toString();
         String num = mEdtTransferNum.getText().toString();
 
-        if (TextUtils.isEmpty(mTvToken.getText().toString())) {
-            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_choose_token), "OK");
-            return false;
-        }
         if (TextUtils.isEmpty(address)) {
             ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_wallet_address), "OK");
             return false;

@@ -124,7 +124,7 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
         mTvImportWallet.setOnClickListener(this);
 
         mTvBlockChain.setText(mBlock.desc);
-        mWalletUtil = TBController.getInstance().getWalletUtil((int) mBlock.hid);
+        mWalletUtil = TBController.getInstance().getWalletUtil();
 
     }
 
@@ -174,7 +174,7 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
     private void importWallet() {
         final String words = mEdtWalletWords.getText().toString();
         final String password = mEdtWalletPwd.getText().toString();
-        mWalletUtil.importWallet(words, (int) mBlock.hid, 1, new WCallback() {
+        mWalletUtil.importWallet(words, 1,new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
                 if (ret == 0) {
@@ -204,7 +204,7 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
     private void uploadWallet(final String name, final int walletType, final String hash, final String privateKey,
                               final String address) {
         long walletId = System.currentTimeMillis();
-        storeWallet(walletId, walletType, name, address, hash, privateKey);
+        storeWallet(walletId, name, address, hash, privateKey);
         gotoMainActivity();
     }
 
@@ -215,14 +215,13 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
         getActivity().finish();
     }
 
-    private void storeWallet(long walletId, int walletType, String walletName, String address, String walletHash, String privatekey) {
+    private void storeWallet(long walletId, String walletName, String address, String walletHash, String privatekey) {
         WalletInfoManager.WData wallet = new WalletInfoManager.WData();
         wallet.wid = walletId;
         wallet.wname = walletName;
         wallet.waddress = address;
         wallet.whash = walletHash;
         wallet.wpk = privatekey;
-        wallet.type = walletType;
         wallet.words = "";
         wallet.isBaked = true;
         WalletInfoManager.getInstance().insertWallet(wallet);

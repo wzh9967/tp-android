@@ -68,9 +68,6 @@
             android:name=".activity.TransactionRecordActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.AboutActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.ManageWalletActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -108,6 +105,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.LanguageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.AboutActivity"
             android:screenOrientation="portrait" />
     </application>
 

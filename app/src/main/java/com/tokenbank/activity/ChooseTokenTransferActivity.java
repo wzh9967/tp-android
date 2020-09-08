@@ -22,6 +22,7 @@ import com.tokenbank.utils.TokenImageLoader;
 import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
 
+//交易部分，等待底层完成
 public class ChooseTokenTransferActivity extends BaseActivity implements BaseRecycleAdapter.OnDataLodingFinish {
 
     private final static String TAG = "ChooseTokenTransferActivity";
@@ -159,9 +160,10 @@ public class ChooseTokenTransferActivity extends BaseActivity implements BaseRec
             if (mDataLoadingListener != null) {
                 mDataLoadingListener.onDataLoadingFinish(params, false, loadmore);
             }
-            int type = WalletInfoManager.getInstance().getWalletType();
             String address = WalletInfoManager.getInstance().getWAddress();
-            GsonUtil json = TBController.getInstance().getWalletUtil(type).loadTransferTokens(ChooseTokenTransferActivity.this);
+
+            //delete
+            GsonUtil json = TBController.getInstance().getWalletUtil().loadTransferTokens(ChooseTokenTransferActivity.this);
             handleTokenRequestResult(params, loadmore, json);
         }
 

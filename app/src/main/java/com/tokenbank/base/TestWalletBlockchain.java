@@ -12,14 +12,16 @@ public class TestWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
-    public void createWallet(String walletName,  String walletPassword, int blockType, WCallback callback) {
+    public void createWallet(String walletName,  String walletPassword, WCallback callback) {
 
     }
 
     @Override
-    public void importWallet(String privateKey, int blockType, int type, WCallback callback) {
+    public void importWallet(String privateKey, int type, WCallback callback) {
 
     }
+
+
 
     @Override
     public void toIban(String address, WCallback callback) {
@@ -82,7 +84,7 @@ public class TestWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
-    public void getTokenInfo(String token, long blockChainId, WCallback callback) {
+    public void getTokenInfo(String token, WCallback callback) {
 
     }
 
@@ -107,6 +109,11 @@ public class TestWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
+    public void queryBalance(String address, WCallback callback) {
+
+    }
+
+    @Override
     public void queryTransactionList(GsonUtil params, WCallback callback) {
 
     }
@@ -121,10 +128,6 @@ public class TestWalletBlockchain implements BaseWalletUtil {
         return null;
     }
 
-    @Override
-    public void queryBalance(String address, int type, WCallback callback) {
-
-    }
 
     @Override
     public GsonUtil loadTransferTokens(Context context) {

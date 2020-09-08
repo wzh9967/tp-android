@@ -22,6 +22,8 @@ import com.tokenbank.fragment.PKFragment;
 import com.tokenbank.fragment.WordsFragment;
 import com.tokenbank.view.TitleBar;
 
+
+//添加keystore导入
 public class ImportWalletActivity extends BaseActivity implements View.OnClickListener {
 
     private TitleBar mTitleBar;
@@ -85,51 +87,6 @@ public class ImportWalletActivity extends BaseActivity implements View.OnClickLi
 
     }
 
-    private void initView() {
-
-        mTitleBar = findViewById(R.id.title_bar);
-        mTitleBar.setLeftDrawable(R.drawable.ic_back);
-        mTitleBar.setTitle(getString(R.string.titleBar_import_wallet));
-        mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
-            @Override
-            public void onLeftClick(View view) {
-                ImportWalletActivity.this.finish();
-            }
-        });
-
-        mTvWords = findViewById(R.id.tv_word);
-        mTvWords.setOnClickListener(this);
-        mTvPrivateKey = findViewById(R.id.tv_privatekey);
-        mTvPrivateKey.setOnClickListener(this);
-        mViewPager = findViewById(R.id.viewpager_import_wallet);
-        mAdapter = new ImportWalletAdapter(getSupportFragmentManager());
-        mViewPager.setAdapter(mAdapter);
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (position == 0) {
-                    mTvWords.setTextColor(getResources().getColor(R.color.common_blue));
-                    mTvPrivateKey.setTextColor(getResources().getColor(R.color.common_black_fontcolor));
-                } else if (position == 1) {
-                    mTvWords.setTextColor(getResources().getColor(R.color.common_black_fontcolor));
-                    mTvPrivateKey.setTextColor(getResources().getColor(R.color.common_blue));
-                }
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-        mViewPager.setCurrentItem(0);
-        mTvWords.setTextColor(getResources().getColor(R.color.common_blue));
-        mTvPrivateKey.setTextColor(getResources().getColor(R.color.common_black_fontcolor));
-    }
 
     public static void startImportWalletActivity(Context context, int blockChainId) {
 

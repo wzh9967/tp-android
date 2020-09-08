@@ -18,7 +18,7 @@ import com.tokenbank.utils.FileUtil;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.view.TitleBar;
 
-
+//不用动
 public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBarClickListener, View.OnClickListener {
 
 

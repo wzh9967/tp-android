@@ -57,7 +57,7 @@ public class OrderDetailDialog extends BaseDialog implements View.OnClickListene
         this.mGas = gas;
         this.mTokenCount = tokencount;
         mBlockChain = blockChain;
-        mWalletUtil = TBController.getInstance().getWalletUtil((int) mBlockChain);
+        mWalletUtil = TBController.getInstance().getWalletUtil();
         isDefaultToken = defaultToken;
     }
 

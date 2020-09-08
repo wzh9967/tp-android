@@ -22,6 +22,7 @@ public class RequestPresenter {
 
             @Override
             public void loadSuccess(String result) {
+                //用于对事件作出响应
                 if (requestCallback != null) {
                     GsonUtil jsonResult = new GsonUtil(result);
                     requestCallback.onRequesResult(jsonResult.getInt("result", -1), jsonResult);
@@ -47,6 +48,7 @@ public class RequestPresenter {
 
             @Override
             public void loadSuccess(String result) {
+                //请求成功，结果返回
                 if (requestCallback != null) {
                     //todo
                     GsonUtil jsonResult = new GsonUtil(result);
@@ -56,6 +58,7 @@ public class RequestPresenter {
 
             @Override
             public void loadFailed(Throwable throwable, int reqId) {
+                //请求失败错误返回
                 if (requestCallback != null) {
                     //todo
                     GsonUtil errorMsg = new GsonUtil("{}");

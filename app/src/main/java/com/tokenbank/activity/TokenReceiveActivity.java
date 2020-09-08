@@ -26,7 +26,7 @@ import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.Util;
 import com.tokenbank.view.TitleBar;
 
-
+//修改底层
 public class TokenReceiveActivity extends BaseActivity {
 
     public final static String TAG = "TokenTransferActivity";
@@ -54,7 +54,8 @@ public class TokenReceiveActivity extends BaseActivity {
             finish();
             return;
         }
-        mWalletUtil = TBController.getInstance().getWalletUtil(WalletInfoManager.getInstance().getWalletType());
+        //delete
+        mWalletUtil = TBController.getInstance().getWalletUtil();
         if (mWalletUtil == null) {
             this.finish();
             return;

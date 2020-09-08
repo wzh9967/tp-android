@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -11,7 +12,7 @@ import com.tokenbank.R;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.view.TitleBar;
 
-
+//不用动
 public class StartBakupActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String WALLET_ADDRESS = "Wallet_Address";
@@ -19,6 +20,7 @@ public class StartBakupActivity extends BaseActivity implements View.OnClickList
 
     private static final int PK_TYPE = 1;
     private static final int WORDS_TYPE = 2;
+    private static final String TAG = "StartBakupActivity";
 
     private TitleBar mTitleBar;
     private TextView mTvBakupTitle;
@@ -34,14 +36,19 @@ public class StartBakupActivity extends BaseActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bakup_wallet_start);
+        Log.d(TAG, "onCreate: avtive");
         if (getIntent() != null) {
             mType = getIntent().getIntExtra(BAKUP_TYPE, -1);
             String walletAddress = getIntent().getStringExtra(WALLET_ADDRESS);
+            Log.d(TAG, "onCreate: walletAddress is "+walletAddress);
             if (!TextUtils.isEmpty(walletAddress)) {
+                Log.d(TAG, "onCreate: walletAddress is not empty");
                 mWalletData = WalletInfoManager.getInstance().getWData(walletAddress);
+                Log.d(TAG, "onCreate: mWalletData "+mWalletData);
             }
         }
         if (!verifyData()) {
+            Log.d(TAG, "onCreate: have no date in the sp");
             this.finish();
             return;
         }
@@ -62,22 +69,27 @@ public class StartBakupActivity extends BaseActivity implements View.OnClickList
         intent.addFlags(from instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(WALLET_ADDRESS, walletAddress);
         intent.putExtra(BAKUP_TYPE, bakupType);
+        Log.d(TAG, "startBakupWalletStartActivity: OKOKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
         from.startActivity(intent);
     }
 
     private boolean verifyData() {
         if (mWalletData == null) {
+            Log.d(TAG, "verifyData: mWalletData == null");
             return false;
         }
         if (mType != PK_TYPE && mType != WORDS_TYPE) {
+            Log.d(TAG, "verifyData: mType != PK_TYPE && mType != WORDS_TYPE");
             return false;
         }
         if (mType == WORDS_TYPE) {
             if (TextUtils.isEmpty(mWalletData.words)) {
+                Log.d(TAG, "verifyData: TextUtils.isEmpty(mWalletData.words)");
                 return false;
             }
             mWords = mWalletData.words.split(" ");
             if (mWords == null || mWords.length < 12) {
+                Log.d(TAG, "mWords == null || mWords.length < 12");
                 return false;
             }
         }
@@ -86,6 +98,7 @@ public class StartBakupActivity extends BaseActivity implements View.OnClickList
     }
 
     private void initView() {
+        Log.d(TAG, "initView: active");
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setTitle(getString(R.string.titleBar_backup_wallet));
 

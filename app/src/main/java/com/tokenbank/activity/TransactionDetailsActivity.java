@@ -58,7 +58,8 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             return;
         }
 
-        mWalletUtil = TBController.getInstance().getWalletUtil(WalletInfoManager.getInstance().getWalletType());
+        //delete
+        mWalletUtil = TBController.getInstance().getWalletUtil();
         if (mWalletUtil == null) {
             this.finish();
             return;
@@ -98,10 +99,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         mTvCopyUrl.setOnClickListener(this);
         mImgTransactionQrCode = findViewById(R.id.img_transaction_qrcode);
 
-        int type = WalletInfoManager.getInstance().getWalletType();
-        if (type == TBController.SWT_INDEX) {
-            loadData();
-        }
+        loadData();
     }
 
     private void updateData(GsonUtil transactionInfo) {

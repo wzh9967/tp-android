@@ -20,6 +20,7 @@ import com.tokenbank.view.TitleBar;
 import java.util.List;
 
 
+//好像不用怎么改
 public class ChangeWalletActivity extends BaseActivity {
 
     private TitleBar mTitleBar;

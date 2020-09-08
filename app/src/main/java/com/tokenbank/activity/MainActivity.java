@@ -72,13 +72,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initViewPager() {
-        //tab
+        //layout_view_maintab.xml中底部菜单栏切换
         mLayoutTabWallet = (LinearLayout) findViewById(R.id.layout_tab_wallet);
         mLayoutTabMine = (LinearLayout) findViewById(R.id.layout_tab_mine);
+
         mLayoutTabWallet.setOnClickListener(this);
-
         mLayoutTabMine.setOnClickListener(this);
-
 
         mImgWallet = (ImageView) findViewById(R.id.img_tab_wallet);
         mTvWallet = (TextView) findViewById(R.id.tv_tab_wallet);
@@ -86,6 +85,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mImgMine = (ImageView) findViewById(R.id.img_tab_mine);
         mTvMine = (TextView) findViewById(R.id.tv_tab_mine);
 
+        //显示的主要界面（界面切换框）
         mMainViewPager = (ViewPager) findViewById(R.id.main_viewpager);
         mMainViewPager.setOffscreenPageLimit(3);
         mMainViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

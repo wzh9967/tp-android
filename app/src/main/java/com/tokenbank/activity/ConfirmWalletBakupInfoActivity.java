@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+//不用动
 public class ConfirmWalletBakupInfoActivity extends BaseActivity implements View.OnClickListener {
 
 
@@ -167,7 +168,6 @@ public class ConfirmWalletBakupInfoActivity extends BaseActivity implements View
         });
         mAdapterSource = new WordAdapter(mResortedList);
         mFlowSource.setAdapter(mAdapterSource);
-
         updateUIContent();
     }
 

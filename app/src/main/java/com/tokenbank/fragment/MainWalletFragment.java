@@ -93,7 +93,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     }
 
     private void initView(View view) {
-        mWalletUtil = TBController.getInstance().getWalletUtil(WalletInfoManager.getInstance().getWalletType());
+        mWalletUtil = TBController.getInstance().getWalletUtil();
 
         isAssetVisible = FileUtil.getBooleanFromSp(getContext(), Constant.common_prefs, Constant.asset_visible_key, true);
 
@@ -185,12 +185,9 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 if (TextUtils.isEmpty(scanResult)) {
                     ToastUtil.toast(getContext(), getString(R.string.toast_scan_failure));
                 } else {
-                    if (scanResult.startsWith("iban")) {
-                        //eth
-                        ToastUtil.toast(getContext(), getString(R.string.toast_not_support_eth_wallet));
-                    } else if (scanResult.startsWith("jingtum")) {
+                    if (scanResult.startsWith("jingtum")) {
                         //swt
-                        handleSwtScanResult(scanResult);
+                        handleScanResult(scanResult);
                     } else {
                         ToastUtil.toast(getContext(), getString(R.string.toast_scan_failure));
                     }
@@ -198,8 +195,23 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             }
         }
     }
+    private void handleScanResult(final String scanResult) {
+        if (!WalletInfoManager.getInstance().hasWallet()) {
+            ToastUtil.toast(getContext(), getString(R.string.toast_no_wallet));
+            return;
+        }
+        int beginIndex = scanResult.indexOf("amount=") + 7;
+        double num = Util.parseDouble(scanResult.substring(beginIndex, scanResult.indexOf("&token")));
+        final String token = scanResult.substring(scanResult.indexOf("&token=") + 7);
+        String ibanAddress = scanResult.substring(scanResult.indexOf("jingtum:") + 8, scanResult.indexOf("?"));
+        TokenTransferActivity.startTokenTransferActivity(getContext(), ibanAddress,
+                "", num, token, 0, 0);
 
 
+
+
+    }
+   /*
     private void handleSwtScanResult(final String scanResult) {
         if (!WalletInfoManager.getInstance().hasWallet(TBController.SWT_INDEX)) {
             ToastUtil.toast(getContext(), getString(R.string.toast_no_jintum_wallet));
@@ -242,6 +254,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         }
     }
 
+    */
     /**
      * 显示钱包菜单pop
      */
@@ -265,7 +278,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private void refreshWallet() {
         setWalletName();
         refresh();
-        mWalletUtil = TBController.getInstance().getWalletUtil(WalletInfoManager.getInstance().getWalletType());
+        mWalletUtil = TBController.getInstance().getWalletUtil();
     }
 
     /**
@@ -317,12 +330,11 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         setWalletName();
     }
 
+
+    // update to moac UNION block chains
     private void setWalletName() {
-        BlockChainData.Block block = BlockChainData.getInstance().getBolckByHid(WalletInfoManager.getInstance().getWalletType());
-        if (block != null) {
-            mTvWalletName.setText(WalletInfoManager.getInstance().getWname() +
-                    "(" + block.desc + ")");
-        }
+        mTvWalletName.setText(WalletInfoManager.getInstance().getWname() +
+                "()");
     }
 
     private void refresh() {
@@ -433,9 +445,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 mDataLoadingListener.onDataLoadingFinish(params, false, loadmore);
             }
 
-            int type = WalletInfoManager.getInstance().getWalletType();
             String address = WalletInfoManager.getInstance().getWAddress();
-            TBController.getInstance().getWalletUtil(type).queryBalance(address, type, new WCallback() {
+            TBController.getInstance().getWalletUtil().queryBalance(address, new WCallback() {
                 @Override
                 public void onGetWResult(int ret, GsonUtil extra) {
                     if (ret == 0) {

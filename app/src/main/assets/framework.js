@@ -1,15 +1,71 @@
-//jt
+//moc
+function createMocWallet () {
+    var paramsjson = JSON.parse(params);
+    var callid = paramsjson.callid;
+
+
+
+    var accountInfo = new Object();
+    notifyClient(callid, 0, accountInfo);
+}
+
+function isValidAddress(params) {
+    var paramsjson = JSON.parse(params);
+    var callid = paramsjson.callid;
+    var address = paramsjson.address;
+
+
+    //var isAddressValid = jingtum.Wallet.isValidAddress(data);
+
+
+
+    var checkAddress = new Object();
+    checkAddress.isAddressValid = isAddressValid;
+    checkAddress.address = wallet.address;
+    notifyClient(callid, 0, checkAddress);
+}
+
+function importWalletBySecret () {
+    var paramsjson = JSON.parse(params);
+    var callid = paramsjson.callid;
+    var secret = paramsjson.secret;
+    //    var wallet = jingtum.Wallet.fromSecret(privateKey);
+
+
+
+    var accountInfo = new Object();
+    notifyClient(callid, 0, accountInfo);
+
+}
+
+function SingTx(params){
+    var paramsjson = JSON.parse(params);
+    var callid = paramsjson.callid;
+
+
+
+    var accountInfo = new Object();
+    notifyClient(callid, 0, accountInfo);
+}
+
+
+
+
+
+
+
 function createJtWallet(params) {
     var paramsjson = JSON.parse(params);
     var callid = paramsjson.callid;
-    var wallet = jingtum.Wallet.generate();
+    //var wallet = jingtum.Wallet.generate();
     var accountInfo = new Object();
+    let wallet = {"secret":"saj9auE499uFZYQupLKxMiPu8pWaY","address":"jL5nRP7dF4fDby93sZpDKsegH13zU8FbUz"}
     accountInfo.blockType = paramsjson.blockType;
     accountInfo.privatekey = wallet.secret;
     accountInfo.address = wallet.address;
     notifyClient(callid, 0, accountInfo);
 }
-
+/*
 function retrieveWalletFromPk(params) {
     var paramsjson = JSON.parse(params);
     var callid = paramsjson.callid;
@@ -22,16 +78,7 @@ function retrieveWalletFromPk(params) {
     notifyClient(callid, 0, accountInfo);
 }
 
-function isValidAddress(params) {
-    var paramsjson = JSON.parse(params);
-    var callid = paramsjson.callid;
-    var address = paramsjson.address;
-    var isAddressValid = jingtum.Wallet.isValidAddress(data);
-    var checkAddress = new Object();
-    checkAddress.isAddressValid = isAddressValid;
-    checkAddress.address = wallet.address;
-    notifyClient(callid, 0, checkAddress);
-}
+
 
 function jtSingtx(params) {
     var paramsjson = JSON.parse(params);
@@ -51,15 +98,17 @@ function jtSingtx(params) {
     callbackData.signedTransaction = signedTransaction;
     notifyClient(callid, 0, callbackData);
 }
-
+*/
 //end jt
 
 
+    //JS调用原生的部分的入口    JS(here)  ->  原生  ->JS
 function notifyClient(callid, ret, extra) {
     var result = new Object();
     result.ret = ret;
     result.callid = callid;
     result.extra = extra;
+    result.methodName = "notifyWeb3Result";
     var resultStr = toJsonString(result);
     window.client.notifyWeb3Result(resultStr);
 }

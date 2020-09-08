@@ -1,11 +1,9 @@
 package com.tokenbank.base;
-
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
 import com.tokenbank.config.AppConfig;
 import com.tokenbank.config.Constant;
 import com.tokenbank.utils.GsonUtil;
@@ -56,7 +54,7 @@ public class JSUtil {
         loadJs();
     }
 
-
+    //原生(out) -> js -> 原生（）
     public void callJS(String optCallback, GsonUtil json, WCallback walletOptCallback) {
         if (optCallback == null || optCallback.length() <= 0 || json == null) {
             return;
@@ -88,6 +86,7 @@ public class JSUtil {
         return callbackStr;
     }
 
+
     public boolean checkInit(WCallback callback) {
         if (!isInit) {
             if (callback != null) {
@@ -101,6 +100,7 @@ public class JSUtil {
         }
     }
 
+    //原生调用JS的回调处理    原生 -> js -> 原生（in）
     @JavascriptInterface
     public void notifyWeb3Result(final String result) {
         AppConfig.postOnUiThread(new Runnable() {
@@ -118,9 +118,7 @@ public class JSUtil {
                 }
             }
         });
-
     }
-
 
     private void loadJs() {
         mWebView.loadUrl(Constant.base_web3_url);

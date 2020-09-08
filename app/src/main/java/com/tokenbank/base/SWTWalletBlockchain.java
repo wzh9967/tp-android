@@ -2,6 +2,7 @@ package com.tokenbank.base;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tokenbank.config.Constant;
 import com.tokenbank.net.api.GetWalletTokenList;
@@ -13,8 +14,8 @@ import com.tokenbank.utils.FileUtil;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.Util;
 
-
-public class SWTWalletBlockchain implements BaseWalletUtil {
+//FSTWalletBlockchain更新完毕后移除
+public class  SWTWalletBlockchain implements BaseWalletUtil {
 
     private final static String TAG = "SWTWalletBlockchain";
 
@@ -23,22 +24,20 @@ public class SWTWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
-    public void createWallet(final String walletName, final String walletPassword, int blockType, final WCallback callback) {
+    public void createWallet(final String walletName, final String walletPassword, final WCallback callback) {
         if (!checkInit(callback)) {
             return;
         }
         GsonUtil json = new GsonUtil("{}");
-        json.putInt("blockType", blockType);
         JSUtil.getInstance().callJS("createJtWallet", json, callback);
     }
 
     @Override
-    public void importWallet(String privateKey, int blockType, int type, WCallback callback) {
+    public void importWallet(String privateKey, int type, WCallback callback) {
         if (!checkInit(callback)) {
             return;
         }
         GsonUtil json = new GsonUtil("{}");
-        json.putInt("blockType", blockType);
 
         if (type == 1) {
             json.putString("words", privateKey);
@@ -141,7 +140,7 @@ public class SWTWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
-    public void getTokenInfo(String token, long blockChainId, WCallback callback) {
+    public void getTokenInfo(String token, WCallback callback) {
 
     }
 
@@ -209,6 +208,7 @@ public class SWTWalletBlockchain implements BaseWalletUtil {
         });
     }
 
+
     @Override
     public void queryTransactionList(final GsonUtil params, final WCallback callback) {
         int pagesize = params.getInt("pagesize", 10);
@@ -228,7 +228,7 @@ public class SWTWalletBlockchain implements BaseWalletUtil {
                         item.putDouble("fee", payment.getDouble("fee", 0.0f));
                         item.putString("hash", payment.getString("hash", ""));
                         item.putString("tokenSymbol", payment.getObject("amount", "{}").getString("currency", ""));
-                        item.putString("real_value", payment.getObject("amount", "{}").getString("value", ""));
+                        item.putString("real_value", payment.getObject("amount", "{}") .getString("value", ""));
                         item.putLong("timeStamp", payment.getLong("date", 0l));
                         String type = payment.getString("type", "");
                         if (TextUtils.equals(type, "sent")) {
@@ -250,8 +250,6 @@ public class SWTWalletBlockchain implements BaseWalletUtil {
                 }
             }
         });
-
-
     }
 
     @Override
@@ -263,6 +261,14 @@ public class SWTWalletBlockchain implements BaseWalletUtil {
         return Util.formatDouble(3, Util.translateValue(decimal, originValue));
     }
 
+    @Override
+    public void queryBalance(String address, final WCallback callback) {
+
+
+    }
+
+
+    /*
     @Override
     public void queryBalance(String address, int type, final WCallback callback) {
         new RequestPresenter().loadJcData(new GetWalletTokenList(address, type), new RequestPresenter.RequestCallback() {
@@ -299,6 +305,8 @@ public class SWTWalletBlockchain implements BaseWalletUtil {
             }
         });
     }
+
+     */
 
     @Override
     public String getTransactionSearchUrl(String hash) {

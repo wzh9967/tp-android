@@ -1,19 +1,16 @@
 package com.tokenbank.activity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
-
 import com.tokenbank.R;
 import com.tokenbank.utils.TLog;
 import com.tokenbank.view.TBWebCore;
 import com.tokenbank.view.TitleBar;
 
-
-
+//加上导航栏做成浏览器??
 public class WebBrowserActivity extends BaseActivity implements TitleBar.TitleBarClickListener {
 
     private final static String TAG = "WebBrowserActivity";
@@ -35,6 +32,7 @@ public class WebBrowserActivity extends BaseActivity implements TitleBar.TitleBa
             TLog.d(TAG, "mUrl:" + mUrl);
         }
         mWebCore =  findViewById(R.id.web_core);
+
         mTitleBar =  findViewById(R.id.title_bar);
         mTitleBar.setTitle(mTitle);
         mTitleBar.setTitleTextColor(R.color.white);
@@ -54,6 +52,7 @@ public class WebBrowserActivity extends BaseActivity implements TitleBar.TitleBa
 
     @Override
     public void onRightClick(View view) {
+        //刷新
         mWebCore.refresh();
     }
 

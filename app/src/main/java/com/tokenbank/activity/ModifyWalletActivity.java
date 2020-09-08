@@ -19,6 +19,7 @@ import com.tokenbank.utils.Util;
 import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
 
+//不用动
 public class ModifyWalletActivity extends BaseActivity implements View.OnClickListener, TitleBar.TitleBarClickListener,
         PwdDialog.PwdResult {
     private final static String TAG = "ModifyWalletActivity";
@@ -145,11 +146,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
         mTvBak.setOnClickListener(this);
 
         if (!mWalletData.isBaked) {
-            if (mWalletData.type == 1) {
-                mTvBak.setVisibility(View.VISIBLE);
-            } else if (mWalletData.type == 2) {
-                mTvBak.setVisibility(View.GONE);
-            }
+            mTvBak.setVisibility(View.GONE);
         }
 
     }
@@ -182,37 +179,20 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
 
     private void deleteWallet() {
         if (!mWalletData.isBaked) {
-            if (mWalletData.type == 1) {
-                ViewUtil.showSysAlertDialog(ModifyWalletActivity.this, getString(R.string.dialog_title_warning), getString(R.string.dialog_content_no_wallet_backup), getString(R.string.dialog_btn_backup), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        gotoBak();
-                        dialog.dismiss();
-                    }
-                }, getString(R.string.dialog_btn_delete), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        WalletInfoManager.getInstance().deleteWallet(ModifyWalletActivity.this, mWalletData);
-                        dialog.dismiss();
-                        finish();
-                    }
-                });
-            } else if (mWalletData.type == 2) {
-                ViewUtil.showSysAlertDialog(ModifyWalletActivity.this, getString(R.string.dialog_title_warning), getString(R.string.dialog_content_no_key_backup), getString(R.string.dialog_btn_backup), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        verifyPwd("exportprivatekey");
-                        dialog.dismiss();
-                    }
-                }, getString(R.string.dialog_btn_delete), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        WalletInfoManager.getInstance().deleteWallet(ModifyWalletActivity.this, mWalletData);
-                        dialog.dismiss();
-                        finish();
-                    }
-                });
-            }
+            ViewUtil.showSysAlertDialog(ModifyWalletActivity.this, getString(R.string.dialog_title_warning), getString(R.string.dialog_content_no_wallet_backup), getString(R.string.dialog_btn_backup), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    gotoBak();
+                    dialog.dismiss();
+                }
+            }, getString(R.string.dialog_btn_delete), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    WalletInfoManager.getInstance().deleteWallet(ModifyWalletActivity.this, mWalletData);
+                    dialog.dismiss();
+                    finish();
+                }
+            });
         } else {
             WalletInfoManager.getInstance().deleteWallet(ModifyWalletActivity.this, mWalletData);
             finish();

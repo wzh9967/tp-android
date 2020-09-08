@@ -56,8 +56,7 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
     @Override
     protected void onResume() {
         super.onResume();
-        int blockId = WalletInfoManager.getInstance().getWalletType();
-        mWalletUtil = TBController.getInstance().getWalletUtil(blockId);
+        mWalletUtil = TBController.getInstance().getWalletUtil();
         if (mWalletUtil == null) {
             this.finish();
             return;

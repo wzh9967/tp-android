@@ -141,13 +141,8 @@ public class WalletMenuPop extends PopupWindow implements View.OnClickListener {
             } else {
                 holder = (ViewHolder) view.getTag();
             }
-            BlockChainData.Block block = BlockChainData.getInstance().getBolckByHid(mList.get(position).type);
-            if (block != null) {
-                holder.name.setText(mList.get(position).wname +
-                        "(" + block.desc + ")");
-            } else {
-                holder.name.setText("");
-            }
+
+            holder.name.setText("");
 
             if (index == position) {
                 holder.name.setTextColor(ContextCompat.getColor(context, R.color.color_theme));

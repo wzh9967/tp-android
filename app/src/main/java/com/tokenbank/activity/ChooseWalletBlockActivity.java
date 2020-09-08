@@ -21,6 +21,8 @@ import com.tokenbank.utils.TokenImageLoader;
 import com.tokenbank.view.TitleBar;
 
 
+
+//delete
 public class ChooseWalletBlockActivity extends BaseActivity {
     private static final int REQUEST_CODE = 1007;
     public final static String TAG = "ChooseWalletBlockActivity";
@@ -33,8 +35,9 @@ public class ChooseWalletBlockActivity extends BaseActivity {
     }
 
     private void initView() {
+        //设置列表头
         TitleBar mTitleBar = findViewById(R.id.title_bar);
-        mTitleBar.setTitle(getString(R.string.titleBar_select_block));
+        mTitleBar.setTitle(getString(R.string.titleBar_select_import_way));
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
         mTitleBar.setRightDrawable(R.drawable.ic_walletutil_help);
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
@@ -48,6 +51,7 @@ public class ChooseWalletBlockActivity extends BaseActivity {
                 ToastUtil.toast(ChooseWalletBlockActivity.this, "帮助");
             }
         });
+
 
         ListView listView = findViewById(R.id.listview);
         final WalletUtilAdapter adapter = new WalletUtilAdapter(this);
@@ -84,6 +88,8 @@ public class ChooseWalletBlockActivity extends BaseActivity {
             }
         });
     }
+
+
 
     private void setResult(BlockChainData.Block block) {
         setResult(RESULT_OK, new Intent().putExtra(CreateWalletActivity.BLOCK, block));
@@ -129,13 +135,9 @@ public class ChooseWalletBlockActivity extends BaseActivity {
             } else {
                 holder = (ViewHolder) view.getTag();
             }
-
-            BlockChainData.Block block = mList.get(position);
-            holder.name.setText(block.title
-            );
-            holder.des.setText(block.desc);
-            TokenImageLoader.displayImage(block.symbol, holder.icon,
-                    TokenImageLoader.imageOption(R.drawable.ic_images_common_loading, R.drawable.ic_images_asset_eth, R.drawable.ic_images_asset_eth));
+            holder.name.setText("通过密钥导入");
+            holder.des.setText("");
+            //TokenImageLoader.displayImage(block.symbol, holder.icon, TokenImageLoader.imageOption(R.drawable.ic_images_common_loading, R.drawable.ic_images_asset_eth, R.drawable.ic_images_asset_eth));
             return view;
         }
 
@@ -145,7 +147,6 @@ public class ChooseWalletBlockActivity extends BaseActivity {
                 this.name = view.findViewById(R.id.token_name);
                 this.des = view.findViewById(R.id.token_des);
             }
-
             ImageView icon;
             TextView name, des;
         }

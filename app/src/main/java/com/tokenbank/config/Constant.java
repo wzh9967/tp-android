@@ -28,7 +28,7 @@ public class Constant {
     public final static String init_keys = "init_keys";
 
     //本地web3文件地址
-   public final static String base_web3_url = "file:///android_asset/web3.html";
+    public final static String base_web3_url = "file:///android_asset/web3.html";
 
     //帮助
     public final static String help_url = "";
@@ -37,7 +37,7 @@ public class Constant {
     public final static String privilege_url = "";
 
     //服务协议
-    public final static String service_term_url = "";
+    public final static String service_term_url = "file:///android_asset/moc.html";
 
     //交易查询
     public final static String swt_transaction_search_url = "http://state.jingtum.com/#!/tx/";
