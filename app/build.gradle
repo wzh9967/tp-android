@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 30
+    buildToolsVersion '30.0.1'
     defaultConfig {
         applicationId "com.tokenbank"
-        minSdkVersion 15
-        targetSdkVersion 23
+        minSdkVersion 17
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -20,19 +20,23 @@ android {
     }
 }
 
-
 dependencies {
+    implementation 'com.github.JCCDex:jcc-android-base-lib:0.1.8'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //noinspection GradleCompatible
     implementation 'com.android.support:support-v4:26.1.0'
+    //noinspection GradleCompatible
     implementation 'com.android.support:support-vector-drawable:26.1.0'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'
     implementation 'com.mcxiaoke.volley:library:1.0.+'
     implementation files('libs/gson-2.3.1.jar')
+    //noinspection GradleCompatible
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.google.zxing:core:3.3.0'
     implementation 'org.greenrobot:eventbus:3.0.0'

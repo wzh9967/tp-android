@@ -44,6 +44,8 @@ public class WalletInfoManager {
                     Constant.wallet_def_file, Constant.wpk);
             wallet.words = FileUtil.getStringFromSp(AppConfig.getContext(),
                     Constant.wallet_def_file, Constant.words);
+            wallet.tips = FileUtil.getStringFromSp(AppConfig.getContext(),
+                    Constant.wallet_def_file, Constant.tips);
             wallet.isBaked = FileUtil.getBooleanFromSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.baked);
             mCurrentWallet = wallet;
         } else {
@@ -71,6 +73,8 @@ public class WalletInfoManager {
                                         spFileName, Constant.wpk);
                                 dwallet.words = FileUtil.getStringFromSp(AppConfig.getContext(),
                                         spFileName, Constant.words);
+                                dwallet.tips = FileUtil.getStringFromSp(AppConfig.getContext(),
+                                        spFileName, Constant.tips);
                                 wallet.isBaked = FileUtil.getBooleanFromSp(AppConfig.getContext(), spFileName, Constant.baked);
                                 setCurrentWallet(dwallet);
                                 return;
@@ -134,6 +138,8 @@ public class WalletInfoManager {
         FileUtil.putStringToSp(AppConfig.getContext(), spFileName, Constant.whash, wallet.whash);
         FileUtil.putStringToSp(AppConfig.getContext(), spFileName, Constant.wpk,
                 wallet.wpk);
+        FileUtil.putStringToSp(AppConfig.getContext(), spFileName, Constant.tips,
+                wallet.tips);
         FileUtil.putStringToSp(AppConfig.getContext(), spFileName, Constant.words,
                 wallet.words);
         FileUtil.putBooleanToSp(AppConfig.getContext(), spFileName, Constant.baked, wallet.isBaked);
@@ -256,6 +262,8 @@ public class WalletInfoManager {
                 spFileName, Constant.wpk);
         walletData.words = FileUtil.getStringFromSp(AppConfig.getContext(),
                 spFileName, Constant.words);
+        walletData.tips = FileUtil.getStringFromSp(AppConfig.getContext(),
+                spFileName, Constant.tips);
         walletData.isBaked = FileUtil.getBooleanFromSp(AppConfig.getContext(), spFileName, Constant.baked);
         return walletData;
     }
@@ -360,6 +368,8 @@ public class WalletInfoManager {
                             dwallet.whash = FileUtil.getStringFromSp(AppConfig.getContext(), fileName, Constant.whash);
                             dwallet.wpk = FileUtil.getStringFromSp(AppConfig.getContext(),
                                     fileName, Constant.wpk);
+                            dwallet.tips = FileUtil.getStringFromSp(AppConfig.getContext(),
+                                    fileName, Constant.tips);
                             dwallet.words = FileUtil.getStringFromSp(AppConfig.getContext(),
                                     fileName, Constant.words);
                             dwallet.isBaked = FileUtil.getBooleanFromSp(AppConfig.getContext(), fileName, Constant.baked);
@@ -401,6 +411,7 @@ public class WalletInfoManager {
         FileUtil.putStringToSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.waddress, wallet.waddress);
         FileUtil.putStringToSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.whash, wallet.whash);
         FileUtil.putStringToSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.wpk, wallet.wpk);
+        FileUtil.putStringToSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.tips, wallet.tips);
         FileUtil.putStringToSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.words, wallet.words);
         FileUtil.putBooleanToSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.baked, wallet.isBaked);
     }
@@ -414,6 +425,7 @@ public class WalletInfoManager {
         public String wpk;
         public boolean isBaked = false;
         public String words = "";
+        public String tips ="";
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof WData) {

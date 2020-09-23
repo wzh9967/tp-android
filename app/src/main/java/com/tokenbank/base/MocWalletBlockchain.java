@@ -1,11 +1,7 @@
 package com.tokenbank.base;
-
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
-
 import com.tokenbank.config.Constant;
-import com.tokenbank.net.api.GetWalletTokenList;
 import com.tokenbank.net.api.jtrequest.JTTransactionDetailsRequest;
 import com.tokenbank.net.api.jtrequest.JTTransactionListRequest;
 import com.tokenbank.net.api.jtrequest.JTTransactionRequest;
@@ -15,9 +11,9 @@ import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.Util;
 
 //FSTWalletBlockchain更新完毕后移除
-public class  SWTWalletBlockchain implements BaseWalletUtil {
+public class MocWalletBlockchain implements BaseWalletUtil {
 
-    private final static String TAG = "SWTWalletBlockchain";
+    private final static String TAG = "MocWalletBlockchain";
 
     @Override
     public void init() {
@@ -25,27 +21,12 @@ public class  SWTWalletBlockchain implements BaseWalletUtil {
 
     @Override
     public void createWallet(final String walletName, final String walletPassword, final WCallback callback) {
-        if (!checkInit(callback)) {
-            return;
-        }
-        GsonUtil json = new GsonUtil("{}");
-        JSUtil.getInstance().callJS("createJtWallet", json, callback);
+
     }
 
     @Override
     public void importWallet(String privateKey, int type, WCallback callback) {
-        if (!checkInit(callback)) {
-            return;
-        }
-        GsonUtil json = new GsonUtil("{}");
 
-        if (type == 1) {
-            json.putString("words", privateKey);
-            JSUtil.getInstance().callJS("importWalletWithWords", json, callback);
-        } else if (type == 2) {
-            json.putString("privateKey", privateKey);
-            JSUtil.getInstance().callJS("retrieveWalletFromPk", json, callback);
-        }
     }
 
     @Override
@@ -58,32 +39,17 @@ public class  SWTWalletBlockchain implements BaseWalletUtil {
 
     @Override
     public void gasPrice(WCallback callback) {
-        double gasPrice = 1.0f;
-        GsonUtil gasPriceJson = new GsonUtil("{}");
-        gasPriceJson.putDouble("gasPrice", gasPrice);
-        callback.onGetWResult(0, gasPriceJson);
+
     }
 
     @Override
     public void signedTransaction(GsonUtil data, WCallback callback) {
-        if (!checkInit(callback)) {
-            return;
-        }
-        JSUtil.getInstance().callJS("jtSingtx", data, callback);
+
     }
 
     @Override
     public void sendSignedTransaction(String rawTransaction, final WCallback callback) {
-        new RequestPresenter().loadJcData(new JTTransactionRequest(rawTransaction), new RequestPresenter.RequestCallback() {
-            @Override
-            public void onRequesResult(int ret, GsonUtil json) {
-                if (ret == 0) {
-                    callback.onGetWResult(0, json);
-                    return;
-                }
-                callback.onGetWResult(ret, json);
-            }
-        });
+
     }
 
     @Override
@@ -118,14 +84,12 @@ public class  SWTWalletBlockchain implements BaseWalletUtil {
 
     @Override
     public void gasSetting(Context context, double gasPrice, boolean defaultToken, WCallback callback) {
-        GsonUtil gas = new GsonUtil("{}");
-        gas.putString("gas", "0.01 SWT");
-        gas.putDouble("gasPrice", 0.01f);
-        callback.onGetWResult(0, gas);
+
     }
 
     @Override
     public double getRecommendGas(double gas, boolean defaultToken) {
+        //从设置的Gas费中获取
         return 0.01;
     }
 
@@ -146,12 +110,6 @@ public class  SWTWalletBlockchain implements BaseWalletUtil {
 
     @Override
     public void translateAddress(String sourceAddress, WCallback callback) {
-        GsonUtil addressJson = new GsonUtil("{}");
-        if (TextUtils.isEmpty(sourceAddress)) {
-            sourceAddress = "";
-        }
-        addressJson.putString("receive_address", sourceAddress);
-        callback.onGetWResult(0, addressJson);
     }
 
     @Override
@@ -264,50 +222,7 @@ public class  SWTWalletBlockchain implements BaseWalletUtil {
     @Override
     public void queryBalance(String address, final WCallback callback) {
 
-
     }
-
-
-    /*
-    @Override
-    public void queryBalance(String address, int type, final WCallback callback) {
-        new RequestPresenter().loadJcData(new GetWalletTokenList(address, type), new RequestPresenter.RequestCallback() {
-            @Override
-            public void onRequesResult(int ret, GsonUtil json) {
-                GsonUtil formatData = new GsonUtil("{}");
-                GsonUtil arrays = new GsonUtil("[]");
-
-                if (ret == 0) {
-                    GsonUtil datas = json.getArray("data");
-                    int len = datas.getLength();
-                    for (int i = 0; i < len; i++) {
-                        GsonUtil data = new GsonUtil("{}");
-                        data.putLong("blockchain_id", Long.parseLong("" + TBController.SWT_INDEX));
-                        data.putString("icon_url", "http://state.jingtum.com/favicon.ico");
-                        data.putString("bl_symbol", datas.getObject(i).getString("currency", ""));
-                        data.putInt("decimal", 0);
-                        data.putString("balance", datas.getObject(i).getString("value", "0"));
-                        data.putString("asset", "0");
-                        arrays.put(i, data);
-                    }
-                } else {
-                    GsonUtil data = new GsonUtil("{}");
-                    data.putLong("blockchain_id", Long.parseLong("" + TBController.SWT_INDEX));
-                    data.putString("icon_url", "http://state.jingtum.com/favicon.ico");
-                    data.putString("bl_symbol", "SWT");
-                    data.putInt("decimal", 0);
-                    data.putString("balance", "0");
-                    data.putString("asset", "0");
-                    arrays.put(data);
-                }
-                formatData.put("data", arrays);
-                callback.onGetWResult(0, formatData);
-            }
-        });
-    }
-
-     */
-
     @Override
     public String getTransactionSearchUrl(String hash) {
         return Constant.swt_transaction_search_url + hash;

@@ -1,6 +1,4 @@
-
 package com.tokenbank.activity;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -14,17 +12,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import com.android.jccdex.app.base.JCallback;
+import com.android.jccdex.app.moac.MoacWallet;
+import com.android.jccdex.app.util.JCCJson;
 import com.tokenbank.R;
 import com.tokenbank.base.BlockChainData;
-import com.tokenbank.base.BaseWalletUtil;
-import com.tokenbank.base.TBController;
 import com.tokenbank.base.WalletInfoManager;
-import com.tokenbank.base.WCallback;
 import com.tokenbank.config.Constant;
 import com.tokenbank.utils.FileUtil;
-import com.tokenbank.utils.GsonUtil;
-import com.tokenbank.utils.TLog;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
@@ -40,13 +35,17 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
     private ImageView mImgServiceTerms;
     private TextView mTvServiceTerms;
     private Button mBtnConfirm;
-    private BaseWalletUtil mWalletUtil;
+    private MoacWallet mMoacWallet;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_wallet_new);
         initView();
+        mMoacWallet = MoacWallet.getInstance();
+        mMoacWallet.init(this);
+        String moacNode = "";
+        mMoacWallet.initChain3Provider(moacNode);
     }
 
 
@@ -76,13 +75,12 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        mWalletUtil = TBController.getInstance().getWalletUtil();
         switch (view.getId()) {
             case R.id.btn_confirm:
                 if (paramCheck()) {
                     String walletName = mEdtWalletName.getText().toString();
                     String walletPwd = mEdtWalletPwd.getText().toString();
-                    createWallet(walletName, walletPwd);
+                    createMocWallet(walletName, walletPwd);
                 }
                 break;
             case R.id.img_service_terms:
@@ -109,7 +107,6 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mWalletUtil = TBController.getInstance().getWalletUtil();
     }
 
     private boolean paramCheck() {
@@ -149,41 +146,42 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
         return true;
     }
 
-    private void createWallet(final String walletName, final String walletPwd) {
+    private void createMocWallet(final String walletName, final String walletPwd) {
         setBtnStateToCreating();
-        mWalletUtil.createWallet(walletName, walletPwd, new WCallback() {
+        mMoacWallet.createWallet(new JCallback() {
             @Override
-            public void onGetWResult(int ret, GsonUtil extra) {
-                if (ret == 0) {
-                    TLog.d(TAG, "创建钱包成功");
+            public void completion(JCCJson jccJson) {
+                //String secret = jccJson.getString("secret");
+                //String address = jccJson.getString("address");
+                //String words = jccJson.getString("words");
+                String secret = "d324ae567508810cf351bf1705748e688c2842206f38d49e8e5f71605da3fab5";
+                String address = "0xa68dabb5932806e6373ca2d424286e820e23bcc8";
+                String words = "pupil genre shoot glass oxygen guard alpha scissors verb wrap position law";
+                if (secret != null && address != null && words != null) {
                     String hash = FileUtil.getStringContent(walletPwd);
-                    String privateKey = extra.getString("privatekey", "");
-                    String words = extra.getString("words", "");
-                    String address = extra.getString("address", "");
-                    if (mWalletUtil.isWalletLegal(privateKey, address)) {
-                        recordWallet(walletName, hash, privateKey, words, mEdtWalletTips.getText().toString(),
-                                extra.getString("address", ""));
-                    } else {
-                        resetBtn();
-                        ToastUtil.toast(CreateWalletActivity.this, "创建钱包失败, 错误码 1");
-                    }
+                    recordWallet(walletName, hash, secret, words, mEdtWalletTips.getText().toString(),
+                            address);
                 } else {
-                    ToastUtil.toast(CreateWalletActivity.this, "创建钱包失败, 错误码 2" + extra.toString());
+                    resetBtn();
+                    ToastUtil.toast(CreateWalletActivity.this, "创建钱包失败, 错误码 1");
                 }
+                Log.d(TAG, "completion: secret" + secret);
+                Log.d(TAG, "completion: address" + address);
+                Log.d(TAG, "completion: words" + words);
             }
         });
     }
 
     //save
-    private void recordWallet(final String name, final String hash, final String privateKey,
+    private void recordWallet(final String name, final String hash, final String sectet,
                               final String words, String tips, final String address) {
         long walletID = System.currentTimeMillis();
-        storeWallet(walletID, name, address, hash, privateKey, words);
+        storeWallet(walletID, name, address, hash, sectet, words, tips);
         ToastUtil.toast(CreateWalletActivity.this, getString(R.string.toast_wallet_created));
         gotoBakup();
     }
 
-    private void storeWallet(long walletId, String walletName, String address, String walletHash, String privatekey, String words) {
+    private void storeWallet(long walletId, String walletName, String address, String walletHash, String privatekey, String words ,String tips) {
         WalletInfoManager.WData wallet = new WalletInfoManager.WData();
         wallet.wid = walletId;
         wallet.wname = walletName;
@@ -191,13 +189,11 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
         wallet.whash = walletHash;
         wallet.wpk = privatekey;
         wallet.words = words;
-
+        wallet.tips = tips;
         WalletInfoManager.getInstance().insertWallet(wallet);
     }
 
-
     //view
-
     private void resetBtn() {
         mBtnConfirm.setText(getString(R.string.btn_create_wallet_done));
         mBtnConfirm.setEnabled(true);
@@ -208,11 +204,10 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
         mBtnConfirm.setEnabled(false);
     }
 
-
     private void gotoBakup() {
         WalletInfoManager.WData walletData = WalletInfoManager.getInstance().getCurrentWallet();
-        if (TextUtils.isEmpty(walletData.words)) {
-            StartBakupActivity.startBakupWalletStartActivity(CreateWalletActivity.this, walletData.waddress, 1);
+        if (!TextUtils.isEmpty(walletData.words)) {
+            StartBakupActivity.startBakupWalletStartActivity(CreateWalletActivity.this, walletData.waddress, 2);
         }
         this.finish();
     }

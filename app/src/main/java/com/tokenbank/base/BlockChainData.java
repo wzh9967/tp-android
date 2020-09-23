@@ -42,7 +42,6 @@ public class BlockChainData {
                 mBlock.add(getBlock(item));
             }
         }
-
     }
 
     public static Block getBlock(GsonUtil json) {

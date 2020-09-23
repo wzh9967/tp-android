@@ -18,28 +18,6 @@
         android:paddingLeft="@dimen/dimen_content_padding"
         android:paddingRight="@dimen/dimen_content_padding">
 
-        <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
-
-            <TextView
-                style="@style/Style.WalletCreateTitle"
-                android:minWidth="60dp"
-                android:text="@string/enter_title_transfer_token" />
-
-            <TextView
-                android:id="@+id/tv_token_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="12dp"
-                android:textColor="@color/color_text_3"
-                android:textColorHint="@color/color_text_80"
-                android:drawableRight="@drawable/ic_arrow_right"
-                android:textSize="@dimen/text_size_16" />
-            <!--android:drawableRight="@drawable/ic_arrow_right"-->
-
-
-        </LinearLayout>
-
-        <View style="@style/Style.Line" />
 
         <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
 

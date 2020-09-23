@@ -14,6 +14,7 @@ public class Constant {
     public final static String whash = "whash";
     public final static String wpk = "wpk";
     public final static String baked = "baked";
+    public final static String tips = "tips";
     public final static String words = "words";
 
     //common sp
@@ -37,7 +38,7 @@ public class Constant {
     public final static String privilege_url = "";
 
     //服务协议
-    public final static String service_term_url = "file:///android_asset/moc.html";
+    public final static String service_term_url = "file:///android_asset/TestJsNativeBridge.html";
 
     //交易查询
     public final static String swt_transaction_search_url = "http://state.jingtum.com/#!/tx/";
@@ -49,7 +50,7 @@ public class Constant {
 
     //activity requestCode
     public final static int CHOOSE_BLOCK_REQUEST_CODE = 1001;
-
+    public final static int CHOOSE_IMPORTWAY_CODE = 1002;
     public final static String BLOCK_KEY = "BLOCK";
 
 }

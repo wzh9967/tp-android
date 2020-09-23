@@ -2,6 +2,7 @@
 package com.tokenbank.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,13 +24,15 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.android.jccdex.app.base.JCallback;
+import com.android.jccdex.app.moac.MoacWallet;
+import com.android.jccdex.app.util.JCCJson;
 import com.tokenbank.R;
 import com.tokenbank.activity.TokenDetailsActivity;
 import com.tokenbank.activity.TokenReceiveActivity;
 import com.tokenbank.activity.TokenTransferActivity;
 import com.tokenbank.adapter.BaseRecycleAdapter;
 import com.tokenbank.adapter.BaseRecyclerViewHolder;
-import com.tokenbank.base.BlockChainData;
 import com.tokenbank.base.BaseWalletUtil;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
@@ -69,9 +73,11 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private boolean isAssetVisible = false;
     private BaseWalletUtil mWalletUtil;
 
+    private MoacWallet mMoacWallet;
     private String unit = "¥";
     private boolean isViewCreated = false;
     private double mTotalAsset = 0.0f;
+    private Context context;
 
     public static MainWalletFragment newInstance() {
         Bundle args = new Bundle();
@@ -97,10 +103,12 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
         isAssetVisible = FileUtil.getBooleanFromSp(getContext(), Constant.common_prefs, Constant.asset_visible_key, true);
 
+        //主要界面
         mSwipteRefreshLayout = view.findViewById(R.id.swiperefreshlayout);
         mSwipteRefreshLayout.setOnRefreshListener(this);
 
         mAppbarLayout = view.findViewById(R.id.main_appbar);
+        //刷新滑动
         mAppbarLayout.addOnOffsetChangedListener(mOnOffsetChangedListener);
 
         mToolbar = view.findViewById(R.id.toolbar);
@@ -140,6 +148,12 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         view.findViewById(R.id.wallet_action_transfer).setOnClickListener(this);
         view.findViewById(R.id.wallet_action_transfer1).setOnClickListener(this);
         isViewCreated = true;
+
+        this.context = getActivity().getApplicationContext();
+        mMoacWallet = MoacWallet.getInstance();
+        mMoacWallet.init(this.context);
+        String moacNode = "";
+        mMoacWallet.initChain3Provider(moacNode);
     }
 
     @Override
@@ -166,8 +180,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 break;
             case R.id.wallet_action_transfer:
             case R.id.wallet_action_transfer1:
-                TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", 0,
-                        mWalletUtil.getDefaultTokenSymbol(), mWalletUtil.getDefaultDecimal(), 0);
+                TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", 0, mWalletUtil.getDefaultTokenSymbol(), mWalletUtil.getDefaultDecimal(), 0);
                 break;
             case R.id.wallet_action_receive:
             case R.id.wallet_action_receive1:
@@ -204,57 +217,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         double num = Util.parseDouble(scanResult.substring(beginIndex, scanResult.indexOf("&token")));
         final String token = scanResult.substring(scanResult.indexOf("&token=") + 7);
         String ibanAddress = scanResult.substring(scanResult.indexOf("jingtum:") + 8, scanResult.indexOf("?"));
-        TokenTransferActivity.startTokenTransferActivity(getContext(), ibanAddress,
-                "", num, token, 0, 0);
-
-
-
-
+        TokenTransferActivity.startTokenTransferActivity(getContext(), ibanAddress, "", num, token, 0, 0);
     }
-   /*
-    private void handleSwtScanResult(final String scanResult) {
-        if (!WalletInfoManager.getInstance().hasWallet(TBController.SWT_INDEX)) {
-            ToastUtil.toast(getContext(), getString(R.string.toast_no_jintum_wallet));
-            return;
-        }
-        if (WalletInfoManager.getInstance().getWalletType() == TBController.SWT_INDEX) {
-            //当前就是SWT钱包
-            int beginIndex = scanResult.indexOf("amount=") + 7;
-            double num = Util.parseDouble(scanResult.substring(beginIndex, scanResult.indexOf("&token")));
-            final String token = scanResult.substring(scanResult.indexOf("&token=") + 7);
-            String ibanAddress = scanResult.substring(scanResult.indexOf("jingtum:") + 8, scanResult.indexOf("?"));
-            TokenTransferActivity.startTokenTransferActivity(getContext(), ibanAddress,
-                    "", num, token, 0, 0);
-        } else {
-            ViewUtil.showSysAlertDialog(getContext(), getString(R.string.dialog_title_reminder), getString(R.string.dialog_content_switch_jintum_wallet),
-                    getString(R.string.dialog_btn_not_switch), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }, getString(R.string.dialog_btn_switch), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (WalletInfoManager.getInstance().setCurrentWallet(TBController.SWT_INDEX)) {
-                                //跳转到井通转账
-                                if (!WalletInfoManager.getInstance().getCurrentWallet().isBaked) {
-                                    ViewUtil.showBakupDialog(getActivity(), WalletInfoManager.getInstance().getCurrentWallet(),
-                                            true, true, WalletInfoManager.getInstance().getCurrentWallet().whash);
-                                } else {
-                                    int beginIndex = scanResult.indexOf("amount=") + 7;
-                                    double num = Util.parseDouble(scanResult.substring(beginIndex, scanResult.indexOf("&token")));
-                                    final String token = scanResult.substring(scanResult.indexOf("&token=") + 7);
-                                    String ibanAddress = scanResult.substring(scanResult.indexOf("jingtum:") + 8, scanResult.indexOf("?"));
-                                    TokenTransferActivity.startTokenTransferActivity(getContext(), ibanAddress,
-                                            "", num, token, 0, 0);
-                                }
-                            }
-                        }
-                    });
-        }
-    }
-
-    */
     /**
      * 显示钱包菜单pop
      */
@@ -352,7 +316,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             }
         } catch (Throwable e) {
         }
-
         return false;
     }
 
@@ -446,11 +409,13 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             }
 
             String address = WalletInfoManager.getInstance().getWAddress();
-            TBController.getInstance().getWalletUtil().queryBalance(address, new WCallback() {
+
+            mMoacWallet.getBalance(address, new JCallback() {
                 @Override
-                public void onGetWResult(int ret, GsonUtil extra) {
-                    if (ret == 0) {
-                        handleTokenRequestResult(params, loadmore, extra);
+                public void completion(JCCJson jccJson) {
+                    String balance = jccJson.getString("balance");
+                    if(balance != null){
+                   //     handleTokenRequestResult(params, loadmore, extra);
                     }
                     mSwipteRefreshLayout.setRefreshing(false);
                 }
@@ -498,6 +463,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         }
 
         private void gotoTokenDetail(GsonUtil data) {
+            //跳转到交易细节
+            Log.d(TAG, "gotoTokenDetail: +++++++++++++++++++++++++++++++++++++++");
             TokenDetailsActivity.NavToActivity(getActivity(), data.toString(), unit);
         }
 

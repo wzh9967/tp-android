@@ -30,25 +30,20 @@ public class StartBakupActivity extends BaseActivity implements View.OnClickList
 
     private WalletInfoManager.WData mWalletData;
     private String[] mWords;
-    private int mType = -1;
+    private int mType = -1;//创建钱包的备份方式，设定为助记词，密钥可在管理钱包页面查看
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bakup_wallet_start);
-        Log.d(TAG, "onCreate: avtive");
         if (getIntent() != null) {
             mType = getIntent().getIntExtra(BAKUP_TYPE, -1);
             String walletAddress = getIntent().getStringExtra(WALLET_ADDRESS);
-            Log.d(TAG, "onCreate: walletAddress is "+walletAddress);
             if (!TextUtils.isEmpty(walletAddress)) {
-                Log.d(TAG, "onCreate: walletAddress is not empty");
                 mWalletData = WalletInfoManager.getInstance().getWData(walletAddress);
-                Log.d(TAG, "onCreate: mWalletData "+mWalletData);
             }
         }
         if (!verifyData()) {
-            Log.d(TAG, "onCreate: have no date in the sp");
             this.finish();
             return;
         }
@@ -69,7 +64,6 @@ public class StartBakupActivity extends BaseActivity implements View.OnClickList
         intent.addFlags(from instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(WALLET_ADDRESS, walletAddress);
         intent.putExtra(BAKUP_TYPE, bakupType);
-        Log.d(TAG, "startBakupWalletStartActivity: OKOKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
         from.startActivity(intent);
     }
 
@@ -93,7 +87,6 @@ public class StartBakupActivity extends BaseActivity implements View.OnClickList
                 return false;
             }
         }
-
         return true;
     }
 
