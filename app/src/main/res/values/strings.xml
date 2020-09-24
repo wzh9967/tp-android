@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">TokenPocket</string>
 
     <string name="enter_title_block">钱包体系</string>
@@ -25,7 +25,7 @@
     <string name="titleBar_switch_account">切换账号</string>
     <string name="titleBar_select_token">选择代币</string>
     <string name="titleBar_select_block">选择币种体系</string>
-    <string name="titleBar_select_import_way" translatable="false">选择导入方式</string>
+    <string name="titleBar_select_import_way">选择导入方式</string>
     <string name="toast_abnormal_data">数据异常:</string>
     <string name="toast_private_key_incorrect">私钥输入错误,请确认</string>
     <string name="toast_mnemonic_incorrect">助记词顺错误,请确认</string>
@@ -98,7 +98,7 @@
     <string name="titleBar_help_center">帮助中心</string>
     <string name="toast_scan_failure">扫描错误</string>
     <string name="toast_not_support_eth_wallet">当前不支持以太钱包</string>
-    <string name="toast_no_wallet" translatable="false">当前没有钱包，请创建钱包，再扫描</string>
+    <string name="toast_no_wallet">当前没有钱包，请创建钱包，再扫描</string>
     <string name="dialog_title_reminder">提示</string>
     <string name="dialog_content_switch_jintum_wallet">扫描到的地址为井通地址，但是当前钱包为非井通钱包，是否切换成井通钱包？</string>
     <string name="dialog_btn_not_switch">不切换</string>
@@ -164,11 +164,14 @@
     <string name="enter_title_transfer_token">代币名称</string>
     <string name="enter_title_transfer_address">钱包地址</string>
     <string name="enter_title_transfer_amount">转出数量</string>
+    <string name="transfer_speed_fast">更快</string>
+    <string name="transfer_speed_slow">更慢</string>
     <string name="enter_hint_transfer_amount">输入转出数量</string>
     <string name="enter_title_transfer_gas">矿工费</string>
     <string name="enter_hint_transfer_gas">请选择矿工费</string>
     <string name="btn_manage_wallet">管理钱包</string>
     <string name="btn_transactions">交易记录</string>
+    <string name="btn_node_setting">节点设置</string>
     <string name="btn_message_center">消息中心</string>
     <string name="btn_contacts">联系人</string>
     <string name="btn_help_support">帮助中心</string>
@@ -225,6 +228,7 @@
     <string name="btn_language_zh">简体中文</string>
     <string name="btn_language_en">English</string>
     <string name="title_languages">语言设置</string>
-
+    <string name="title_SettingNode">节点设置</string>
+    <string name="toast_no_jintum_wallet">不存在墨客钱包，请导入或者创建</string>
 
 </resources>

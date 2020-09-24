@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.google.zxing.WriterException;
 import com.tokenbank.R;
 import com.tokenbank.base.BaseWalletUtil;
-import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.base.WCallback;
 import com.tokenbank.base.TBController;
 import com.tokenbank.utils.GsonUtil;

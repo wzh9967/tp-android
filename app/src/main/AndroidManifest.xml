@@ -64,7 +64,10 @@
             android:name=".activity.ChooseWalletBlockActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.ChooseWalletImportWay"
+            android:name=".activity.NodeSettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ChooseImportWayActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ImportWalletActivity"

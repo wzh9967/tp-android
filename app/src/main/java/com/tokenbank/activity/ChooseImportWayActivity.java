@@ -1,5 +1,4 @@
 package com.tokenbank.activity;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -10,14 +9,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import com.tokenbank.R;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.view.TitleBar;
 
-public class ChooseWalletImportWay extends BaseActivity {
+public class ChooseImportWayActivity extends BaseActivity {
     private static final int REQUEST_CODE = 1007;
-    public final static String TAG = "ChooseWalletImportWay";
+    public final static String TAG = "ChooseImportWayActivity";
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +35,7 @@ public class ChooseWalletImportWay extends BaseActivity {
 
             @Override
             public void onRightClick(View view) {
-                ToastUtil.toast(ChooseWalletImportWay.this, "帮助");
+                ToastUtil.toast(ChooseImportWayActivity.this, "帮助");
             }
         });
 
@@ -72,7 +70,7 @@ public class ChooseWalletImportWay extends BaseActivity {
      */
     public static void navToActivity(Context context, int requestCode) {
         Log.d(TAG, "navToActivity: 已经跳转到导入方式");
-        Intent intent = new Intent(context, ChooseWalletImportWay.class);
+        Intent intent = new Intent(context, ChooseImportWayActivity.class);
         //返回值到context ,结果在onActivityResult中处理  在setResult 传递过去
         ((Activity) context).startActivityForResult(intent, requestCode);
     }

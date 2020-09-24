@@ -1,5 +1,6 @@
 package com.tokenbank.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -42,10 +44,12 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
     private View mEmptyView;
     private int mFrom = 2;
 
+    @SuppressLint("LongLogTag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_record);
+        Log.d(TAG, "onCreate: onCreate execute ");
         if (getIntent() != null) {
             mFrom = getIntent().getIntExtra("From", 2);
         }
@@ -103,8 +107,9 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
     public void onMiddleClick(View view) {
     }
 
+    @SuppressLint("LongLogTag")
     private void initView() {
-
+        Log.d(TAG, "initView: init begin");
         mSwipeRefreshLayout = findViewById(R.id.root_view);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
@@ -136,6 +141,7 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
                 }
             }
         });
+        Log.d(TAG, "initView: init success");
     }
 
     public static void startTransactionRecordActivity(Context context, int from) {
@@ -175,7 +181,6 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
             @Override
             public void onItemClick(View view, int position) {
                 GsonUtil item = getItem(position);
-
                 gotoTransactionDetail(item);
             }
         };

@@ -20,6 +20,7 @@ import com.android.jccdex.app.moac.MoacWallet;
 import com.android.jccdex.app.util.JCCJson;
 import com.tokenbank.R;
 import com.tokenbank.activity.MainActivity;
+import com.tokenbank.activity.SplashActivity;
 import com.tokenbank.activity.WebBrowserActivity;
 import com.tokenbank.base.BlockChainData;
 import com.tokenbank.base.BaseWalletUtil;
@@ -44,18 +45,10 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
     private TextView mTvTerms;
     private TextView mTvImportWallet;
     private BaseWalletUtil mWalletUtil;
-    private int flag = 1;
-    private final static String FLAG = "Flag";
-    public static final String BLOCK = "Block";
-    private BlockChainData.Block mBlock;
     private MoacWallet mMoacWallet;
     private Context context;
-    public static WordsFragment newInstance(int flag, BlockChainData.Block block) {
-        Bundle args = new Bundle();
+    public static WordsFragment newInstance() {
         WordsFragment fragment = new WordsFragment();
-        args.putInt(FLAG, flag);
-        args.putParcelable(BLOCK, block);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -181,6 +174,7 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
                               final String address) {
         long walletId = System.currentTimeMillis();
         storeWallet(walletId, name, address, hash, privateKey);
+
         gotoMainActivity();
     }
 
@@ -188,6 +182,7 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
         // 添加资产时，进入创建钱包
         Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);
+        SplashActivity.instance.finish();
         getActivity().finish();
     }
 

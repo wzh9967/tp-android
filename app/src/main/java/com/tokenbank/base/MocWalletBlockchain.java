@@ -14,6 +14,7 @@ import com.tokenbank.utils.Util;
 public class MocWalletBlockchain implements BaseWalletUtil {
 
     private final static String TAG = "MocWalletBlockchain";
+    private long gasLimit = 21000;
 
     @Override
     public void init() {
@@ -73,9 +74,17 @@ public class MocWalletBlockchain implements BaseWalletUtil {
         address.putString("receiveAddress", receiveStr);
         callback.onGetWResult(0, address);
     }
+    public void setGasLimit(long gasLimit){
+        this.gasLimit = gasLimit;
+    }
+
+    public long getGasLimit(long gasLimit){
+        return this.gasLimit;
+    }
 
     @Override
     public void calculateGasInToken(double gas, double gasPrice, boolean defaultToken, WCallback callback) {
+        double price = gasPrice*gas;
         GsonUtil gasJson = new GsonUtil("{}");
         gasJson.putString("gas", "0.01 SWT");
         gasJson.putDouble("gasPrice", 0.01f);
@@ -114,7 +123,7 @@ public class MocWalletBlockchain implements BaseWalletUtil {
 
     @Override
     public boolean checkWalletAddress(String receiveAddress) {
-        if (TextUtils.isEmpty(receiveAddress) || receiveAddress.length() != 34) {
+        if (TextUtils.isEmpty(receiveAddress) || receiveAddress.length() != 42) {
             return false;
         }
         return true;

@@ -42,7 +42,6 @@
                 style="@style/Style.WalletCreateTitle"
                 android:minWidth="60dp"
                 android:text="@string/enter_title_transfer_amount"
-
                 />
 
             <EditText
@@ -52,6 +51,7 @@
                 android:digits="0123456789."
                 android:inputType="numberDecimal"/>
         </LinearLayout>
+
 
         <View style="@style/Style.Line" />
 
@@ -73,6 +73,30 @@
                 android:textColorHint="@color/color_text_80"
                 android:textSize="@dimen/text_size_16" />
 
+        </LinearLayout>
+
+        <View style="@style/Style.Line" />
+
+        <LinearLayout style="@style/Style.ItemLayout.WalletCreateLayout">
+
+            <TextView
+                style="@style/Style.WalletCreateTitle"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:minWidth="60dp"
+                android:text="@string/transfer_speed_slow" />
+            <SeekBar
+                android:id="@+id/seekBar2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                style="@style/Style.WalletCreateTitle"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:minWidth="60dp"
+                android:text="@string/transfer_speed_fast" />
         </LinearLayout>
 
         <View style="@style/Style.Line" />

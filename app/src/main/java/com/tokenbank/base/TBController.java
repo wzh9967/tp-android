@@ -13,7 +13,7 @@ public class TBController {
     public final static int SWT_INDEX = 2;
 
     private BaseWalletUtil mWalletUtil;
-    private BaseWalletUtil mSwtWalletUtil;
+    private BaseWalletUtil mMocWalletUtil;
     private TestWalletBlockchain mNullWalletUtil;
 
     private static TBController sInstance = new TBController();
@@ -29,13 +29,13 @@ public class TBController {
 
     public void init() {
         mSupportType.add(SWT_INDEX);
-        mSwtWalletUtil = new MocWalletBlockchain();
-        mSwtWalletUtil.init();
+        mMocWalletUtil = new MocWalletBlockchain();
+        mMocWalletUtil.init();
         mNullWalletUtil = new TestWalletBlockchain();
     }
 
     public BaseWalletUtil getWalletUtil() {
-        mWalletUtil = mSwtWalletUtil;
+        mWalletUtil = mMocWalletUtil;
         return mWalletUtil;
     }
 

@@ -165,9 +165,9 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
                     resetBtn();
                     ToastUtil.toast(CreateWalletActivity.this, "创建钱包失败, 错误码 1");
                 }
-                Log.d(TAG, "completion: secret" + secret);
-                Log.d(TAG, "completion: address" + address);
-                Log.d(TAG, "completion: words" + words);
+                Log.d(TAG, "completion: secret" + secret+ "             "+secret.length());
+                Log.d(TAG, "completion: address" + address +"       "+address.length());
+                Log.d(TAG, "completion: words" + words+"        "+words.length());
             }
         });
     }
@@ -206,9 +206,11 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
 
     private void gotoBakup() {
         WalletInfoManager.WData walletData = WalletInfoManager.getInstance().getCurrentWallet();
+        //也可以改成密钥
         if (!TextUtils.isEmpty(walletData.words)) {
             StartBakupActivity.startBakupWalletStartActivity(CreateWalletActivity.this, walletData.waddress, 2);
         }
+        SplashActivity.instance.finish();
         this.finish();
     }
 

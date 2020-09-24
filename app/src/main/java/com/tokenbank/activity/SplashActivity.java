@@ -26,15 +26,18 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
 
     private final static String TAG = "SplashActivity";
     private static final int REQUEST_CODE = 1008;
-
     private LinearLayout mLayoutSplashBtn;
     private TextView mTvCreateWallet;
     private TextView mTvImportWallet;
+
+    public static SplashActivity instance = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        instance = this;
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
@@ -67,12 +70,10 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
 
     private void gotoCreateWallet() {
         CreateWalletActivity.navToActivity(SplashActivity.this, REQUEST_CODE);
-        this.finish();
     }
 
     private void gotoImportWallet() {
         ImportWalletActivity.startImportWalletActivity(SplashActivity.this);
-        this.finish();
     }
 
     private void checkPermission() {

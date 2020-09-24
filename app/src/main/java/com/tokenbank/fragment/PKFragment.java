@@ -21,6 +21,7 @@ import com.android.jccdex.app.moac.MoacWallet;
 import com.android.jccdex.app.util.JCCJson;
 import com.tokenbank.R;
 import com.tokenbank.activity.MainActivity;
+import com.tokenbank.activity.SplashActivity;
 import com.tokenbank.activity.WebBrowserActivity;
 import com.tokenbank.base.BlockChainData;
 import com.tokenbank.base.BaseWalletUtil;
@@ -37,8 +38,6 @@ import java.util.List;
 public class PKFragment extends BaseFragment implements View.OnClickListener {
     public final static String TAG = "PKFragment";
     private EditText mEdtWalletPrivateKey;
-    private RelativeLayout mLayoutSelectBlockChain;
-    private TextView mTvBlockChain;
     private EditText mEdtWalletName;
     private EditText mEdtWalletPwd;
     private EditText mEdtWalletPwdRepeat;
@@ -48,12 +47,12 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
     private TextView mTvImportWallet;
     private TextView mTvAboutPrivateKey;
     private BaseWalletUtil walletblockchain;
-    public static final String BLOCK = "Block";
     private MoacWallet mMoacWallet;
     private Context context;
-
-    private int flag = 1;
-    private final static String FLAG = "Flag";
+    public static BaseFragment newInstance() {
+        PKFragment fragment = new PKFragment();
+        return fragment;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -203,6 +202,7 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
         // 添加资产时，进入创建钱包
         Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);
+        SplashActivity.instance.finish();
         getActivity().finish();
     }
 

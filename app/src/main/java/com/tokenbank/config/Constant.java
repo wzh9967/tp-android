@@ -30,7 +30,9 @@ public class Constant {
 
     //本地web3文件地址
     public final static String base_web3_url = "file:///android_asset/web3.html";
-
+    //联盟链节点地址和浏览器地址
+    public final static String moc_node = "http://101.200.174.239:8545";
+    public final static String web_node = "http://consortium.moacchain.net";
     //帮助
     public final static String help_url = "";
 

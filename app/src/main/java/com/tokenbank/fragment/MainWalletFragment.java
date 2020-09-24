@@ -3,7 +3,6 @@ package com.tokenbank.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -35,7 +34,6 @@ import com.tokenbank.adapter.BaseRecycleAdapter;
 import com.tokenbank.adapter.BaseRecyclerViewHolder;
 import com.tokenbank.base.BaseWalletUtil;
 import com.tokenbank.base.TBController;
-import com.tokenbank.base.WCallback;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.config.Constant;
 import com.tokenbank.dialog.WalletActionPop;
@@ -58,7 +56,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private static final String TAG = "MainWalletFragment";
 
     private final static int SCAN_REQUEST_CODE = 10001;
-
+    private Context context;
+    private MoacWallet mMoacWallet;
     private SwipeRefreshLayout mSwipteRefreshLayout;
     private AppBarLayout mAppbarLayout;
     private Toolbar mToolbar;
@@ -73,11 +72,9 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private boolean isAssetVisible = false;
     private BaseWalletUtil mWalletUtil;
 
-    private MoacWallet mMoacWallet;
     private String unit = "¥";
     private boolean isViewCreated = false;
     private double mTotalAsset = 0.0f;
-    private Context context;
 
     public static MainWalletFragment newInstance() {
         Bundle args = new Bundle();
@@ -99,16 +96,17 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     }
 
     private void initView(View view) {
+        //获取钱包
         mWalletUtil = TBController.getInstance().getWalletUtil();
 
+        //金额是否可见
         isAssetVisible = FileUtil.getBooleanFromSp(getContext(), Constant.common_prefs, Constant.asset_visible_key, true);
 
-        //主要界面
+        //下拉刷新控件
         mSwipteRefreshLayout = view.findViewById(R.id.swiperefreshlayout);
         mSwipteRefreshLayout.setOnRefreshListener(this);
 
         mAppbarLayout = view.findViewById(R.id.main_appbar);
-        //刷新滑动
         mAppbarLayout.addOnOffsetChangedListener(mOnOffsetChangedListener);
 
         mToolbar = view.findViewById(R.id.toolbar);
@@ -119,6 +117,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         mEmptyView = view.findViewById(R.id.empty_view);
 
+        //我的资产
         mTvWalletUnit = view.findViewById(R.id.wallet_unit);
         mTvWalletUnit.setOnClickListener(this);
         mRecycleView = view.findViewById(R.id.mainwallet_recycleview);
@@ -152,7 +151,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         this.context = getActivity().getApplicationContext();
         mMoacWallet = MoacWallet.getInstance();
         mMoacWallet.init(this.context);
-        String moacNode = "";
+        String moacNode = Constant.moc_node;
         mMoacWallet.initChain3Provider(moacNode);
     }
 
@@ -180,7 +179,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 break;
             case R.id.wallet_action_transfer:
             case R.id.wallet_action_transfer1:
-                TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", 0, mWalletUtil.getDefaultTokenSymbol(), mWalletUtil.getDefaultDecimal(), 0);
+                TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", 0,
+                        mWalletUtil.getDefaultTokenSymbol(), mWalletUtil.getDefaultDecimal(), 0);
                 break;
             case R.id.wallet_action_receive:
             case R.id.wallet_action_receive1:
@@ -198,9 +198,12 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 if (TextUtils.isEmpty(scanResult)) {
                     ToastUtil.toast(getContext(), getString(R.string.toast_scan_failure));
                 } else {
-                    if (scanResult.startsWith("jingtum")) {
+                    if (scanResult.startsWith("iban")) {
+                        //eth
+                        ToastUtil.toast(getContext(), getString(R.string.toast_not_support_eth_wallet));
+                    } else if (scanResult.startsWith("jingtum")) {
                         //swt
-                        handleScanResult(scanResult);
+                        //handleSwtScanResult(scanResult);
                     } else {
                         ToastUtil.toast(getContext(), getString(R.string.toast_scan_failure));
                     }
@@ -208,17 +211,50 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             }
         }
     }
-    private void handleScanResult(final String scanResult) {
-        if (!WalletInfoManager.getInstance().hasWallet()) {
-            ToastUtil.toast(getContext(), getString(R.string.toast_no_wallet));
+
+/*
+    private void handleSwtScanResult(final String scanResult) {
+        if (!WalletInfoManager.getInstance().hasWallet(TBController.SWT_INDEX)) {
+            ToastUtil.toast(getContext(), getString(R.string.toast_no_jintum_wallet));
             return;
         }
-        int beginIndex = scanResult.indexOf("amount=") + 7;
-        double num = Util.parseDouble(scanResult.substring(beginIndex, scanResult.indexOf("&token")));
-        final String token = scanResult.substring(scanResult.indexOf("&token=") + 7);
-        String ibanAddress = scanResult.substring(scanResult.indexOf("jingtum:") + 8, scanResult.indexOf("?"));
-        TokenTransferActivity.startTokenTransferActivity(getContext(), ibanAddress, "", num, token, 0, 0);
+        if (WalletInfoManager.getInstance().getWalletType() == TBController.SWT_INDEX) {
+            //当前就是SWT钱包
+            int beginIndex = scanResult.indexOf("amount=") + 7;
+            double num = Util.parseDouble(scanResult.substring(beginIndex, scanResult.indexOf("&token")));
+            final String token = scanResult.substring(scanResult.indexOf("&token=") + 7);
+            String ibanAddress = scanResult.substring(scanResult.indexOf("jingtum:") + 8, scanResult.indexOf("?"));
+            TokenTransferActivity.startTokenTransferActivity(getContext(), ibanAddress,
+                    "", num, token, 0, 0);
+        } else {
+            ViewUtil.showSysAlertDialog(getContext(), getString(R.string.dialog_title_reminder), getString(R.string.dialog_content_switch_jintum_wallet),
+                    getString(R.string.dialog_btn_not_switch), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }, getString(R.string.dialog_btn_switch), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (WalletInfoManager.getInstance().setCurrentWallet(TBController.SWT_INDEX)) {
+                                //跳转到井通转账
+                                if (!WalletInfoManager.getInstance().getCurrentWallet().isBaked) {
+                                    ViewUtil.showBakupDialog(getActivity(), WalletInfoManager.getInstance().getCurrentWallet(),
+                                            true, true, WalletInfoManager.getInstance().getCurrentWallet().whash);
+                                } else {
+                                    int beginIndex = scanResult.indexOf("amount=") + 7;
+                                    double num = Util.parseDouble(scanResult.substring(beginIndex, scanResult.indexOf("&token")));
+                                    final String token = scanResult.substring(scanResult.indexOf("&token=") + 7);
+                                    String ibanAddress = scanResult.substring(scanResult.indexOf("jingtum:") + 8, scanResult.indexOf("?"));
+                                    TokenTransferActivity.startTokenTransferActivity(getContext(), ibanAddress,
+                                            "", num, token, 0, 0);
+                                }
+                            }
+                        }
+                    });
+        }
     }
+*/
     /**
      * 显示钱包菜单pop
      */
@@ -294,11 +330,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         setWalletName();
     }
 
-
-    // update to moac UNION block chains
     private void setWalletName() {
-        mTvWalletName.setText(WalletInfoManager.getInstance().getWname() +
-                "()");
+        mTvWalletName.setText(WalletInfoManager.getInstance().getWname()+"(MOC)");
     }
 
     private void refresh() {
@@ -316,6 +349,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             }
         } catch (Throwable e) {
         }
+
         return false;
     }
 
@@ -374,26 +408,31 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         private int mPageIndex = 0;
         private final static int PAGE_SIZE = 10;
 
+        //监听点击事件跳到对应交易细节
         private BaseRecyclerViewHolder.ItemClickListener mItemClickListener =
                 new BaseRecyclerViewHolder.ItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
+                        Log.d(TAG, "fillTokenData: 44444444444444444444444444444444");
                         gotoTokenDetail(MainTokenRecycleViewAdapter.this.getItem(position));
                     }
                 };
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            Log.d(TAG, "fillTokenData: 333333333333333333333333333333333333");
             View view = ViewUtil.inflatView(getContext(), parent, R.layout.wallet_token_item_view, false);
             return new TokenViewHolder(view, mItemClickListener);
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            Log.d(TAG, "fillTokenData: 22222222222222222222222222222222");
             GsonUtil itemData = getItem(position);
             fillTokenData((TokenViewHolder) holder, itemData);
         }
 
+        //加载数据
         @Override
         public void loadData(final String params, final boolean loadmore) {
             if (!loadmore) {
@@ -409,13 +448,23 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             }
 
             String address = WalletInfoManager.getInstance().getWAddress();
-
             mMoacWallet.getBalance(address, new JCallback() {
                 @Override
                 public void completion(JCCJson jccJson) {
                     String balance = jccJson.getString("balance");
                     if(balance != null){
-                   //     handleTokenRequestResult(params, loadmore, extra);
+                        GsonUtil arrays = new GsonUtil("[]");
+                        GsonUtil extra = new GsonUtil("{}");
+                        GsonUtil data = new GsonUtil("{}");
+                        data.putLong("blockchain_id", Long.parseLong("" + TBController.SWT_INDEX));
+                        data.putString("icon_url", "http://state.jingtum.com/favicon.ico");
+                        data.putString("bl_symbol", "MOC");
+                        data.putInt("decimal", 0);
+                        data.putString("balance", balance);
+                        data.putString("asset", "0");
+                        arrays.put(data);
+                        extra.put("data", arrays);
+                        handleTokenRequestResult(params, loadmore, extra);
                     }
                     mSwipteRefreshLayout.setRefreshing(false);
                 }
@@ -445,30 +494,24 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         }
 
         private void fillTokenData(TokenViewHolder holder, GsonUtil data) {
+            Log.d(TAG, "fillTokenData: !!!!!!!!!!!!!!!!!!!!!!!!!");
             TokenImageLoader.displayImage(data.getString("icon_url", ""), holder.mImgTokenIcon,
                     TokenImageLoader.imageOption(R.drawable.ic_images_common_loading, R.drawable.ic_images_asset_eth,
                             R.drawable.ic_images_asset_eth));
-            holder.mTvTokenName.setText(data.getString("bl_symbol", "ETH"));
+            holder.mTvTokenName.setText(data.getString("bl_symbol", "MOC"));
             if (isAssetVisible) {
                 holder.mTvTokenCount.setText("" + mWalletUtil.getValue(data.getInt("decimal", 0), Util.parseDouble(data.getString("balance", "0"))));
             } else {
                 holder.mTvTokenCount.setText("***");
             }
-//            if (isAssetVisible) {
-//                holder.mTvTokenAsset.setText(String.format("≈ %1s %2s", unit, Util.formatDoubleToStr(2, Util.strToDouble(
-//                        data.getString("asset", "0")))));
-//            } else {
-//                holder.mTvTokenAsset.setText(String.format("≈ %1s %2s", unit, "***"));
-//            }
         }
 
         private void gotoTokenDetail(GsonUtil data) {
-            //跳转到交易细节
-            Log.d(TAG, "gotoTokenDetail: +++++++++++++++++++++++++++++++++++++++");
             TokenDetailsActivity.NavToActivity(getActivity(), data.toString(), unit);
         }
 
         class TokenViewHolder extends BaseRecyclerViewHolder {
+
             ImageView mImgTokenIcon;
             TextView mTvTokenName;
             TextView mTvTokenCount;

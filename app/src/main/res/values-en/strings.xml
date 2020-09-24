@@ -97,7 +97,7 @@
     <string name="titleBar_help_center">Help Center</string>
     <string name="toast_scan_failure">Scan failure</string>
     <string name="toast_not_support_eth_wallet">No support for ETH wallet now</string>
-    <string name="toast_no_jintum_wallet">There is no Jintum, please create and scan it</string>
+    <string name="toast_no_jintum_wallet">There is no moc, please create and scan it</string>
     <string name="dialog_title_reminder">Reminder</string>
     <string name="dialog_content_switch_jintum_wallet">The scanned address is Jintum address, but the current wallet is not Jintum wallet, whether to switch to Jintum wallet.</string>
     <string name="dialog_btn_not_switch">No</string>
@@ -224,5 +224,10 @@
     <string name="btn_language_zh">简体中文</string>
     <string name="btn_language_en">English</string>
     <string name="title_languages">Language Settings</string>
-
+    <string name="title_SettingNode">Setting Node</string>
+    <string name="titleBar_select_import_way">Choose Import way</string>
+    <string name="toast_no_wallet">have no wallet,create one please</string>
+    <string name="transfer_speed_fast">fast</string>
+    <string name="transfer_speed_slow">slow</string>
+    <string name="btn_node_setting">Node Setting</string>
 </resources>
