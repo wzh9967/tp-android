@@ -20,10 +20,9 @@ import com.tokenbank.base.BaseWalletUtil;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.base.WCallback;
+import com.tokenbank.config.Constant;
 import com.tokenbank.dialog.OrderDetailDialog;
 import com.tokenbank.dialog.PwdDialog;
-import com.tokenbank.net.api.jtrequest.JTBalanceRequest;
-import com.tokenbank.net.load.RequestPresenter;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.Util;
@@ -70,7 +69,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         setContentView(R.layout.activity_transfer_token);
         mMoacWallet = MoacWallet.getInstance();
         mMoacWallet.init(this);
-        String moacNode = "";
+        String moacNode = Constant.moc_node;
         mMoacWallet.initChain3Provider(moacNode);
         if (getIntent() != null) {
             mOriginAddress = getIntent().getStringExtra(RECEIVE_ADDRESS_KEY);
@@ -88,11 +87,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         }
 
         mWalletUtil = TBController.getInstance().getWalletUtil();
-        //mTokenSymbol : SWT
-        // defaultToken = TextUtils.equals(mWalletUtil.getDefaultTokenSymbol(), mTokenSymbol);
         defaultToken = true;
-        //??
-        //mBlockChain = WalletInfoManager.getInstance().getWalletType();
         initView();
     }
 
@@ -100,7 +95,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
         mTitleBar.setTitle(getString(R.string.titleBar_transfer));
-//        mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener());
         mTitleBar.setTitleBarClickListener(new TitleBar.TitleBarListener() {
             @Override
             public void onLeftClick(View view) {
@@ -109,8 +103,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         });
         mEdtWalletAddress = findViewById(R.id.edt_wallet_address);
         mEdtTransferNum = findViewById(R.id.edt_transfer_num);
-        //mGas = mWalletUtil.getRecommendGas(mGas, defaultToken);
-
+        mGas = mWalletUtil.getRecommendGas(mGas);
 
         mTvGas = findViewById(R.id.tv_transfer_gas);
         mTvGas.setOnClickListener(this);
@@ -120,6 +113,8 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                 String gas = jccJson.getString("gasPrice");
                 if(gas != null) {
                     mGasPrice = Double.parseDouble(gas);
+                    Log.d(TAG, "completion: mGasPrice = "+mGasPrice);
+                    //?
                     mGas = 0;
                     mWalletUtil.calculateGasInToken(mGas, mGasPrice, defaultToken, new WCallback() {
                         @Override
@@ -139,11 +134,8 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         });
         DecimalFormat df = new DecimalFormat("#.00000000");
         mEdtTransferNum.setText(mAmount > 0.0f ? df.format(mAmount).toString() : "");
-
         mEdtTransferRemark = findViewById(R.id.edt_transfer_remark);
-
         mBtnNext = findViewById(R.id.btn_next);
-
         mBtnNext.setOnClickListener(this);
     }
 
@@ -212,7 +204,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     }
 
     private void TokenTransfer() {
-        //首先获取isuer con
 
 
 
@@ -324,14 +315,14 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
      * @param context
      */
     public static void startTokenTransferActivity(Context context, String receiveAddress, String contactAddress,
-                                                  double num, String tokenSymbol, int decimal, double gas) {
+                                                  double mAmount, String tokenSymbol, int decimal, double gas) {
         Intent intent = new Intent(context, TokenTransferActivity.class);
         intent.putExtra(CONTRACT_ADDRESS_KEY, contactAddress);
         intent.putExtra(RECEIVE_ADDRESS_KEY, receiveAddress);
         intent.putExtra(TOKEN_SYMBOL_KEY, tokenSymbol);
         intent.putExtra(TOKEN_DECIMAL, decimal);
         intent.putExtra(TOEKN_GAS, gas);
-        intent.putExtra(TOEKN_AMOUNT, num);
+        intent.putExtra(TOEKN_AMOUNT, mAmount);
         context.startActivity(intent);
     }
 }

@@ -22,7 +22,6 @@ import com.tokenbank.utils.TokenImageLoader;
 import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
 
-//交易部分，等待底层完成
 public class ChooseTokenTransferActivity extends BaseActivity implements BaseRecycleAdapter.OnDataLodingFinish {
 
     private final static String TAG = "ChooseTokenTransferActivity";

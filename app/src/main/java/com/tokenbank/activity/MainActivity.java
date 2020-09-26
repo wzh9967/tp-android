@@ -19,16 +19,12 @@ import com.tokenbank.fragment.MainUserFragment;
 import com.tokenbank.fragment.MainWalletFragment;
 import com.tokenbank.utils.ViewUtil;
 
-
-//分析mainActivity的过程
-
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private final static int WALLET_INDEX = 0;
     private final static int MINE_INDEX = 1;
     private ViewPager mMainViewPager;
 
-    //tab
     private LinearLayout mLayoutTabWallet;
     private LinearLayout mLayoutTabMine;
 
@@ -74,24 +70,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initViewPager() {
-        //layout_view_maintab.xml中底部菜单栏切换
         mLayoutTabWallet = (LinearLayout) findViewById(R.id.layout_tab_wallet);
         mLayoutTabMine = (LinearLayout) findViewById(R.id.layout_tab_mine);
 
         mLayoutTabWallet.setOnClickListener(this);
         mLayoutTabMine.setOnClickListener(this);
 
-        //点击特效
         mImgWallet = (ImageView) findViewById(R.id.img_tab_wallet);
         mTvWallet = (TextView) findViewById(R.id.tv_tab_wallet);
 
-        //点击特效
         mImgMine = (ImageView) findViewById(R.id.img_tab_mine);
         mTvMine = (TextView) findViewById(R.id.tv_tab_mine);
 
-        //显示的主要界面（界面切换框）
         mMainViewPager = (ViewPager) findViewById(R.id.main_viewpager);
-        //viewpager每次切换的时候， 会重新创建当前界面及左右界面三个界面， 每次切换都要重新oncreate, 所以只要设置viewPager setOffscreenPageLimit即可避免这个问题。
         mMainViewPager.setOffscreenPageLimit(3);
         mMainViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -109,9 +100,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             }
         });
-        //MainViewPagerAdapter是两个Fragment的实现
         mMainViewPager.setAdapter(new MainViewPagerAdapter(getSupportFragmentManager()));
-        //默认跳转到钱包
         pageSelected(WALLET_INDEX);
     }
 
@@ -129,7 +118,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    //选择特效
     private void resetTab() {
         mImgWallet.setImageResource(R.drawable.ic_tab_asset_unselected);
         mTvWallet.setSelected(false);

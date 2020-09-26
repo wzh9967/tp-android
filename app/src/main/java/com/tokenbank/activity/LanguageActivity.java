@@ -15,7 +15,6 @@ import com.tokenbank.utils.LanguageUtil;
 import com.tokenbank.view.TitleBar;
 
 import java.util.Locale;
-//delete?
 public class LanguageActivity extends BaseActivity implements View.OnClickListener, TitleBar.TitleBarClickListener {
 
     private TitleBar mTitleBar;

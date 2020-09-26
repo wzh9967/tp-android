@@ -49,6 +49,7 @@ import com.tokenbank.utils.ViewUtil;
 import com.zxing.activity.CaptureActivity;
 
 
+
 public class MainWalletFragment extends BaseFragment implements View.OnClickListener,
         SwipeRefreshLayout.OnRefreshListener,
         BaseRecycleAdapter.OnDataLodingFinish {
@@ -77,9 +78,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private double mTotalAsset = 0.0f;
 
     public static MainWalletFragment newInstance() {
-        Bundle args = new Bundle();
         MainWalletFragment fragment = new MainWalletFragment();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -96,13 +95,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     }
 
     private void initView(View view) {
-        //获取钱包
         mWalletUtil = TBController.getInstance().getWalletUtil();
-
-        //金额是否可见
         isAssetVisible = FileUtil.getBooleanFromSp(getContext(), Constant.common_prefs, Constant.asset_visible_key, true);
-
-        //下拉刷新控件
         mSwipteRefreshLayout = view.findViewById(R.id.swiperefreshlayout);
         mSwipteRefreshLayout.setOnRefreshListener(this);
 
@@ -113,7 +107,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mWalletAction = view.findViewById(R.id.wallet_menu_action);
         mTvWalletName = view.findViewById(R.id.tv_wallet_name);
         setWalletName();
-
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         mEmptyView = view.findViewById(R.id.empty_view);
 
@@ -179,6 +172,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 break;
             case R.id.wallet_action_transfer:
             case R.id.wallet_action_transfer1:
+                //要从当前时刻设置的合约中获取对应的数值传递过去
                 TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", 0,
                         mWalletUtil.getDefaultTokenSymbol(), mWalletUtil.getDefaultDecimal(), 0);
                 break;
@@ -331,7 +325,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     }
 
     private void setWalletName() {
-        mTvWalletName.setText(WalletInfoManager.getInstance().getWname()+"(MOC)");
+        mTvWalletName.setText(WalletInfoManager.getInstance().getWname()+"(moac)");
     }
 
     private void refresh() {
@@ -413,21 +407,18 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 new BaseRecyclerViewHolder.ItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Log.d(TAG, "fillTokenData: 44444444444444444444444444444444");
                         gotoTokenDetail(MainTokenRecycleViewAdapter.this.getItem(position));
                     }
                 };
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            Log.d(TAG, "fillTokenData: 333333333333333333333333333333333333");
             View view = ViewUtil.inflatView(getContext(), parent, R.layout.wallet_token_item_view, false);
             return new TokenViewHolder(view, mItemClickListener);
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            Log.d(TAG, "fillTokenData: 22222222222222222222222222222222");
             GsonUtil itemData = getItem(position);
             fillTokenData((TokenViewHolder) holder, itemData);
         }
@@ -435,6 +426,10 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         //加载数据
         @Override
         public void loadData(final String params, final boolean loadmore) {
+
+
+
+
             if (!loadmore) {
                 mPageIndex = 0;
             } else {
@@ -446,7 +441,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             if (mDataLoadingListener != null) {
                 mDataLoadingListener.onDataLoadingFinish(params, false, loadmore);
             }
-
             String address = WalletInfoManager.getInstance().getWAddress();
             mMoacWallet.getBalance(address, new JCallback() {
                 @Override
@@ -494,7 +488,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         }
 
         private void fillTokenData(TokenViewHolder holder, GsonUtil data) {
-            Log.d(TAG, "fillTokenData: !!!!!!!!!!!!!!!!!!!!!!!!!");
             TokenImageLoader.displayImage(data.getString("icon_url", ""), holder.mImgTokenIcon,
                     TokenImageLoader.imageOption(R.drawable.ic_images_common_loading, R.drawable.ic_images_asset_eth,
                             R.drawable.ic_images_asset_eth));

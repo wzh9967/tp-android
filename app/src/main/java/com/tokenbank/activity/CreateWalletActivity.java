@@ -44,7 +44,7 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
         initView();
         mMoacWallet = MoacWallet.getInstance();
         mMoacWallet.init(this);
-        String moacNode = "";
+        String moacNode = Constant.moc_node;
         mMoacWallet.initChain3Provider(moacNode);
     }
 

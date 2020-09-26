@@ -69,9 +69,10 @@ public class TestWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
-    public double getRecommendGas(double gas, boolean defaultToken) {
+    public double getRecommendGas(double gas) {
         return 0;
     }
+
 
     @Override
     public String getDefaultTokenSymbol() {

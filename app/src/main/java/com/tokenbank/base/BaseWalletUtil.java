@@ -32,7 +32,7 @@ public interface BaseWalletUtil {
 
     void gasSetting(Context context, double gasPrice, boolean defaultToken, WCallback callback);
 
-    double getRecommendGas(double gas, boolean defaultToken);
+    double getRecommendGas(double gas);
 
     String getDefaultTokenSymbol();
 

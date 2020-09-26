@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">TokenPocket</string>
-
+    <string name="btn_add_node">create node</string>
     <string name="enter_title_block">Block</string>
     <string name="enter_hint_choose_block">Choose the block</string>
     <string name="enter_title_wallet_name">Wallet Name</string>
@@ -84,6 +84,7 @@
     <string name="titleBar_transaction_details">Transaction Details</string>
     <string name="content_trading_success">Trading successfully</string>
     <string name="content_trading_pending">Trading Pending</string>
+    <string name="tv_err_node">Please enter a valid node address</string>
     <string name="content_trading_failure">Trading failure</string>
     <string name="content_trading_unknown">The status is unknown, please click the transaction number to query</string>
     <string name="toast_transaction_info_failure">Failed to get transaction information, please try again later</string>
@@ -96,6 +97,7 @@
     <string name="toast_private_key_copied">The private key has been copied to the clipboard</string>
     <string name="titleBar_help_center">Help Center</string>
     <string name="toast_scan_failure">Scan failure</string>
+    <string name="tv_custom_node">Custom Node</string>
     <string name="toast_not_support_eth_wallet">No support for ETH wallet now</string>
     <string name="toast_no_jintum_wallet">There is no moc, please create and scan it</string>
     <string name="dialog_title_reminder">Reminder</string>

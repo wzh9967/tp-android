@@ -1,6 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">TokenPocket</string>
-
     <string name="enter_title_block">钱包体系</string>
     <string name="enter_hint_choose_block">请选择钱包体系</string>
     <string name="enter_title_wallet_name">钱包名称</string>
@@ -12,6 +11,7 @@
     <string name="enter_title_prompt">提示信息</string>
     <string name="enter_hint_prompt">可不填</string>
     <string name="btn_create_wallet_done">创建钱包</string>
+    <string name="btn_add_node">创建节点</string>
     <string name="titleBar_about">关于我们</string>
     <string name="content_version">当前版本:</string>
     <string name="titleBar_agreement">使用协议</string>
@@ -204,6 +204,8 @@
     <string name="content_recommend">推荐</string>
     <string name="dialog_title_update">升级提示</string>
     <string name="dialog_content_has_new_version">检测到新版本</string>
+    <string name="tv_custom_node">自定义节点</string>
+    <string name="tv_err_node">请输入合法的节点地址</string>
     <string name="dialog_btn_update">立即升级</string>
     <string name="dialog_content_backup_warning">为了您的钱包安全\n请备份私钥或助记词</string>
     <string name="dialog_btn_backup_now">立即备份</string>
