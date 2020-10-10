@@ -7,15 +7,13 @@ import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
-
-
 import com.tokenbank.R;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +23,7 @@ import java.util.List;
  */
 public class NodeCustomDialog extends BaseDialog implements View.OnClickListener {
 
+    private static final String TAG = "NodeCustomDialog";
     private EditText mEdtNode;
     private TextView mTvErr;
     private TextView mTvCancel;

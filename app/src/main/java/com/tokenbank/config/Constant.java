@@ -59,4 +59,5 @@ public class Constant {
     public final static int CHOOSE_IMPORTWAY_CODE = 1002;
     public final static String BLOCK_KEY = "BLOCK";
 
+    public final static String CustomNodeName = "自定义节点";
 }

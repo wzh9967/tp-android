@@ -22,7 +22,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/nodesetting_ecycleview"
             android:layout_width="match_parent"
-            android:layout_height="540dp"
+            android:layout_height="514dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         </android.support.v7.widget.RecyclerView>
