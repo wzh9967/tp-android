@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokenbank.R;
+import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.dialog.PKDialog;
 import com.tokenbank.dialog.PwdDialog;
@@ -43,6 +44,7 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_wallet);
+        SysApplication.addActivity(this);
         if (getIntent() != null) {
             mWalletAddress = getIntent().getStringExtra("Wallet_Address");
         }

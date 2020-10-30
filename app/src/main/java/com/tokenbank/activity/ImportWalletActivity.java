@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokenbank.R;
+import com.tokenbank.base.SysApplication;
 import com.tokenbank.fragment.BaseFragment;
 import com.tokenbank.fragment.PKFragment;
 import com.tokenbank.fragment.WordsFragment;
@@ -34,6 +35,7 @@ public class ImportWalletActivity extends BaseActivity implements View.OnClickLi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import_wallet);
+        SysApplication.addActivity(this);
         initView();
     }
 

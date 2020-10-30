@@ -1,0 +1,25 @@
+{
+  "data": [
+    {
+      "icon_url":"http://app.moacchain.net/qWallet/qWallet/statics/icons/token-icons/mfc-logo.png",
+      "bl_symbol":"mfc",
+      "name": "mfc币",
+      "decimal" : "18",
+      "contract": ""
+    },
+    {
+      "icon_url":"http://app.moacchain.net/qWallet/qWallet/statics/icons/token-icons/mfc-logo.png",
+      "bl_symbol":"wztest",
+      "name": "wzh_test币",
+      "decimal" : "18",
+      "contract": "0xc19323c4c4298673b41c6847ba937b5e6d9d77db"
+    },
+    {
+      "icon_url":"http://app.moacchain.net/qWallet/qWallet/statics/icons/token-icons/mfc-logo.png",
+      "bl_symbol":"wzh_te",
+      "name": "wzh_test1币",
+      "decimal" : "18",
+      "contract": "0xba753eb6cc555c867e4e7a554f3e13018a9c075b"
+    }
+  ]
+}

@@ -17,6 +17,7 @@ import com.android.jccdex.app.moac.MoacWallet;
 import com.android.jccdex.app.util.JCCJson;
 import com.tokenbank.R;
 import com.tokenbank.base.BlockChainData;
+import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.config.Constant;
 import com.tokenbank.utils.FileUtil;
@@ -41,6 +42,7 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_wallet_new);
+        SysApplication.addActivity(this);
         initView();
         mMoacWallet = MoacWallet.getInstance();
         mMoacWallet.init(this);
@@ -215,6 +217,6 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void gotoServiceTermPage() {
-        WebBrowserActivity.startWebBrowserActivity(this, getString(R.string.titleBar_service_terms), Constant.service_term_url);
+        //WebBrowserActivity.startWebBrowserActivity(this, getString(R.string.titleBar_service_terms), Constant.service_term_url);
     }
 }

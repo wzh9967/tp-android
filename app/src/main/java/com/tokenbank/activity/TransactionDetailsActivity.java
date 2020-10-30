@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.google.zxing.WriterException;
 import com.tokenbank.R;
 import com.tokenbank.base.BaseWalletUtil;
+import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.WCallback;
 import com.tokenbank.base.TBController;
 import com.tokenbank.utils.GsonUtil;
@@ -46,6 +47,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_details);
+        SysApplication.addActivity(this);
         if (getIntent() != null) {
             String data = getIntent().getStringExtra("ITEM");
             transactionData = new GsonUtil(data);

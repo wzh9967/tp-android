@@ -10,25 +10,30 @@ import com.tokenbank.utils.NetUtil;
  * 用来检测节点的连接性
  */
 public class MoacServer {
-    private static final String STATUS = "OPEN";
-    private static String server = Constant.moc_node;
-    private static Boolean local_sign = true;
+    private static String node ;
+    private static String ping ;
     private static MoacServer instance;
-    private static Context mContext;
-    static SharedPreferences sharedPreferences;
     private MoacServer() {
     }
-    public static MoacServer getInstance(Context context) {
-        if (!NetUtil.isNetworkAvailable(context)) {
-        }
+    public static MoacServer getInstance() {
         if (instance == null) {
             instance = new MoacServer();
         }
         return instance;
     }
+    public void initNode(){
+        node = Constant.moc_node;
+    }
 
+    public String getNode(){
+        return this.node;
+    }
+    public String getPing(){
+        return this.ping;
+    }
 
-
-
-
+    public void setNode(String node,String ping){
+        this.node = node;
+        this.ping = ping;
+    }
 }

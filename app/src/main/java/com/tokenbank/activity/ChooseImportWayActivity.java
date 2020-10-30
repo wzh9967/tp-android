@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import com.tokenbank.R;
+import com.tokenbank.base.SysApplication;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.view.TitleBar;
 
@@ -20,6 +21,7 @@ public class ChooseImportWayActivity extends BaseActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallet_util);
+        SysApplication.addActivity(this);
         initView();
     }
     private void initView() {

@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tokenbank.R;
+import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.utils.MethodCompat;
 import com.tokenbank.utils.ViewUtil;
@@ -34,6 +35,7 @@ public class ManageWalletActivity extends BaseActivity implements View.OnClickLi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_managerwallet);
+        SysApplication.addActivity(this);
         initView();
     }
 

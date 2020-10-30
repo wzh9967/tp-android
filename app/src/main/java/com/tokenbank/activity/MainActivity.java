@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokenbank.R;
+import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.fragment.MainUserFragment;
 import com.tokenbank.fragment.MainWalletFragment;
@@ -38,6 +39,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SysApplication.addActivity(this);
         initView();
     }
 

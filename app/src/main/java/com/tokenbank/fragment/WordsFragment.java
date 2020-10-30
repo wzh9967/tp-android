@@ -105,7 +105,7 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
     }
 
     private void gotoServiceTermPage() {
-        WebBrowserActivity.startWebBrowserActivity(getActivity(), getString(R.string.titleBar_user_agreement), Constant.service_term_url);
+        //WebBrowserActivity.startWebBrowserActivity(getActivity(), getString(R.string.titleBar_user_agreement), Constant.service_term_url);
     }
 
     private boolean paramCheck() {

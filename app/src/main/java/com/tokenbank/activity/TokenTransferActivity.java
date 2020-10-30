@@ -14,6 +14,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import com.tokenbank.R;
 import com.tokenbank.base.BaseWalletUtil;
+import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.base.WCallback;
@@ -63,6 +64,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transfer_token);
+        SysApplication.addActivity(this);
         if (getIntent() != null) {
             mOriginAddress = getIntent().getStringExtra(RECEIVE_ADDRESS_KEY);
             mContractAddress = getIntent().getStringExtra(CONTRACT_ADDRESS_KEY);

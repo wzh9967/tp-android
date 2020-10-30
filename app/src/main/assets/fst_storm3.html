@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script type="text/javascript" src="./utils.js"></script>
+<script type="text/javascript" src="./fst.min.js"></script>
+<script type="text/javascript" src="./framework.js"></script>
+<script type="text/javascript" src="./contract_abi.js"></script>
+
+
+<script>
+    function fst_transaction(url) {
+    this.url = url;
+    this.storm3 = "undefined";
+    if (typeof fst_transaction._initialized == "undefined") {
+        fst_transaction.prototype.init = function() {
+            if(this.storm3 == "undefined"){
+                this.storm3 = new Storm3(new Storm3.providers.HttpProvider(this.url));
+            }
+        };
+        fst_transaction._initialized = true;
+    }
+
+    if (typeof this.getBalance != "function") {
+        fst_transaction.prototype.getBalance = async function(address) {
+            try {
+                let balance =await this.storm3.fst.getBalance(address);
+                return balance;
+            } catch (err) {
+                return err;
+            }
+        }
+    }
+
+    if (typeof this.sendansaction != "function") {
+        fst_transaction.prototype.sendansaction = async function(txData,secret) {
+            try {
+                let tx = await storm3.fst.accounts.signTransaction(txData,secret)
+                let raw = tx.rawTransaction
+                let hash = await storm3.fst.sendSignedTransaction(raw)
+                return hash;
+            } catch (err){
+                return err;
+            }
+        }
+    }
+}
+
+
+
+
+</script>
+</body>
+</html>

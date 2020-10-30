@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokenbank.R;
+import com.tokenbank.base.SysApplication;
 import com.tokenbank.config.Constant;
 import com.tokenbank.utils.DeviceUtil;
 import com.tokenbank.utils.ToastUtil;
@@ -29,6 +30,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+        SysApplication.addActivity(this);
 
         mTitleBar = (TitleBar) findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
@@ -52,7 +54,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     @Override
     public void onClick(View view) {
         if (view == mLayoutUserTerms) {
-            WebBrowserActivity.startWebBrowserActivity(AboutActivity.this, getString(R.string.titleBar_agreement), Constant.service_term_url);
+            //WebBrowserActivity.startWebBrowserActivity(AboutActivity.this, getString(R.string.titleBar_agreement), Constant.service_term_url);
 
         } else if (view == mLayoutPrivliTerms) {
             WebBrowserActivity.startWebBrowserActivity(AboutActivity.this, getString(R.string.titleBar_privacy), Constant.privilege_url);

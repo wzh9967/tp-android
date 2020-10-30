@@ -18,7 +18,7 @@ import com.tokenbank.config.Constant;
 
 
 public class MainUserFragment extends BaseFragment implements View.OnClickListener {
-
+    private static final String TAG = "MainUserFragment";
     private RelativeLayout mLayoutManageWallet;
     private RelativeLayout mLayoutRecordTransaction;
     private RelativeLayout mLayoutNotification;

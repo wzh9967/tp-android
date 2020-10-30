@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokenbank.R;
+import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.view.TitleBar;
 
@@ -36,6 +37,7 @@ public class StartBakupActivity extends BaseActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bakup_wallet_start);
+        SysApplication.addActivity(this);
         if (getIntent() != null) {
             mType = getIntent().getIntExtra(BAKUP_TYPE, -1);
             String walletAddress = getIntent().getStringExtra(WALLET_ADDRESS);

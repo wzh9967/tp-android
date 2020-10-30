@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -13,9 +14,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokenbank.R;
+import com.tokenbank.base.BaseWalletUtil;
+import com.tokenbank.base.SysApplication;
+import com.tokenbank.base.TBController;
+import com.tokenbank.base.WCallback;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.config.AppConfig;
 import com.tokenbank.utils.DeviceUtil;
+import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.NetUtil;
 import com.tokenbank.utils.PermissionUtil;
 import com.tokenbank.utils.ToastUtil;
@@ -29,14 +35,16 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
     private LinearLayout mLayoutSplashBtn;
     private TextView mTvCreateWallet;
     private TextView mTvImportWallet;
+    private int BackFlag = -1;
 
     public static SplashActivity instance = null;
-
+    private BaseWalletUtil mWalletUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        SysApplication.addActivity(this);
         instance = this;
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -51,6 +59,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
         }
 //        checkUpgrade();
         checkPermission();
+        mWalletUtil = TBController.getInstance().getWalletUtil();
     }
 
     @Override
@@ -59,6 +68,20 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
             gotoCreateWallet();
         } else if (v == mTvImportWallet) {
             gotoImportWallet();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(BackFlag == 0){
+            BackFlag--;
+            SysApplication.finish();
+            this.finish();
+            return;
+        }
+        if(BackFlag == -1){
+            ToastUtil.toast(SplashActivity.this, "确认退出？请重试！");
+            BackFlag++;
         }
     }
 

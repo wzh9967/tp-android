@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 30
+    useLibrary 'org.apache.http.legacy'
     buildToolsVersion '30.0.1'
     defaultConfig {
         applicationId "com.tokenbank"

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.tokenbank.R;
 import com.tokenbank.adapter.BaseRecycleAdapter;
 import com.tokenbank.adapter.BaseRecyclerViewHolder;
+import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.utils.GsonUtil;
@@ -38,6 +39,7 @@ public class ChooseTokenTransferActivity extends BaseActivity implements BaseRec
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_token_transfer);
+        SysApplication.addActivity(this);
         initView();
     }
 

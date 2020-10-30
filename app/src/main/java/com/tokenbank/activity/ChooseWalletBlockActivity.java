@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.tokenbank.R;
 import com.tokenbank.adapter.BaseListViewAdapter;
 import com.tokenbank.base.BlockChainData;
+import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.TokenImageLoader;
@@ -29,6 +30,7 @@ public class ChooseWalletBlockActivity extends BaseActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallet_util);
+        SysApplication.addActivity(this);
         initView();
     }
 

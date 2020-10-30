@@ -24,6 +24,8 @@ import com.stealthcopter.networktools.PortScan;
 import com.stealthcopter.networktools.ping.PingResult;
 import com.stealthcopter.networktools.ping.PingStats;
 import com.tokenbank.R;
+import com.tokenbank.base.MoacServer;
+import com.tokenbank.base.SysApplication;
 import com.tokenbank.config.Constant;
 import com.tokenbank.dialog.NodeCustomDialog;
 import com.tokenbank.utils.FileUtil;
@@ -47,20 +49,6 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.tokenbank.config.AppConfig.getContext;
 
-/**
- * 初始化：
- * 1, 默认节点从本地获取         读取json
- * 2, 初始化存在sp中
- * 3, 如果不为空不重新加载, 加载以后ping测试
- * 4, ping不到到节点设置为不可点击
- * 5, ping到允许点击
- * 6, 点击过后设置为实际节点
- *
- * 设置节点
- * 1, 验证节点可连接性
- * 2, 初始化加入界面,和本地节点形式相同
- * 3, 更新list , 刷新显示框
- */
 public class NodeSettingActivity extends BaseActivity implements View.OnClickListener, TitleBar.TitleBarClickListener{
 
     private static final String TAG = "NodeSettingActivity" ;
@@ -78,6 +66,7 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting_node);
+        SysApplication.addActivity(this);
         initView();
     }
 
@@ -107,7 +96,6 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
                 new NodeCustomDialog(NodeSettingActivity.this, new NodeCustomDialog.onConfirmOrderListener() {
                     @Override
                     public void onConfirmOrder() {
-                        Log.d(TAG, "onConfirmOrder: 设置用户节点");
                         getCustomNode();
                     }
                 }).show();
@@ -117,6 +105,7 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onLeftClick(View view) {
+        saveNode();
         this.finish();
     }
 
@@ -236,7 +225,7 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
             holder.mTvNodeUrl.setText(url);
             holder.mLayoutItem.setClickable(true);
             holder.mProgressDrawable.start();
-            String[] ws = url.replace("ws://", "").replace("wss://", "").split(":");
+            String[] ws = url.replace("http://", "").replace("https://", "").split(":");
             if (ws.length != 2) {
                 return;
             }
@@ -354,6 +343,25 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
         }
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * 保存节点
+     */
+    private void saveNode() {
+        String url;
+        String ping = null;
+        if (mSelectedItem != -1) {
+            NodeRecordAdapter.VH vh = (NodeRecordAdapter.VH) mNodeRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
+            url = vh.mTvNodeUrl.getText().toString();
+            ping = vh.mTvNodePing.getText().toString();
+        } else {
+            return;
+        }
+        ping = ping.replace("ms", "");
+        if (!TextUtils.isEmpty(ping) && !TextUtils.equals(ping, "---")) {
+            MoacServer.getInstance().setNode(url,ping);
         }
     }
 
