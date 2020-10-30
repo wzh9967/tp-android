@@ -94,8 +94,8 @@ public class NodeCustomDialog extends BaseDialog implements View.OnClickListener
             dismiss();
         } else if (v == mTvConfirm) {
             String node = mEdtNode.getText().toString();
-            if (!TextUtils.isEmpty(node) && (node.startsWith("ws://") || node.startsWith("wss://"))) {
-                String[] ws = node.replace("ws://", "").replace("wss://", "").split(":");
+            if (!TextUtils.isEmpty(node) && (node.startsWith("http://") || node.startsWith("https://"))) {
+                String[] ws = node.replace("http://", "").replace("https://", "").split(":");
                 if (ws.length == 2) {
                     String fileName = getContext().getPackageName() + "_customNode";
                     SharedPreferences sharedPreferences = getContext().getSharedPreferences(fileName, Context.MODE_PRIVATE);

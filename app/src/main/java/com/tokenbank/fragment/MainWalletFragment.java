@@ -1,7 +1,6 @@
 
 package com.tokenbank.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,8 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +31,7 @@ import com.tokenbank.adapter.BaseRecycleAdapter;
 import com.tokenbank.adapter.BaseRecyclerViewHolder;
 import com.tokenbank.base.BaseWalletUtil;
 import com.tokenbank.base.TBController;
+import com.tokenbank.base.WCallback;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.config.Constant;
 import com.tokenbank.dialog.WalletActionPop;
@@ -44,7 +42,6 @@ import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.NetUtil;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.TokenImageLoader;
-import com.tokenbank.utils.Util;
 import com.tokenbank.utils.ViewUtil;
 import com.zxing.activity.CaptureActivity;
 
@@ -53,8 +50,6 @@ import com.zxing.activity.CaptureActivity;
 public class MainWalletFragment extends BaseFragment implements View.OnClickListener,
         SwipeRefreshLayout.OnRefreshListener,
         BaseRecycleAdapter.OnDataLodingFinish {
-
-    private static final String TAG = "MainWalletFragment";
 
     private final static int SCAN_REQUEST_CODE = 10001;
     private Context context;
@@ -72,7 +67,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private WalletActionPop walletActionPop;
     private boolean isAssetVisible = false;
     private BaseWalletUtil mWalletUtil;
-
+    private GsonUtil currency = new GsonUtil("{}");
     private String unit = "¥";
     private boolean isViewCreated = false;
     private double mTotalAsset = 0.0f;
@@ -140,12 +135,9 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         view.findViewById(R.id.wallet_action_transfer).setOnClickListener(this);
         view.findViewById(R.id.wallet_action_transfer1).setOnClickListener(this);
         isViewCreated = true;
-
         this.context = getActivity().getApplicationContext();
-        mMoacWallet = MoacWallet.getInstance();
-        mMoacWallet.init(this.context);
-        String moacNode = Constant.moc_node;
-        mMoacWallet.initChain3Provider(moacNode);
+        mMoacWallet =TBController.getInstance().getMoacWallet();
+        currency =new GsonUtil(FileUtil.getConfigFile(this.context, "currency.json"));
     }
 
     @Override
@@ -172,7 +164,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 break;
             case R.id.wallet_action_transfer:
             case R.id.wallet_action_transfer1:
-                //要从当前时刻设置的合约中获取对应的数值传递过去
                 TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", 0,
                         "",mWalletUtil.getDefaultTokenSymbol(), mWalletUtil.getDefaultDecimal(), 0);
                 break;
@@ -183,87 +174,19 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SCAN_REQUEST_CODE) {
-                //扫描到地址
-                String scanResult = data.getStringExtra("result");
-                if (TextUtils.isEmpty(scanResult)) {
-                    ToastUtil.toast(getContext(), getString(R.string.toast_scan_failure));
-                } else {
-                    if (scanResult.startsWith("iban")) {
-                        //eth
-                        ToastUtil.toast(getContext(), getString(R.string.toast_not_support_eth_wallet));
-                    } else if (scanResult.startsWith("jingtum")) {
-                        //swt
-                        //handleSwtScanResult(scanResult);
-                    } else {
-                        ToastUtil.toast(getContext(), getString(R.string.toast_scan_failure));
-                    }
-                }
-            }
-        }
-    }
-
-/*
-    private void handleSwtScanResult(final String scanResult) {
-        if (!WalletInfoManager.getInstance().hasWallet(TBController.SWT_INDEX)) {
-            ToastUtil.toast(getContext(), getString(R.string.toast_no_jintum_wallet));
-            return;
-        }
-        if (WalletInfoManager.getInstance().getWalletType() == TBController.SWT_INDEX) {
-            //当前就是SWT钱包
-            int beginIndex = scanResult.indexOf("amount=") + 7;
-            double num = Util.parseDouble(scanResult.substring(beginIndex, scanResult.indexOf("&token")));
-            final String token = scanResult.substring(scanResult.indexOf("&token=") + 7);
-            String ibanAddress = scanResult.substring(scanResult.indexOf("jingtum:") + 8, scanResult.indexOf("?"));
-            TokenTransferActivity.startTokenTransferActivity(getContext(), ibanAddress,
-                    "", num, token, 0, 0);
-        } else {
-            ViewUtil.showSysAlertDialog(getContext(), getString(R.string.dialog_title_reminder), getString(R.string.dialog_content_switch_jintum_wallet),
-                    getString(R.string.dialog_btn_not_switch), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }, getString(R.string.dialog_btn_switch), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (WalletInfoManager.getInstance().setCurrentWallet(TBController.SWT_INDEX)) {
-                                //跳转到井通转账
-                                if (!WalletInfoManager.getInstance().getCurrentWallet().isBaked) {
-                                    ViewUtil.showBakupDialog(getActivity(), WalletInfoManager.getInstance().getCurrentWallet(),
-                                            true, true, WalletInfoManager.getInstance().getCurrentWallet().whash);
-                                } else {
-                                    int beginIndex = scanResult.indexOf("amount=") + 7;
-                                    double num = Util.parseDouble(scanResult.substring(beginIndex, scanResult.indexOf("&token")));
-                                    final String token = scanResult.substring(scanResult.indexOf("&token=") + 7);
-                                    String ibanAddress = scanResult.substring(scanResult.indexOf("jingtum:") + 8, scanResult.indexOf("?"));
-                                    TokenTransferActivity.startTokenTransferActivity(getContext(), ibanAddress,
-                                            "", num, token, 0, 0);
-                                }
-                            }
-                        }
-                    });
-        }
-    }
-*/
     /**
      * 显示钱包菜单pop
      */
     private void showWalletMenuPop() {
-        if (walletMenuPop == null) {
-            walletMenuPop = new WalletMenuPop(getActivity());
-            walletMenuPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
-                @Override
-                public void onDismiss() {
-                    mTvWalletName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_wallet, 0,
-                            R.drawable.ic_arrow_down, 0);
-                    refreshWallet();
-                }
-            });
-        }
+        walletMenuPop = new WalletMenuPop(getActivity());
+        walletMenuPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                mTvWalletName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_wallet, 0,
+                        R.drawable.ic_arrow_down, 0);
+                refreshWallet();
+            }
+        });
         walletMenuPop.setData();
         walletMenuPop.showAsDropDown(mTvWalletName);
         mTvWalletName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_wallet, 0, R.drawable.ic_arrow_up, 0);
@@ -325,7 +248,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     }
 
     private void setWalletName() {
-        mTvWalletName.setText(WalletInfoManager.getInstance().getWname()+"(moac)");
+        mTvWalletName.setText(WalletInfoManager.getInstance().getWname());
     }
 
     private void refresh() {
@@ -398,6 +321,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
     class MainTokenRecycleViewAdapter extends BaseRecycleAdapter<String, RecyclerView.ViewHolder> {
 
+        private static final String TAG = "MainTokenAdapter";
         private boolean mHasMore = true;
         private int mPageIndex = 0;
         private final static int PAGE_SIZE = 10;
@@ -420,16 +344,12 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             GsonUtil itemData = getItem(position);
-            fillTokenData((TokenViewHolder) holder, itemData);
+            getBalance(itemData,(TokenViewHolder) holder);
         }
 
         //加载数据
         @Override
         public void loadData(final String params, final boolean loadmore) {
-
-
-
-
             if (!loadmore) {
                 mPageIndex = 0;
             } else {
@@ -441,32 +361,16 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             if (mDataLoadingListener != null) {
                 mDataLoadingListener.onDataLoadingFinish(params, false, loadmore);
             }
-            String address = WalletInfoManager.getInstance().getWAddress();
-            mMoacWallet.getBalance(address, new JCallback() {
+            mMoacWallet.gasPrice(new JCallback() {
                 @Override
                 public void completion(JCCJson jccJson) {
-                    String balance = jccJson.getString("balance");
-                    if(balance != null){
-                        GsonUtil arrays = new GsonUtil("[]");
-                        GsonUtil extra = new GsonUtil("{}");
-                        GsonUtil data = new GsonUtil("{}");
-                        data.putLong("blockchain_id", Long.parseLong("" + TBController.SWT_INDEX));
-                        data.putString("icon_url", "http://state.jingtum.com/favicon.ico");
-                        data.putString("bl_symbol", "MOC");
-                        data.putInt("decimal", 0);
-                        data.putString("balance", balance);
-                        data.putString("asset", "0");
-                        arrays.put(data);
-                        extra.put("data", arrays);
-                        handleTokenRequestResult(params, loadmore, extra);
-                    }
+                    handleTokenRequestResult(params, loadmore, currency);
                     mSwipteRefreshLayout.setRefreshing(false);
                 }
             });
         }
 
         private void handleTokenRequestResult(final String params, final boolean loadmore, GsonUtil json) {
-//            TLog.d(TAG, "token list:" + json);
             GsonUtil data = json.getObject("data", "{}");
             unit = data.getString("unit", "¥");
             GsonUtil tokens = json.getArray("data", "");
@@ -493,12 +397,38 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                             R.drawable.ic_images_asset_eth));
             holder.mTvTokenName.setText(data.getString("bl_symbol", "MOC"));
             if (isAssetVisible) {
-                holder.mTvTokenCount.setText("" + mWalletUtil.getValue(data.getInt("decimal", 0), data.getString("balance", "0")));
+                String value = mWalletUtil.getValue(data.getInt("decimal", 0), data.getString("balance",""));
+                holder.mTvTokenCount.setText("" +value);
             } else {
                 holder.mTvTokenCount.setText("***");
             }
         }
 
+        private void getBalance(GsonUtil data,TokenViewHolder holder){
+            String contract = data.getString("contract","");
+            String address = WalletInfoManager.getInstance().getWAddress();
+            if(contract.equals("")){
+                mWalletUtil.getBalance(address,new WCallback() {
+                    @Override
+                    public void onGetWResult(int ret, GsonUtil extra) {
+                        if(ret == 0){
+                            data.putString("balance",extra.getString("balance",""));
+                        }
+                        fillTokenData((TokenViewHolder) holder, data);
+                    }
+                });
+            } else {
+                mWalletUtil.getErc20Balance(contract,address,new WCallback() {
+                    @Override
+                    public void onGetWResult(int ret, GsonUtil extra) {
+                        if(ret == 0){
+                            data.putString("balance",extra.getString("balance",""));
+                        }
+                        fillTokenData((TokenViewHolder) holder, data);
+                    }
+                });
+            }
+        }
         private void gotoTokenDetail(GsonUtil data) {
             TokenDetailsActivity.NavToActivity(getActivity(), data.toString(), unit);
         }

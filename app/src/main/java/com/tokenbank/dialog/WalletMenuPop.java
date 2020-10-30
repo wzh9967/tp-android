@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,8 +59,10 @@ public class WalletMenuPop extends PopupWindow implements View.OnClickListener {
         view.findViewById(R.id.create_wallet).setOnClickListener(this);
         view.findViewById(R.id.pop_wallet_view).setOnClickListener(this);
         setContentView(view);
+        //和父宽度相同
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+        //        setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
 
         //设置动画
         setAnimationStyle(R.style.Pop_up_anim);
@@ -141,9 +144,7 @@ public class WalletMenuPop extends PopupWindow implements View.OnClickListener {
             } else {
                 holder = (ViewHolder) view.getTag();
             }
-
-            holder.name.setText("");
-
+            holder.name.setText(mList.get(position).wname);
             if (index == position) {
                 holder.name.setTextColor(ContextCompat.getColor(context, R.color.color_theme));
             } else {
@@ -156,7 +157,6 @@ public class WalletMenuPop extends PopupWindow implements View.OnClickListener {
             public ViewHolder(View view) {
                 this.name = view.findViewById(R.id.wallet_item_name);
             }
-
             TextView name;
         }
     }
