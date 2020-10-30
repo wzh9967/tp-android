@@ -117,7 +117,18 @@ async function getBalance(params){
         notifyClient(callid, -1, result);
     }
 }
-
+async function getGasPrice(params){
+    var paramsjson = JSON.parse(params);
+    let callid = paramsjson.callid;
+    var result = new Object();
+    try {
+        let GasPrice = await storm3.fst.getGasPrice();
+        result.GasPrice = GasPrice;
+        notifyClient(callid, 0, result);
+    } catch (UnhandledPromiseRejectionWarning){
+        notifyClient(callid, -1, result);
+    }
+}
 
 /*
 

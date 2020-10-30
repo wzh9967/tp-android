@@ -1,6 +1,7 @@
 package com.tokenbank.base;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -33,9 +34,7 @@ public class WalletInfoManager {
 
     public void init() {
         WData wallet = new WData();
-        Log.d(TAG, "init: init begin");
         if (validWalletData(Constant.wallet_def_file)) {
-            Log.d(TAG, "init: wallet_def_file exit");
             wallet.wid = FileUtil.getLongFromSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.wid);
             wallet.wname = FileUtil.getStringFromSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.wname);
             wallet.waddress = FileUtil.getStringFromSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.waddress);
@@ -49,16 +48,12 @@ public class WalletInfoManager {
             wallet.isBaked = FileUtil.getBooleanFromSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.baked);
             mCurrentWallet = wallet;
         } else {
-            Log.d(TAG, "init: wallet_def_file not exit");
             FileUtil.deleteFile(FileUtil.getSharedPrefDir(AppConfig.getContext()) + Constant.wallet_def_file + ".xml");
             File spFileDir = new File(FileUtil.getSharedPrefDir(AppConfig.getContext()));
             if (!spFileDir.exists()) {
-                Log.d(TAG, "init: 文档创建失败");
                 return;
             } else {
-                Log.d(TAG, "init: spFileDir not exit");
                 if (spFileDir.isDirectory()) {
-                    Log.d(TAG, "init: 存在文档");
                     File[] spFiles = spFileDir.listFiles();
                     if (spFiles != null && spFiles.length > 0) {
                         for (File spFile : spFiles) {

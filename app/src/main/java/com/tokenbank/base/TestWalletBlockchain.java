@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.tokenbank.utils.GsonUtil;
 
+import java.math.BigDecimal;
+
 
 public class TestWalletBlockchain implements BaseWalletUtil {
     @Override
@@ -22,13 +24,9 @@ public class TestWalletBlockchain implements BaseWalletUtil {
     }
 
 
-
     @Override
     public void importWallet(String privateKey, int type, WCallback callback) {
-
     }
-
-
 
     @Override
     public void toIban(String address, WCallback callback) {
@@ -46,44 +44,10 @@ public class TestWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
-    public void importSecret(String secret, WCallback wCallback) {
-
-    }
-
-    @Override
-    public void importWords(String words, WCallback wCallback) {
-
-    }
-
-    @Override
-    public String getGasLimit() {
-        return null;
-    }
-
-    @Override
-    public void setGasLimit(String gasLimit) {
-
-    }
-
-    @Override
-    public Double calculateGasFee() {
-        return null;
-    }
-
-    @Override
-    public void Test(WCallback callback) {
-
-    }
-
-    @Override
-    public int getDecimalByContract(String contract, GsonUtil currency) {
-        return 0;
-    }
-
-    @Override
     public void signedTransaction(GsonUtil data, WCallback callback) {
 
     }
+
 
     @Override
     public boolean isValidAddress(String address, WCallback callback) {
@@ -95,7 +59,6 @@ public class TestWalletBlockchain implements BaseWalletUtil {
         return false;
     }
 
-
     @Override
     public void generateReceiveAddress(String walletAddress, double amount, String token, WCallback callback) {
 
@@ -105,6 +68,7 @@ public class TestWalletBlockchain implements BaseWalletUtil {
     public String calculateGasInToken(int decimal, String gasLimit, Double gasPrice) {
         return null;
     }
+
 
 
     @Override
@@ -144,8 +108,10 @@ public class TestWalletBlockchain implements BaseWalletUtil {
         return false;
     }
 
+
+
     @Override
-    public void queryTransactionList(int pagesize, String address, WCallback callback) {
+    public void queryTransactionList(int pagesize,String address, WCallback callback) {
 
     }
 
@@ -154,11 +120,11 @@ public class TestWalletBlockchain implements BaseWalletUtil {
         return null;
     }
 
+
     @Override
     public String toValue(int decimal, String Value) {
         return null;
     }
-
 
     @Override
     public String getTransactionSearchUrl(String hash) {
@@ -166,7 +132,7 @@ public class TestWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
-    public void queryErc20TransactionList(int PageSize, int Decimal, String contract, String address, WCallback callback) {
+    public void queryErc20TransactionList(int PageSize,int decimal ,String contract, String address, WCallback callback) {
 
     }
 
@@ -180,9 +146,9 @@ public class TestWalletBlockchain implements BaseWalletUtil {
 
     }
 
+
     @Override
     public void getErc20GasPrice(String Contract, WCallback callback) {
-
     }
 
     @Override
@@ -198,6 +164,43 @@ public class TestWalletBlockchain implements BaseWalletUtil {
     @Override
     public void getGasPrice(WCallback wCallback) {
 
+    }
+
+
+    @Override
+    public void importSecret(String secret, WCallback wCallback) {
+
+    }
+
+    @Override
+    public void importWords(String words, WCallback wCallback) {
+
+    }
+
+    @Override
+    public String getGasLimit() {
+        return "";
+    }
+
+    @Override
+    public void setGasLimit(String gasLimit) {
+
+    }
+
+    @Override
+    public Double calculateGasFee() {
+        return null;
+    }
+
+
+    @Override
+    public void Test(WCallback callback) {
+
+    }
+
+    @Override
+    public int getDecimalByContract(String contract, GsonUtil currency) {
+        return 0;
     }
 
 

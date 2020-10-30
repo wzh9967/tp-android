@@ -1,20 +1,16 @@
 package com.tokenbank.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.jccdex.app.base.JCallback;
 import com.android.jccdex.app.moac.MoacWallet;
@@ -23,7 +19,6 @@ import com.tokenbank.R;
 import com.tokenbank.activity.MainActivity;
 import com.tokenbank.activity.SplashActivity;
 import com.tokenbank.activity.WebBrowserActivity;
-import com.tokenbank.base.BlockChainData;
 import com.tokenbank.base.BaseWalletUtil;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WalletInfoManager;
@@ -48,7 +43,6 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
     private TextView mTvAboutPrivateKey;
     private BaseWalletUtil walletblockchain;
     private MoacWallet mMoacWallet;
-    private Context context;
     public static BaseFragment newInstance() {
         PKFragment fragment = new PKFragment();
         return fragment;
@@ -56,13 +50,8 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "PKFragment onCreate: 已经跳转！！！！！！！");
         super.onCreate(savedInstanceState);
-        this.context = getActivity().getApplicationContext();
-        mMoacWallet = MoacWallet.getInstance();
-        mMoacWallet.init(this.context);
-        String moacNode = "";
-        mMoacWallet.initChain3Provider(moacNode);
+        mMoacWallet =TBController.getInstance().getMoacWallet();
     }
 
     @Nullable
@@ -119,7 +108,7 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void gotoServiceTermPage() {
-        //WebBrowserActivity.startWebBrowserActivity(getActivity(), getString(R.string.titleBar_user_agreement), Constant.service_term_url);
+        WebBrowserActivity.startWebBrowserActivity(getActivity(), getString(R.string.titleBar_user_agreement), Constant.service_term_url);
     }
 
     private boolean paramCheck() {

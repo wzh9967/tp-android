@@ -1,8 +1,11 @@
 package com.tokenbank.net.load;
 
+import android.util.Log;
+
 import com.tokenbank.net.apirequest.ApiRequest;
 import com.tokenbank.net.listener.LoadDataListener;
 import com.tokenbank.utils.GsonUtil;
+import com.tokenbank.utils.TLog;
 
 import org.json.JSONException;
 

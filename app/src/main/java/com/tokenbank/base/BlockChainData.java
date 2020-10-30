@@ -31,7 +31,6 @@ public class BlockChainData {
 
     public void init() {
         String data = FileUtil.getConfigFile(AppConfig.getContext(), "blockChains.json");
-
         GsonUtil json = new GsonUtil(data);
 
         GsonUtil chains = json.getArray("data", "[]");

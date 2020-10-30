@@ -172,13 +172,13 @@ public class Util {
     }
 
     public static BigDecimal tokenToWei(int dec,BigDecimal tokenValue) {
-        String decimal = "1";
-        for(int i = 0; i < dec; i++)  {
-            decimal = decimal + "0";
-        }
-        BigDecimal decimal1 = new BigDecimal(decimal);
-        tokenValue =tokenValue.multiply(decimal1);
-        return tokenValue;
+            String decimal = "1";
+            for(int i = 0; i < dec; i++)  {
+                decimal = decimal + "0";
+            }
+            BigDecimal decimal1 = new BigDecimal(decimal);
+            tokenValue =tokenValue.multiply(decimal1);
+            return tokenValue;
     }
 
     public static double fromGweToWei(long blockChain, double gwei) {

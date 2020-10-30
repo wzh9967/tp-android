@@ -27,7 +27,6 @@ import java.util.Random;
 //不用动
 public class ConfirmWalletBakupInfoActivity extends BaseActivity implements View.OnClickListener {
 
-
     private static final String WALLET_ADDRESS = "Wallet_Address";
     private static final String BAKUP_TYPE = "Bakup_Type";
 
@@ -41,7 +40,6 @@ public class ConfirmWalletBakupInfoActivity extends BaseActivity implements View
 
     //私钥备份view
     private EditText mEdtPk;
-
     //助记词相关view
     private LinearLayout mLayoutWords;
     private TagFlowLayout mFlowResult;

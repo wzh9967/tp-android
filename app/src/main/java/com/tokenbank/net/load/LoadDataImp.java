@@ -1,6 +1,8 @@
 package com.tokenbank.net.load;
 
 
+import android.util.Log;
+
 import com.tokenbank.net.apirequest.ApiRequest;
 import com.tokenbank.net.listener.LoadDataListener;
 

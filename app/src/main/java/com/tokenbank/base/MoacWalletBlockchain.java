@@ -1,19 +1,14 @@
 package com.tokenbank.base;
-
 import android.content.Context;
 import android.text.TextUtils;
-
 import com.tokenbank.config.Constant;
 import com.tokenbank.net.api.mcrequest.ERC20TransactionRequest;
 import com.tokenbank.net.api.mcrequest.MCTransactionListRequest;
 import com.tokenbank.net.load.RequestPresenter;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.Util;
-
 import java.math.BigDecimal;
-import java.math.BigInteger;
-
-;
+import java.math.BigInteger;;
 
 public class MoacWalletBlockchain implements BaseWalletUtil {
     private final static String TAG = "MoacWalletBlockchain";

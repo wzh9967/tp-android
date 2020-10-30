@@ -1,18 +1,14 @@
 package com.tokenbank.fragment;
-
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.jccdex.app.base.JCallback;
@@ -22,7 +18,6 @@ import com.tokenbank.R;
 import com.tokenbank.activity.MainActivity;
 import com.tokenbank.activity.SplashActivity;
 import com.tokenbank.activity.WebBrowserActivity;
-import com.tokenbank.base.BlockChainData;
 import com.tokenbank.base.BaseWalletUtil;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.base.TBController;
@@ -46,7 +41,6 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
     private TextView mTvImportWallet;
     private BaseWalletUtil mWalletUtil;
     private MoacWallet mMoacWallet;
-    private Context context;
     public static WordsFragment newInstance() {
         WordsFragment fragment = new WordsFragment();
         return fragment;
@@ -55,12 +49,7 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "WordsFragment onCreate: 已经跳转！！！！！！！");
-        this.context = getActivity().getApplicationContext();
-        mMoacWallet = MoacWallet.getInstance();
-        mMoacWallet.init(this.context);
-        String moacNode = "";
-        mMoacWallet.initChain3Provider(moacNode);
+        mMoacWallet =TBController.getInstance().getMoacWallet();
     }
 
     @Nullable
@@ -105,7 +94,7 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
     }
 
     private void gotoServiceTermPage() {
-        //WebBrowserActivity.startWebBrowserActivity(getActivity(), getString(R.string.titleBar_user_agreement), Constant.service_term_url);
+        WebBrowserActivity.startWebBrowserActivity(getActivity(), getString(R.string.titleBar_user_agreement), Constant.service_term_url);
     }
 
     private boolean paramCheck() {

@@ -71,9 +71,7 @@ public class ChooseImportWayActivity extends BaseActivity {
      * @param context
      */
     public static void navToActivity(Context context, int requestCode) {
-        Log.d(TAG, "navToActivity: 已经跳转到导入方式");
         Intent intent = new Intent(context, ChooseImportWayActivity.class);
-        //返回值到context ,结果在onActivityResult中处理  在setResult 传递过去
         ((Activity) context).startActivityForResult(intent, requestCode);
     }
 }

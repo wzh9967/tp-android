@@ -40,6 +40,7 @@ public class ChooseTokenTransferActivity extends BaseActivity implements BaseRec
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_token_transfer);
         SysApplication.addActivity(this);
+
         initView();
     }
 

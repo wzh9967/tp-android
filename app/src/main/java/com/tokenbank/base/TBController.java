@@ -39,7 +39,7 @@ public class TBController {
         mNullWalletUtil = new TestWalletBlockchain();
         mMoacWallet = MoacWallet.getInstance();
         mMoacWallet.init(AppConfig.getContext());
-        mMoacWallet.initChain3Provider(Constant.moc_node);
+        mMoacWallet.initChain3Provider(MoacServer.getInstance().getNode());
     }
 
     public BaseWalletUtil getWalletUtil() {

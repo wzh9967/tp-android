@@ -13,7 +13,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tokenbank.R;
-import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
@@ -21,7 +20,6 @@ import com.tokenbank.view.TitleBar;
 import java.util.List;
 
 
-//好像不用怎么改
 public class ChangeWalletActivity extends BaseActivity {
 
     private TitleBar mTitleBar;
@@ -34,7 +32,6 @@ public class ChangeWalletActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_changeaccount);
         mAllWallet = WalletInfoManager.getInstance().getAllWallet();
-        SysApplication.addActivity(this);
         if (mAllWallet == null && mAllWallet.size() == 0) {
             this.finish();
             return;

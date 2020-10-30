@@ -20,13 +20,17 @@ import com.tokenbank.adapter.BaseRecycleAdapter;
 import com.tokenbank.adapter.BaseRecyclerViewHolder;
 import com.tokenbank.base.BaseWalletUtil;
 import com.tokenbank.base.SysApplication;
+import com.tokenbank.base.WCallback;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.base.TBController;
+import com.tokenbank.utils.FileUtil;
 import com.tokenbank.utils.GsonUtil;
-import com.tokenbank.utils.TLog;
 import com.tokenbank.utils.Util;
 import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 
 public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAdapter.OnDataLodingFinish, View.OnClickListener {
@@ -47,16 +51,18 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
     private GsonUtil mItem;
     private String mContractAddress;
     private WalletInfoManager.WData mWalletData;
-    private long mBlockChainId;
     private BaseWalletUtil mWalletUtil;
     private String mUnit;
+    private boolean Flag = true;
+    private String maddress;
+    private int PageSize = 1;
+    private GsonUtil currency = new GsonUtil("{}");
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.token_details_activity);
         SysApplication.addActivity(this);
-        Log.d(TAG, "TokenDetailsActivity onCreate");
         initData();
         initView();
     }
@@ -71,15 +77,12 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
         }
     }
 
-
     private void initData() {
+        currency =new GsonUtil(FileUtil.getConfigFile(this, "currency.json"));
+        maddress =  WalletInfoManager.getInstance().getWAddress();
         if (getIntent() != null) {
+            //erc20币种数据json
             mItem = new GsonUtil(getIntent().getStringExtra(TOKEN));
-            mBlockChainId = mItem.getLong("blockchain_id", 0l);
-        }
-        if (mBlockChainId <= 0l || mItem == null) {
-            this.finish();
-            return;
         }
         mWalletData = WalletInfoManager.getInstance().getCurrentWallet();
         if (mWalletData == null) {
@@ -91,13 +94,14 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             this.finish();
             return;
         }
-        mContractAddress = mItem.getString("address", "");
-        Log.d(TAG, "initData: success");
+        mContractAddress = mItem.getString("contract", "");
+        if(mContractAddress.equals("")){
+
+        }
     }
 
     @Override
     public <K> void onDataLoadingFinish(K params, boolean end, boolean loadmore) {
-        Log.d(TAG, "onDataLoadingFinish: 数据加载完毕");
         if (!loadmore) {
             if (end) {
                 if (mAdapter.getLength() <= 0) {
@@ -127,10 +131,9 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
                 TokenDetailsActivity.this.finish();
             }
         });
-
+        mTitleBar.setTitle(mItem.getString("bl_symbol", ""));
         mEmptyView = findViewById(R.id.empty_view);
         mEmptyView.setVisibility(View.GONE);
-
         mRecyclerView = findViewById(R.id.recyclerview);
         mAdapter = new RecyclerViewAdapter();
         mAdapter.setDataLoadingListener(this);
@@ -151,21 +154,22 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
         mLayoutTranster.setOnClickListener(this);
         mLayoutReceive = findViewById(R.id.wallet_action_receive);
         mLayoutReceive.setOnClickListener(this);
-
-        mTitleBar.setTitle(mItem.getString("bl_symbol", ""));
-//
         TextView tvBalance = findViewById(R.id.token_balance);
         TextView tvAsset = findViewById(R.id.token_asset);
+
+
+        //显示余额和估值金额
         mUnit = getIntent().getStringExtra(UNIT_KEY);
         if (TextUtils.isEmpty(mUnit)) {
             mUnit = "$";
         }
-        tvBalance.setText("" + mWalletUtil.getValue(mItem.getInt("decimal", 0),mItem.getString("balance", "0")));
+        //显示余额
+        String value = mWalletUtil.getValue(mItem.getInt("decimal", 0), mItem.getString("balance", "0"));
+        tvBalance.setText("" + value);
         tvAsset.setText(String.format("≈ %1s %2s", mUnit, Util.formatDoubleToStr(2, Util.strToDouble(
                 mItem.getString("asset", "0")))));
 
         mAdapter.refresh();
-        Log.d(TAG, "initView: success");
     }
 
     private boolean isReadyForPullEnd() {
@@ -208,21 +212,42 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             if (mDataLoadingListener != null) {
                 mDataLoadingListener.onDataLoadingFinish(params, false, loadmore);
             }
-
-            GsonUtil requestParams = new GsonUtil("{}");
-            requestParams.putInt("start", mPageIndex * PAGE_SIZE);
-            requestParams.putInt("pagesize", PAGE_SIZE);
-            if (!TextUtils.isEmpty(mContractAddress)) {
-                requestParams.putString("contract_address", mContractAddress);
+            if(mContractAddress.equals("")){
+                Flag = true;
+                mWalletUtil.queryTransactionList(PageSize,maddress,new WCallback() {
+                    @Override
+                    public void onGetWResult(int ret, GsonUtil extra) {
+                        if (ret == 0) {
+                            handleTransactioRecordResult(params, loadmore, extra);
+                            Retry(params,loadmore);
+                        }
+                    }
+                });
+            } else {
+                Flag = false;
+                mWalletUtil.queryErc20TransactionList(PageSize,mItem.getInt("decimal", 18),mContractAddress, maddress,new WCallback() {
+                    @Override
+                    public void onGetWResult(int ret, GsonUtil extra) {
+                        if (ret == 0) {
+                            handleTransactioRecordResult(params, loadmore, extra);
+                            Retry(params,loadmore);
+                        }
+                    }
+                });
             }
-            requestParams.putString("token", mItem.getString("bl_symbol", ""));
-
-            Log.d(TAG, "loadData: 开始执行！！！！！！！！！！！！！！！！");
-            GsonUtil extra = new GsonUtil("{}");
-            handleTransactioRecordResult(params, loadmore, extra);
-
         }
-
+        public void Retry(String params,  boolean loadmore){
+            if(PageSize == 1){
+                loadmore = true;
+            }
+            PageSize++;
+            if(PageSize > 10){
+                PageSize =1;
+                return;
+            }
+            loadData(params,loadmore);
+            return;
+        }
         @Override
         public RecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             RecyclerViewAdapter.ViewHolder holder = new RecyclerViewAdapter.ViewHolder(ViewUtil.inflatView(parent.getContext(),
@@ -236,7 +261,6 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
         }
 
         private void handleTransactioRecordResult(final String params, final boolean loadmore, GsonUtil json) {
-            TLog.d(TAG, "transaction list:" + json);
             GsonUtil transactionRecord = json.getArray("data", "[]");
             if (!loadmore) {
                 //第一页
@@ -246,7 +270,6 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
                     addData(transactionRecord);
                 }
             }
-
             if (transactionRecord.getLength() < PAGE_SIZE) {
                 //最后一页了
                 mHasMore = false;
@@ -259,15 +282,22 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
         }
 
         private void fillData(final ViewHolder holder, final GsonUtil item) {
+
             if (item == null || TextUtils.equals(item.toString(), "{}")) {
                 return;
             }
-
-            double value = item.getDouble("real_value", 0.0f);
             String toAddress = item.getString("to", "");
-
             String fromAddress = item.getString("from", "");
             String currentAddress = WalletInfoManager.getInstance().getWAddress().toLowerCase();
+            String value = "";
+            if(item.getString("isErc20","").equals("true")){
+                String contract = item.getString("contract", "");
+                value = item.getString("value", "");
+                int decimal =  mWalletUtil.getDecimalByContract(contract,currency);
+                value= mWalletUtil.getValue(decimal,value);
+            } else {
+                value= item.getString("value", "");
+            }
             boolean in = false;
             holder.mTvTransactionTime.setText(Util.formatTime(item.getLong("timeStamp", 0l)));
             String label = "";
@@ -288,15 +318,12 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
                 holder.mImgIcon.setImageResource(R.drawable.ic_transaction_out);
                 holder.mTvTransactionCount.setTextColor(getResources().getColor(R.color.common_red));
             }
-
-//            holder.mTvTransactionCount.setText(label + Util.formatDouble(5, Util.fromWei(1, value)) + item.getString("symbol", ""));
-            holder.mTvTransactionCount.setText(label + value + item.getString("tokenSymbol", ""));
+            holder.mTvTransactionCount.setText(label + value);
         }
 
         private void gotoTransactionDetail(GsonUtil json) {
             TransactionDetailsActivity.startTransactionDetailActivity(TokenDetailsActivity.this, json);
         }
-
         class ViewHolder extends BaseRecyclerViewHolder {
             ImageView mImgIcon;
             TextView mTvTransactionAddress;

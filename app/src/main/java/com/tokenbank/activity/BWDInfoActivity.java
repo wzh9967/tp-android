@@ -10,6 +10,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.tokenbank.R;
+import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.FlowLayout;
@@ -43,6 +44,7 @@ public class BWDInfoActivity extends BaseActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bakup_wallet_info);
+        SysApplication.addActivity(this);
         if (getIntent() != null) {
             mType = getIntent().getIntExtra(BAKUP_TYPE, -1);
             String walletAddress = getIntent().getStringExtra(WALLET_ADDRESS);

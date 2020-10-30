@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,8 +15,8 @@ import com.android.jccdex.app.base.JCallback;
 import com.android.jccdex.app.moac.MoacWallet;
 import com.android.jccdex.app.util.JCCJson;
 import com.tokenbank.R;
-import com.tokenbank.base.BlockChainData;
 import com.tokenbank.base.SysApplication;
+import com.tokenbank.base.TBController;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.config.Constant;
 import com.tokenbank.utils.FileUtil;
@@ -30,7 +29,6 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
 
     public final static String TAG = "CreateWalletActivity";
     public static final String BLOCK = "BLOCK";
-    //private static final int REQUEST_CODE = 1005; //选择底层请求码
     private TitleBar mTitleBar;
     private EditText mEdtWalletName, mEdtWalletPwd, mEdtWalletPwdConfirm, mEdtWalletTips;
     private ImageView mImgServiceTerms;
@@ -44,10 +42,7 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
         setContentView(R.layout.activity_create_wallet_new);
         SysApplication.addActivity(this);
         initView();
-        mMoacWallet = MoacWallet.getInstance();
-        mMoacWallet.init(this);
-        String moacNode = Constant.moc_node;
-        mMoacWallet.initChain3Provider(moacNode);
+        mMoacWallet =TBController.getInstance().getMoacWallet();
     }
 
 
@@ -95,10 +90,6 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
     }
 
     public static void navToActivity(Context context, int request) {
-        navToActivity(context, null, request);
-    }
-
-    public static void navToActivity(Context context, BlockChainData.Block block, int request) {
         if (!(context instanceof BaseActivity)) {
             return;
         }
@@ -153,12 +144,9 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
         mMoacWallet.createWallet(new JCallback() {
             @Override
             public void completion(JCCJson jccJson) {
-                //String secret = jccJson.getString("secret");
-                //String address = jccJson.getString("address");
-                //String words = jccJson.getString("words");
-                String secret = "d324ae567508810cf351bf1705748e688c2842206f38d49e8e5f71605da3fab5";
-                String address = "0xa68dabb5932806e6373ca2d424286e820e23bcc8";
-                String words = "pupil genre shoot glass oxygen guard alpha scissors verb wrap position law";
+                String secret = jccJson.getString("secret");
+                String address = jccJson.getString("address");
+                String words = jccJson.getString("words");
                 if (secret != null && address != null && words != null) {
                     String hash = FileUtil.getStringContent(walletPwd);
                     recordWallet(walletName, hash, secret, words, mEdtWalletTips.getText().toString(),
@@ -167,9 +155,6 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
                     resetBtn();
                     ToastUtil.toast(CreateWalletActivity.this, "创建钱包失败, 错误码 1");
                 }
-                Log.d(TAG, "completion: secret" + secret+ "             "+secret.length());
-                Log.d(TAG, "completion: address" + address +"       "+address.length());
-                Log.d(TAG, "completion: words" + words+"        "+words.length());
             }
         });
     }
@@ -217,6 +202,6 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void gotoServiceTermPage() {
-        //WebBrowserActivity.startWebBrowserActivity(this, getString(R.string.titleBar_service_terms), Constant.service_term_url);
+        WebBrowserActivity.startWebBrowserActivity(this, getString(R.string.titleBar_service_terms), Constant.service_term_url);
     }
 }

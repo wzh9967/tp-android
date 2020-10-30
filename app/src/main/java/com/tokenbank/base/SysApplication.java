@@ -1,9 +1,8 @@
 package com.tokenbank.base;
 
-import android.app.Activity;
-
 import java.util.ArrayList;
 import java.util.List;
+import android.app.Activity;
 
 /**
  * 关闭所有页面，退出app

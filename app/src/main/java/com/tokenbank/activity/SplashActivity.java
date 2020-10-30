@@ -65,7 +65,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
     @Override
     public void onClick(View v) {
         if (v == mTvCreateWallet) {
-            gotoCreateWallet();
+             gotoCreateWallet();
         } else if (v == mTvImportWallet) {
             gotoImportWallet();
         }

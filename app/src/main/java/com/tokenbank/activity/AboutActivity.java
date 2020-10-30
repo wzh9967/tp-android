@@ -54,7 +54,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     @Override
     public void onClick(View view) {
         if (view == mLayoutUserTerms) {
-            //WebBrowserActivity.startWebBrowserActivity(AboutActivity.this, getString(R.string.titleBar_agreement), Constant.service_term_url);
+            WebBrowserActivity.startWebBrowserActivity(AboutActivity.this, getString(R.string.titleBar_agreement), Constant.service_term_url);
 
         } else if (view == mLayoutPrivliTerms) {
             WebBrowserActivity.startWebBrowserActivity(AboutActivity.this, getString(R.string.titleBar_privacy), Constant.privilege_url);

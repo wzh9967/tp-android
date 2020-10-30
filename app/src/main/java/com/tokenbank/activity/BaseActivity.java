@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tokenbank.TApplication;
+import com.tokenbank.base.SysApplication;
 import com.tokenbank.utils.LanguageUtil;
 import com.tokenbank.utils.PermissionUtil;
 
@@ -19,12 +20,6 @@ import java.util.Locale;
 
 
 public class BaseActivity extends AppCompatActivity {
-
-
-
-
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -35,6 +30,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SysApplication.addActivity(this);
         TApplication application = (TApplication) getApplication();
         application.addActivity(this);
         EventBus.getDefault().register(this);

@@ -1,7 +1,6 @@
 package com.tokenbank.net.apirequest;
 
 import android.preference.PreferenceManager;
-
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;

@@ -13,7 +13,6 @@ import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.view.TitleBar;
 
-//不用动
 public class StartBakupActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String WALLET_ADDRESS = "Wallet_Address";
