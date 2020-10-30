@@ -98,7 +98,6 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         mTvCopyUrl.setOnClickListener(this);
         mImgTransactionQrCode = findViewById(R.id.img_transaction_qrcode);
 
-        loadData();
     }
 
     private void updateData(GsonUtil transactionInfo) {
@@ -129,20 +128,6 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         createQRCode(mWalletUtil.getTransactionSearchUrl(mTvTransactionId.getText().toString()));
     }
 
-    private void loadData() {
-        mWalletUtil.queryTransactionDetails(mHash, new WCallback() {
-            @Override
-            public void onGetWResult(int ret, GsonUtil extra) {
-                if (ret == 0) {
-                    updateData(extra.getObject("data", "{}"));
-                } else {
-                    ToastUtil.toast(TransactionDetailsActivity.this, getString(R.string.toast_transaction_info_failure))
-                    ;
-                    TransactionDetailsActivity.this.finish();
-                }
-            }
-        });
-    }
 
     public static void startTransactionDetailActivity(Context context, GsonUtil data) {
         Intent intent = new Intent(context, TransactionDetailsActivity.class);

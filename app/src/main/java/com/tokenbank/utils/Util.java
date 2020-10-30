@@ -4,8 +4,10 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -147,13 +149,16 @@ public class Util {
         }
     }
 
-    public static double translateValue(int decimal, double value) {
-        double divider = 1.0f;
+    public static BigDecimal translateValue(int decimal, BigDecimal value) {
+        String divider = "1";
         for(int i = 0; i < decimal; i++) {
-            divider *= 10;
+            divider = divider +"0";
         }
-        return value / divider;
+        BigDecimal divider1 = new BigDecimal(divider);
+        value = value.divide(divider1);
+        return value;
     }
+
 
     //tokenvalue to wei
     public static double toWei(long blockChain, double tokenvalue) {
@@ -166,16 +171,14 @@ public class Util {
         return 0.0f;
     }
 
-    public static double tokenToWei(long blockChain, double tokenValue, int dec) {
-        if(blockChain == 1) {
-            String decimal = "1";
-            for(int i = 0; i < dec; i++)  {
-                decimal = decimal + "0";
-            }
-            TLog.e(TAG, "decimal:" + decimal);
-            return tokenValue * parseDouble(decimal);
+    public static BigDecimal tokenToWei(int dec,BigDecimal tokenValue) {
+        String decimal = "1";
+        for(int i = 0; i < dec; i++)  {
+            decimal = decimal + "0";
         }
-        return 0.0f;
+        BigDecimal decimal1 = new BigDecimal(decimal);
+        tokenValue =tokenValue.multiply(decimal1);
+        return tokenValue;
     }
 
     public static double fromGweToWei(long blockChain, double gwei) {

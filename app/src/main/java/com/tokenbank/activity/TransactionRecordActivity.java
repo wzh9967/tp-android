@@ -206,12 +206,13 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
             requestParams.putInt("pagesize", PAGE_SIZE);
             requestParams.putString("marker", mMarker);
 
-            mWalletUtil.queryTransactionList(requestParams, new WCallback() {
+            int PageSize = 1;
+            String maddress = "";
+            mWalletUtil.queryTransactionList(PageSize, maddress,new WCallback() {
                 @Override
                 public void onGetWResult(int ret, GsonUtil extra) {
                     if (ret == 0) {
                         handleTransactioRecordResult(params, loadmore, extra);
-                        mMarker = extra.getString("marker", "");
                     }
                     mSwipeRefreshLayout.setRefreshing(false);
                 }

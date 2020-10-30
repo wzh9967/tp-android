@@ -3,7 +3,6 @@ package com.tokenbank.net.load;
 import com.tokenbank.net.apirequest.ApiRequest;
 import com.tokenbank.net.listener.LoadDataListener;
 import com.tokenbank.utils.GsonUtil;
-import com.tokenbank.utils.TLog;
 
 import org.json.JSONException;
 
@@ -103,13 +102,12 @@ public class RequestPresenter {
 
     public void loadJtData(final ApiRequest request, boolean shouldCache, final RequestCallback requestCallback) {
         loadDataModel.loadData(request, shouldCache, new LoadDataListener() {
-
             @Override
             public void loadSuccess(String result) throws JSONException {
                 if (requestCallback != null) {
                     //todo
                     GsonUtil jsonResult = new GsonUtil(result);
-                    requestCallback.onRequesResult(jsonResult.getInt("status_code", -1), jsonResult);
+                    requestCallback.onRequesResult(jsonResult.getInt("statusCode", -1), jsonResult);
                 }
             }
 

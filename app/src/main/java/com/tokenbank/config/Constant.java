@@ -1,6 +1,10 @@
 package com.tokenbank.config;
 
 
+import com.tokenbank.utils.FileUtil;
+import com.tokenbank.utils.GsonUtil;
+
+import java.lang.reflect.GenericArrayType;
 
 public class Constant {
 
@@ -33,9 +37,9 @@ public class Constant {
     public final static String init_keys = "init_keys";
 
     //本地web3文件地址
-    public final static String base_web3_url = "file:///android_asset/web3.html";
+    public final static String base_web3_url = "file:///android_asset/fst_storm3.html";
     //联盟链节点地址和浏览器地址
-    public static String moc_node = "http://101.200.174.239:8545";
+    public static String moc_node = "http://101.200.174.239:7545";
     public final static String web_node = "http://consortium.moacchain.net";
     //帮助
     public final static String help_url = "";
@@ -51,6 +55,10 @@ public class Constant {
 
     public final static String JC_EXCHANGE_SERVER = "https://e9joixcvsdvi4sf.jccdex.cn";
 
+
+    public final static String MOC_EXCHANGE_SERVER = "http://dao.moacchain.net/api/v1/wallets/";
+
+    public final static String MOC_ERC20EXCHANGE_SERVER = moc_node+"/api/v1/wallets/";
     //jt
     public final static String jt_base_url = "https://api.jingtum.com";
 
@@ -58,6 +66,7 @@ public class Constant {
     public final static int CHOOSE_BLOCK_REQUEST_CODE = 1001;
     public final static int CHOOSE_IMPORTWAY_CODE = 1002;
     public final static String BLOCK_KEY = "BLOCK";
-
+    public final static String Erc20gasLimit = "70000";
     public final static String CustomNodeName = "自定义节点";
+    public final static String TokenSymbol = "moab";
 }

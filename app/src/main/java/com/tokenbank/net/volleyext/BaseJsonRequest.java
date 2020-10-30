@@ -133,7 +133,6 @@ public class BaseJsonRequest<T> extends JsonRequest<String> {
 				}
 			}
 		}
-
 		return defaultCharset;
 	}
 

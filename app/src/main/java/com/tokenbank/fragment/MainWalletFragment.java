@@ -174,7 +174,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             case R.id.wallet_action_transfer1:
                 //要从当前时刻设置的合约中获取对应的数值传递过去
                 TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", 0,
-                        mWalletUtil.getDefaultTokenSymbol(), mWalletUtil.getDefaultDecimal(), 0);
+                        "",mWalletUtil.getDefaultTokenSymbol(), mWalletUtil.getDefaultDecimal(), 0);
                 break;
             case R.id.wallet_action_receive:
             case R.id.wallet_action_receive1:
@@ -493,7 +493,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                             R.drawable.ic_images_asset_eth));
             holder.mTvTokenName.setText(data.getString("bl_symbol", "MOC"));
             if (isAssetVisible) {
-                holder.mTvTokenCount.setText("" + mWalletUtil.getValue(data.getInt("decimal", 0), Util.parseDouble(data.getString("balance", "0"))));
+                holder.mTvTokenCount.setText("" + mWalletUtil.getValue(data.getInt("decimal", 0), data.getString("balance", "0")));
             } else {
                 holder.mTvTokenCount.setText("***");
             }

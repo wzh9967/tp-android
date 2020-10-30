@@ -63,11 +63,12 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
     public void onClick(View v) {
         if (v == mLayoutTranster) {
             TokenTransferActivity.startTokenTransferActivity(TokenDetailsActivity.this, "",
-                    mContractAddress, 0.0f, mItem.getString("bl_symbol", ""), mItem.getInt("decimal", 18), 0);
+                    mContractAddress, 0.0f, mItem.getString("name", ""),mItem.getString("bl_symbol", ""), mItem.getInt("decimal", 18), 0);
         } else if (v == mLayoutReceive) {
             TokenReceiveActivity.startTokenReceiveActivity(TokenDetailsActivity.this, mItem.getString("bl_symbol", ""));
         }
     }
+
 
     private void initData() {
         if (getIntent() != null) {
@@ -157,7 +158,7 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
         if (TextUtils.isEmpty(mUnit)) {
             mUnit = "$";
         }
-        tvBalance.setText("" + mWalletUtil.getValue(mItem.getInt("decimal", 0), Util.parseDouble(mItem.getString("balance", "0"))));
+        tvBalance.setText("" + mWalletUtil.getValue(mItem.getInt("decimal", 0),mItem.getString("balance", "0")));
         tvAsset.setText(String.format("≈ %1s %2s", mUnit, Util.formatDoubleToStr(2, Util.strToDouble(
                 mItem.getString("asset", "0")))));
 

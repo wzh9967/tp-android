@@ -2,6 +2,7 @@ package com.tokenbank.net.apirequest;
 
 import android.preference.PreferenceManager;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.tokenbank.R;
@@ -96,7 +97,6 @@ public abstract class ApiRequest<T> implements IApiRequest {
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String s) {
-                                TLog.d(TAG, "RxJava request response = " + s);
                                 subscriber.onNext(s);
                                 subscriber.onCompleted();
                             }
@@ -104,7 +104,6 @@ public abstract class ApiRequest<T> implements IApiRequest {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError volleyError) {
-                                TLog.d(TAG, "RxJava request Exception = " + volleyError);
                                 String errMsg = AppConfig.getContext().getString(R.string.content_network_err);
                                 int errCode = AppConfig.ERR_CODE.NETWORK_ERR;
                                 if (volleyError != null && volleyError.networkResponse != null) {
@@ -119,5 +118,9 @@ public abstract class ApiRequest<T> implements IApiRequest {
                 TLog.d(TAG, "RxJava request start, url =  " + initUrl());
             }
         });
+    }
+    @Override
+    public int getMethod(){
+        return Request.Method.GET;
     }
 }

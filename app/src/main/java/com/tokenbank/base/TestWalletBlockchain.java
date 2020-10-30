@@ -12,9 +12,16 @@ public class TestWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
-    public void createWallet(String walletName,  String walletPassword, WCallback callback) {
+    public void initStorm3(String url, WCallback wCallback) {
 
     }
+
+    @Override
+    public void createWallet(String walletPassword, WCallback callback) {
+
+    }
+
+
 
     @Override
     public void importWallet(String privateKey, int type, WCallback callback) {
@@ -39,19 +46,55 @@ public class TestWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
+    public void importSecret(String secret, WCallback wCallback) {
+
+    }
+
+    @Override
+    public void importWords(String words, WCallback wCallback) {
+
+    }
+
+    @Override
+    public String getGasLimit() {
+        return null;
+    }
+
+    @Override
+    public void setGasLimit(String gasLimit) {
+
+    }
+
+    @Override
+    public Double calculateGasFee() {
+        return null;
+    }
+
+    @Override
+    public void Test(WCallback callback) {
+
+    }
+
+    @Override
+    public int getDecimalByContract(String contract, GsonUtil currency) {
+        return 0;
+    }
+
+    @Override
     public void signedTransaction(GsonUtil data, WCallback callback) {
 
     }
 
     @Override
-    public void sendSignedTransaction(String rawTransaction, WCallback callback) {
-
+    public boolean isValidAddress(String address, WCallback callback) {
+        return false;
     }
 
     @Override
-    public boolean isWalletLegal(String pk, String address) {
+    public boolean isValidSecret(String secret, WCallback callback) {
         return false;
     }
+
 
     @Override
     public void generateReceiveAddress(String walletAddress, double amount, String token, WCallback callback) {
@@ -59,9 +102,10 @@ public class TestWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
-    public void calculateGasInToken(double gas, double gasPrice, boolean defaultToken, WCallback callback) {
-
+    public String calculateGasInToken(int decimal, String gasLimit, Double gasPrice) {
+        return null;
     }
+
 
     @Override
     public void gasSetting(Context context, double gasPrice, boolean defaultToken, WCallback callback) {
@@ -84,10 +128,6 @@ public class TestWalletBlockchain implements BaseWalletUtil {
         return 0;
     }
 
-    @Override
-    public void getTokenInfo(String token, WCallback callback) {
-
-    }
 
     @Override
     public void translateAddress(String sourceAddress, WCallback callback) {
@@ -105,28 +145,59 @@ public class TestWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
-    public void queryTransactionDetails(String hash, WCallback callback) {
+    public void queryTransactionList(int pagesize, String address, WCallback callback) {
 
     }
 
     @Override
-    public void queryBalance(String address, WCallback callback) {
-
+    public String getValue(int decimal, String originValue) {
+        return null;
     }
 
     @Override
-    public void queryTransactionList(GsonUtil params, WCallback callback) {
-
+    public String toValue(int decimal, String Value) {
+        return null;
     }
 
-    @Override
-    public double getValue(int decimal, double originValue) {
-        return 0;
-    }
 
     @Override
     public String getTransactionSearchUrl(String hash) {
         return null;
+    }
+
+    @Override
+    public void queryErc20TransactionList(int PageSize, int Decimal, String contract, String address, WCallback callback) {
+
+    }
+
+    @Override
+    public void sendErc20Transaction(GsonUtil data, WCallback callback) {
+
+    }
+
+    @Override
+    public void sendTransaction(GsonUtil data, WCallback callback) {
+
+    }
+
+    @Override
+    public void getErc20GasPrice(String Contract, WCallback callback) {
+
+    }
+
+    @Override
+    public void getErc20Balance(String Contract, String address, WCallback callback) {
+
+    }
+
+    @Override
+    public void getBalance(String address, WCallback wCallback) {
+
+    }
+
+    @Override
+    public void getGasPrice(WCallback wCallback) {
+
     }
 
 
