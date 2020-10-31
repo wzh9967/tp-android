@@ -66,6 +66,7 @@ public class JSUtil {
         }
         mCallID++;
         json.putInt("callid", mCallID);
+        json.putString("url",MoacServer.getInstance().getNode());
         mCallbackHashMap.put(mCallID, walletOptCallback);
 
         String jsonParams = json.toString();

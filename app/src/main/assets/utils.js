@@ -1,4 +1,3 @@
-
 function getNodeFromNative(callback){
      var tpCallbackFun = _getCallbackName();
         window[tpCallbackFun] = function (result) {

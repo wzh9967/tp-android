@@ -70,8 +70,6 @@ public interface BaseWalletUtil {
 
     void getGasPrice(WCallback wCallback);
 
-    void gasPrice(WCallback callback);
-
     void importSecret(String secret, WCallback wCallback);
 
     void importWords(String words, WCallback wCallback);

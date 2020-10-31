@@ -146,7 +146,7 @@ public class MoacWalletBlockchainTest {
         data.putString("to",to);
         data.putString("secret",secret);
         data.putString("value","100");
-        data.putInt("gasLimit",99000);
+        data.putInt("gasLimit",70000);
         data.putString("gasPrice","1000000000");
         data.putString("data",note);
         mWalletUtil.sendTransaction(data,new WCallback(){

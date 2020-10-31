@@ -39,11 +39,6 @@ public class TestWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
-    public void gasPrice(WCallback callback) {
-
-    }
-
-    @Override
     public void signedTransaction(GsonUtil data, WCallback callback) {
 
     }

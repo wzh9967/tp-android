@@ -1,6 +1,8 @@
 package com.tokenbank.base;
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
+
 import com.tokenbank.config.Constant;
 import com.tokenbank.net.api.mcrequest.ERC20TransactionRequest;
 import com.tokenbank.net.api.mcrequest.MCTransactionListRequest;
@@ -47,14 +49,6 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
     public void fromIban(String ibanAddress, WCallback callback) {
     }
 
-    @Override
-    public void gasPrice(WCallback callback) {
-        if (!checkInit(callback)) {
-            return;
-        }
-        GsonUtil json = new GsonUtil("{}");
-        JSUtil.getInstance().callJS("getGasPrice", json, callback);
-    }
 
     @Override
     public void signedTransaction(GsonUtil data, WCallback callback) {
@@ -265,6 +259,7 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
         if (decimal <= 0) {
             decimal = getDefaultDecimal();
         }
+        Log.d(TAG, "getValue: "+originValue);
         BigDecimal origindate = new BigDecimal(originValue);
         origindate = Util.translateValue(decimal, origindate);
         return origindate.setScale(3, BigDecimal.ROUND_DOWN).toString();
