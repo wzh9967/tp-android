@@ -38,7 +38,6 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
     private int BackFlag = -1;
 
     public static SplashActivity instance = null;
-    private BaseWalletUtil mWalletUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +58,6 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
         }
 //        checkUpgrade();
         checkPermission();
-        mWalletUtil = TBController.getInstance().getWalletUtil();
     }
 
     @Override

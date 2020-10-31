@@ -355,8 +355,8 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
 
     public void Test(WCallback callback) {
         GsonUtil data = new GsonUtil("{}");
-        String address = "0x981d4bc976c221b3b42270be6dcab72d37d2e0cd";
-        data.putString("address", address);
-        JSUtil.getInstance().callJS("getNodeFromNative", data, callback);
+        String hash = "0x5cef50ad6ebcf0194a9f36d94a5358deb5f4d82165e74a62d41ed282712b0b1c";
+        data.putString("hash", hash);
+        JSUtil.getInstance().callJS("getTransactionDetail", data, callback);
     }
 }

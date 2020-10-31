@@ -178,6 +178,8 @@ public class MoacWalletBlockchainTest {
         }
     }
 
+
+
     @Test
     public void getBalanceTest(){
         final CountDownLatch sigal = new CountDownLatch(1);
