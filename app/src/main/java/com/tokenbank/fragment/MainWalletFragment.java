@@ -397,7 +397,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                             R.drawable.ic_images_asset_eth));
             holder.mTvTokenName.setText(data.getString("bl_symbol", "MOC"));
             if (isAssetVisible) {
-                String value = mWalletUtil.getValue(data.getInt("decimal", 0), data.getString("balance",""));
+                String value = mWalletUtil.toValue(data.getInt("decimal", 0), data.getString("balance",""));
                 holder.mTvTokenCount.setText("" +value);
             } else {
                 holder.mTvTokenCount.setText("***");

@@ -48,9 +48,9 @@ public interface BaseWalletUtil {
 
     void queryTransactionList(int pagesize,String address, WCallback callback);
 
-    String getValue(int decimal, String originValue);
+    String toValue(int decimal, String originValue);
 
-    String toValue(int decimal , String Value);
+    String fromValue(int decimal , String Value);
 
     GsonUtil loadTransferTokens(Context context);
 
@@ -82,5 +82,5 @@ public interface BaseWalletUtil {
 
     void Test(WCallback callback);
 
-    int getDecimalByContract(String contract,GsonUtil currency);
+    String getDataByContract(String contract,String key);
 }

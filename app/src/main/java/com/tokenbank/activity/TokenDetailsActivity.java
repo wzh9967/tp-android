@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -56,7 +55,6 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
     private boolean Flag = true;
     private String maddress;
     private int PageSize = 1;
-    private GsonUtil currency = new GsonUtil("{}");
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,7 +76,6 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
     }
 
     private void initData() {
-        currency =new GsonUtil(FileUtil.getConfigFile(this, "currency.json"));
         maddress =  WalletInfoManager.getInstance().getWAddress();
         if (getIntent() != null) {
             //erc20币种数据json
@@ -164,7 +161,7 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             mUnit = "$";
         }
         //显示余额
-        String value = mWalletUtil.getValue(mItem.getInt("decimal", 0), mItem.getString("balance", "0"));
+        String value = mWalletUtil.toValue(mItem.getInt("decimal", 0), mItem.getString("balance", "0"));
         tvBalance.setText("" + value);
         tvAsset.setText(String.format("≈ %1s %2s", mUnit, Util.formatDoubleToStr(2, Util.strToDouble(
                 mItem.getString("asset", "0")))));
@@ -261,7 +258,13 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
         }
 
         private void handleTransactioRecordResult(final String params, final boolean loadmore, GsonUtil json) {
-            GsonUtil transactionRecord = json.getArray("data", "[]");
+            GsonUtil transactionRecord;
+            GsonUtil moabTransactionRecord = json.getArray("moabData", "[]");
+            if(!moabTransactionRecord.toString().equals("[]")){
+                transactionRecord =  moabTransactionRecord;
+            }else {
+                transactionRecord = json.getArray("data", "[]");
+            }
             if (!loadmore) {
                 //第一页
                 setData(transactionRecord);
@@ -289,15 +292,7 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             String toAddress = item.getString("to", "");
             String fromAddress = item.getString("from", "");
             String currentAddress = WalletInfoManager.getInstance().getWAddress().toLowerCase();
-            String value = "";
-            if(item.getString("isErc20","").equals("true")){
-                String contract = item.getString("contract", "");
-                value = item.getString("value", "");
-                int decimal =  mWalletUtil.getDecimalByContract(contract,currency);
-                value= mWalletUtil.getValue(decimal,value);
-            } else {
-                value= item.getString("value", "");
-            }
+            String value = item.getString("value", "");;
             boolean in = false;
             holder.mTvTransactionTime.setText(Util.formatTime(item.getLong("timeStamp", 0l)));
             String label = "";

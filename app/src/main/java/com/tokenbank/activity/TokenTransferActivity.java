@@ -216,8 +216,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         data.putString("address",address);
         data.putString("to",to);
         data.putString("secret",secret);
-        data.putString("value",mWalletUtil.toValue(mDecimal,value));
-        Log.d(TAG, "sendErc20Transaction: mWalletUtil.toValue(mDecimal,value) = "+mWalletUtil.toValue(mDecimal,value));
+        data.putString("value",mWalletUtil.fromValue(mDecimal,value));
         data.putString("gasLimit",mGasLimit);
         data.putDouble("gasPrice",SettingGasPrice);
         data.putString("data",note);
@@ -254,9 +253,8 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         data.putString("address",address);
         data.putString("to",to);
         data.putString("secret",secret);
-        data.putString("value",mWalletUtil.toValue(mDecimal,value));
+        data.putString("value",mWalletUtil.fromValue(mDecimal,value));
         data.putString("gasLimit",mGasLimit);
-        Log.d(TAG, "sendErc20Transaction: mWalletUtil.toValue(mDecimal,value) = "+mWalletUtil.toValue(mDecimal,value));
         data.putString("data",note);
         data.putDouble("gasPrice",SettingGasPrice);
         mWalletUtil.sendErc20Transaction(data,new WCallback(){

@@ -111,13 +111,12 @@ public class TestWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
-    public String getValue(int decimal, String originValue) {
+    public String toValue(int decimal, String originValue) {
         return null;
     }
 
-
     @Override
-    public String toValue(int decimal, String Value) {
+    public String fromValue(int decimal, String Value) {
         return null;
     }
 
@@ -194,10 +193,9 @@ public class TestWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
-    public int getDecimalByContract(String contract, GsonUtil currency) {
-        return 0;
+    public String getDataByContract(String contract, String key) {
+        return null;
     }
-
 
     @Override
     public GsonUtil loadTransferTokens(Context context) {

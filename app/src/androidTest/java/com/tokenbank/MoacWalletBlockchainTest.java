@@ -1,14 +1,14 @@
 package com.tokenbank;
 
 import android.support.test.runner.AndroidJUnit4;
-import android.util.Log;
 
-import com.tokenbank.activity.SplashActivity;
+import com.android.jccdex.app.base.JCallback;
+import com.android.jccdex.app.moac.MoacWallet;
+import com.android.jccdex.app.util.JCCJson;
 import com.tokenbank.base.BaseWalletUtil;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
 import com.tokenbank.utils.GsonUtil;
-import com.tokenbank.utils.ToastUtil;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,6 +20,7 @@ import java.util.concurrent.CountDownLatch;
 @RunWith(AndroidJUnit4.class)
 public class MoacWalletBlockchainTest {
     public BaseWalletUtil mWalletUtil;
+    public MoacWallet moacWallet;
     private String transactionHash = "transactionHash";
     private final static int PageSize = 1;
     private final static String address = "0x981d4bc976c221b3b42270be6dcab72d37d2e0cd";
@@ -32,16 +33,17 @@ public class MoacWalletBlockchainTest {
     @Before
     public void setUp() {
         mWalletUtil = TBController.getInstance().getWalletUtil();
+        moacWallet = TBController.getInstance().getMoacWallet();
     }
 
     @Test
     public void createWalletTest(){
         final CountDownLatch sigal = new CountDownLatch(1);
-        mWalletUtil.createWallet(address, new WCallback() {
+        moacWallet.createWallet(new JCallback() {
             @Override
-            public void onGetWResult(int ret, GsonUtil extra) {
-                Assert.assertNotNull(extra.getString("secret",""));
-                Assert.assertNotNull(extra.getString("address",""));
+            public void completion(JCCJson json) {
+                Assert.assertNotNull(json.getString("secret"));
+                Assert.assertNotNull(json.getString("address"));
             }
         });
         try {
@@ -54,10 +56,11 @@ public class MoacWalletBlockchainTest {
     @Test
     public void isValidAddressTest(){
         final CountDownLatch sigal = new CountDownLatch(1);
-        mWalletUtil.isValidAddress(address, new WCallback() {
+        moacWallet.isValidAddress(address,new JCallback() {
             @Override
-            public void onGetWResult(int ret, GsonUtil extra) {
-                Assert.assertEquals(ret,0);
+            public void completion(JCCJson json) {
+                Boolean isValid = json.getBoolean("isValid");
+                Assert.assertEquals(isValid,true);
             }
         });
         try {
@@ -70,10 +73,11 @@ public class MoacWalletBlockchainTest {
     @Test
     public void isValidSecretTest(){
         final CountDownLatch sigal = new CountDownLatch(1);
-        mWalletUtil.isValidSecret(secret, new WCallback() {
+        moacWallet.isValidSecret(address,new JCallback() {
             @Override
-            public void onGetWResult(int ret, GsonUtil extra) {
-                Assert.assertEquals(ret,0);
+            public void completion(JCCJson json) {
+                Boolean isValid = json.getBoolean("isValid");
+                Assert.assertEquals(isValid,true);
             }
         });
         try {
@@ -87,10 +91,13 @@ public class MoacWalletBlockchainTest {
     @Test
     public void importWordsTest(){
         final CountDownLatch sigal = new CountDownLatch(1);
-        mWalletUtil.importWords(words, new WCallback() {
+        moacWallet.importWords(words,new JCallback() {
             @Override
-            public void onGetWResult(int ret, GsonUtil extra) {
-
+            public void completion(JCCJson json) {
+                String secret1 = json.getString("secret");
+                String address1 = json.getString("address");
+                Assert.assertEquals(secret1,secret);
+                Assert.assertEquals(address1,address);
             }
         });
         try {
@@ -103,10 +110,13 @@ public class MoacWalletBlockchainTest {
     @Test
     public void importSecretTest(){
         final CountDownLatch sigal = new CountDownLatch(1);
-        mWalletUtil.importSecret(secret, new WCallback() {
+        moacWallet.importSecret(address,new JCallback() {
             @Override
-            public void onGetWResult(int ret, GsonUtil extra) {
-
+            public void completion(JCCJson json) {
+                String secret1 = json.getString("secret");
+                String address1 = json.getString("address");
+                Assert.assertEquals(secret1,secret);
+                Assert.assertEquals(address1,address);
             }
         });
         try {
@@ -116,23 +126,6 @@ public class MoacWalletBlockchainTest {
         }
     }
 
-    @Test
-    public void signTest(){
-        final CountDownLatch sigal = new CountDownLatch(1);
-        GsonUtil data = new GsonUtil("{}");
-        mWalletUtil.signedTransaction(data, new WCallback() {
-            @Override
-            public void onGetWResult(int ret, GsonUtil extra) {
-
-            }
-        });
-        try {
-
-            sigal.await();
-        } catch (InterruptedException e) {
-
-        }
-    }
 
     @Test
     public void sendTransactionTest(){
@@ -146,13 +139,14 @@ public class MoacWalletBlockchainTest {
         data.putString("to",to);
         data.putString("secret",secret);
         data.putString("value","100");
-        data.putInt("gasLimit",70000);
-        data.putString("gasPrice","1000000000");
+        data.putInt("gas",22000);
+        data.putString("gasPrice","100000000");
         data.putString("data",note);
         mWalletUtil.sendTransaction(data,new WCallback(){
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
                 Assert.assertEquals(0, ret);
+                Assert.assertNotNull(extra.getString("hash",""));
             }
         });
         try {
@@ -168,7 +162,8 @@ public class MoacWalletBlockchainTest {
         mWalletUtil.getGasPrice(new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
-
+                Assert.assertEquals(0, ret);
+                Assert.assertNotNull(extra.getString("GasPrice","1000000000"));
             }
         });
         try {
@@ -187,6 +182,7 @@ public class MoacWalletBlockchainTest {
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
                 Assert.assertEquals(0, ret);
+                Assert.assertNotEquals(extra.getString("balance",""),"");
             }
         });
         try {
@@ -247,17 +243,12 @@ public class MoacWalletBlockchainTest {
         data.putString("secret",secret);
         data.putInt("value",100000000);
         data.putInt("gasLimit",99000);
-        data.putDouble("gasPrice",10e9);
+        data.putString("gasPrice","1000000000");
         mWalletUtil.sendErc20Transaction(data,new WCallback(){
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
-                if(ret == 0){
-                    String hash = extra.getString("hash", "");
-                    Log.d("sendErc20Transaction", "onGetWResult: hash"+hash);
-                }else {
-                    String err = extra.getString("err", "");
-                    Log.d("sendErc20Transaction", "onGetWResult: err"+err);
-                }
+                Assert.assertEquals(0, ret);
+                Assert.assertNotNull(extra.getString("hash",""));
             }
         });
     }
@@ -267,7 +258,8 @@ public class MoacWalletBlockchainTest {
         mWalletUtil.getErc20GasPrice(address, new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
-
+                Assert.assertEquals(0, ret);
+                Assert.assertNotNull(extra.getString("GasPrice",""));
             }
         });
         try {
@@ -282,7 +274,8 @@ public class MoacWalletBlockchainTest {
         mWalletUtil.getErc20Balance(Contract, address, new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
-
+                Assert.assertEquals(0, ret);
+                Assert.assertNotEquals(extra.getString("balance",""),"");
             }
         });
         try {

@@ -44,7 +44,6 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
     private View mEmptyView;
     private int mFrom = 2;
     private String maddress;
-    private GsonUtil currency = new GsonUtil("{}");
 
     @SuppressLint("LongLogTag")
     @Override
@@ -129,7 +128,6 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
         mRecyclerViewTransactionRecord = findViewById(R.id.recyclerview_transaction_record);
         mAdapter = new TransactionRecordAdapter();
         mAdapter.setDataLoadingListener(this);
-        currency = new GsonUtil(FileUtil.getConfigFile(this, "currency.json"));
         mRecyclerViewTransactionRecord.setLayoutManager(new LinearLayoutManager(TransactionRecordActivity.this));
         mRecyclerViewTransactionRecord.setAdapter(mAdapter);
         mRecyclerViewTransactionRecord.setOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -263,18 +261,11 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
             if (item == null || TextUtils.equals(item.toString(), "{}")) {
                 return;
             }
-            String value = "";
-            if(item.getString("isErc20","").equals("true")){
-                String contract = item.getString("contract", "");
-                value = item.getString("value", "");
-                int decimal =  mWalletUtil.getDecimalByContract(contract,currency);
-                value= mWalletUtil.getValue(decimal,value);
-            } else {
-                value= item.getString("value", "");
-            }
+            String value= item.getString("value", "");
             String toAddress = item.getString("to", "");
             String fromAddress = item.getString("from", "");
             String currentAddress = WalletInfoManager.getInstance().getWAddress().toLowerCase();
+            Log.d("fillData", "fillData: "+item.getString("contract", ""));
             boolean in = false;
             holder.mTvTransactionTime.setText(item.getString("timestamp", ""));
             String label = "";

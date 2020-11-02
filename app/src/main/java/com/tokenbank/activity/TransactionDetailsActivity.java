@@ -27,6 +27,7 @@ import com.tokenbank.utils.Util;
 import com.tokenbank.view.TitleBar;
 
 import java.math.BigInteger;
+import java.util.function.LongToDoubleFunction;
 
 
 public class TransactionDetailsActivity extends BaseActivity implements View.OnClickListener {
@@ -48,7 +49,6 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private int mDecimal;
     private GsonUtil transactionData;
     private BaseWalletUtil mWalletUtil;
-    private GsonUtil currency = new GsonUtil("{}");
 
     @SuppressLint("LongLogTag")
     @Override
@@ -105,19 +105,18 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         mTvCopyUrl = findViewById(R.id.tv_copy_transaction_url);
         mTvCopyUrl.setOnClickListener(this);
         mImgTransactionQrCode = findViewById(R.id.img_transaction_qrcode);
-        currency =new GsonUtil(FileUtil.getConfigFile(this, "currency.json"));
         mDecimal = mWalletUtil.getDefaultDecimal();
         updateData(transactionData);
     }
 
     private void updateData(GsonUtil transactionInfo) {
+        String bl_symbol = Constant.TokenSymbol;
         String value = transactionInfo.getString("value","");
         String contract = transactionInfo.getString("contract","");
         Double gasPrice = transactionInfo.getDouble("gasPrice",0.0);
         String gasUsed = transactionInfo.getString("gasUsed","");
         if(!contract.equals("")){
-            mDecimal  = mWalletUtil.getDecimalByContract(contract,currency);
-            value = mWalletUtil.getValue(mDecimal,value);
+            bl_symbol = mWalletUtil.getDataByContract(contract,"bl_symbol");
         }
         String gasFee = mWalletUtil.calculateGasInToken(mDecimal,gasUsed,gasPrice);
         String toAddress = transactionInfo.getString("to", "");
@@ -141,8 +140,8 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         } else {
             mTvTransactionStatus.setText(getString(R.string.content_trading_unknown));
         }
-        mTvCount.setText(value);
-        mTvSymbol.setText(transactionInfo.getString("tokenSymbol", ""));
+        mTvCount.setText(value+" ");
+        mTvSymbol.setText(bl_symbol);
         createQRCode(mWalletUtil.getTransactionSearchUrl(mTvTransactionId.getText().toString()));
     }
 

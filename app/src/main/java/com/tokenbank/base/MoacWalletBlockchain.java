@@ -3,10 +3,12 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tokenbank.config.AppConfig;
 import com.tokenbank.config.Constant;
 import com.tokenbank.net.api.mcrequest.ERC20TransactionRequest;
 import com.tokenbank.net.api.mcrequest.MCTransactionListRequest;
 import com.tokenbank.net.load.RequestPresenter;
+import com.tokenbank.utils.FileUtil;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.Util;
 import java.math.BigDecimal;
@@ -114,7 +116,7 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
 
     @Override
     public int getDefaultDecimal() {
-        return 18;
+        return Constant.DefaultDecimal;
     }
 
 
@@ -155,7 +157,7 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
                         GsonUtil item = new GsonUtil("{}");
                         item.putString("blockHash", payment.getString("blockHash", ""));
                         item.putString("blockNumber", payment.getString("blockNumber", ""));
-                        item.putString("contractAddress",payment.getString("contractAddress",""));
+                        item.putString("contract",payment.getString("to",""));
                         item.putString("gasUsed", payment.getString("gasUsed", ""));
                         item.putDouble("gasPrice",payment.getDouble("gasPrice",0.0f));
                         item.putDouble("status",payment.getDouble("status",0.0f));
@@ -164,7 +166,7 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
                         item.putString("transactionHash", payment.getString("transactionHash", ""));
                         String input = payment.getString("input","");
                         String value = new BigInteger(input.substring(74), 16).toString();
-                        item.putString("value",getValue(Decimal, value));
+                        item.putString("value",toValue(Decimal, value));
                         item.putString("to", "0x"+input.substring(34,74));
                         item.putInt("txreceipt_status",payment.getInt("txreceipt_status",1));
                         dataList.add(item);
@@ -193,7 +195,6 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
         JSUtil.getInstance().callJS("sendTransaction", data, callback);
     }
 
-
     @Override
     public void queryTransactionList(int pagesize, final String address,final WCallback callback) {
         if (!checkInit(callback)) {
@@ -205,6 +206,7 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
                 if (ret == 1) {
                     GsonUtil translatedData = new GsonUtil("{}");
                     GsonUtil dataList = new GsonUtil("[]");
+                    GsonUtil mobDataList = new GsonUtil("[]");
                     GsonUtil payments = json.getArray("data", "[]");
                     int len = payments.getLength();
                     for (int i = 0; i < len; i++) {
@@ -219,20 +221,24 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
                         item.putInt("txreceipt_status", payment.getInt("txreceipt_status", 1));
                         item.putString("gasUsed", payment.getString("gasUsed", ""));
                         item.putDouble("gasPrice", payment.getDouble("gasPrice", 0.0f));
-                        dataList.add(item);
                         String input = payment.getString("input", "");
                         if(input.length() == 128 || input.startsWith("0xa9059cbb")){
                             String value = new BigInteger(input.substring(74), 16).toString();
-                            item.putString("value", value);
+                            String contract = payment.getString("to","");
+                            int Decimal = Integer.parseInt(getDataByContract(contract,"decimal"));
+                            item.putString("value",toValue(Decimal,value));
                             item.putString("to", "0x"+input.substring(34,74));
-                            item.putString("contract",payment.getString("to",""));
                             item.putString("isErc20","true");
+                            item.putString("contract",contract);
                         }else{
-                            item.putString("value", payment.getString("value", ""));
+                            item.putString("value",payment.getString("value", ""));
                             item.putString("to", payment.getString("to", ""));
+                            mobDataList.add(item);
                         }
+                        dataList.add(item);
                     }
                     translatedData.put("data", dataList);
+                    translatedData.put("moabData",mobDataList);
                     callback.onGetWResult(0, translatedData);
                 } else {
                     callback.onGetWResult(-1, new GsonUtil("{}"));
@@ -242,31 +248,31 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
-    public int getDecimalByContract(String contract, GsonUtil currency) {
+    public String getDataByContract(String contract,String key) {
+        GsonUtil currency =new GsonUtil(FileUtil.getConfigFile(AppConfig.getContext(), "currency.json"));
         GsonUtil payments = currency.getArray("data", "[]");
         int len = payments.getLength();
         for (int i = 0; i < len; i++) {
             GsonUtil payment = payments.getObject(i, "{}");
-            if(payment.getString("contract","").equals(contract)){
-                return payment.getInt("decimal",0);
+            if (payment.getString("contract", "").equals(contract)) {
+                return payment.getString(key, "");
             }
         }
-        return 0;
+        return "";
     }
 
     @Override
-    public String getValue(int decimal, String originValue) {
+    public String toValue(int decimal, String originValue) {
         if (decimal <= 0) {
             decimal = getDefaultDecimal();
         }
-        Log.d(TAG, "getValue: "+originValue);
         BigDecimal origindate = new BigDecimal(originValue);
         origindate = Util.translateValue(decimal, origindate);
         return origindate.setScale(3, BigDecimal.ROUND_DOWN).toString();
     }
 
     @Override
-    public String toValue(int decimal, String Value) {
+    public String fromValue(int decimal, String Value) {
         BigDecimal ValueTempe = new BigDecimal(Value);
         if (decimal <= 0) {
             decimal = getDefaultDecimal();

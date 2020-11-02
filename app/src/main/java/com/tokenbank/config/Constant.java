@@ -68,5 +68,6 @@ public class Constant {
     public final static String BLOCK_KEY = "BLOCK";
     public final static String Erc20gasLimit = "70000";
     public final static String CustomNodeName = "自定义节点";
-    public final static String TokenSymbol = "moab";
+    public final static String TokenSymbol = "mfc";
+    public final static int DefaultDecimal = 18;
 }
