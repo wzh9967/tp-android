@@ -26,7 +26,6 @@ import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.Util;
 import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
-import java.text.DecimalFormat;
 
 public class TokenTransferActivity extends BaseActivity implements View.OnClickListener {
 
@@ -47,7 +46,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     private String mReceiveAddress = "";
     private String mTokenSymbol = "";
     private String mGasLimit;
-    private double mAmount;
+    private String mAmount;
     private String mTokenName;
     private boolean defaultToken;
     private int mDecimal = 0;
@@ -71,7 +70,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             mTokenSymbol = getIntent().getStringExtra(TOKEN_SYMBOL_KEY);
             mDecimal = getIntent().getIntExtra(TOKEN_DECIMAL, 0);
             mGas = getIntent().getDoubleExtra(TOEKN_GAS, 0);
-            mAmount = getIntent().getDoubleExtra(TOEKN_AMOUNT, 0.0f);
+            mAmount = getIntent().getStringExtra(TOEKN_AMOUNT);
             mTokenName = getIntent().getStringExtra(TOKEN_NAME);
         }
         initData();
@@ -106,8 +105,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         mEdtTransferNum = findViewById(R.id.edt_transfer_num);
         mGas = mWalletUtil.getRecommendGas(mGas);
         mTvGas = findViewById(R.id.tv_transfer_gas);
-        DecimalFormat df = new DecimalFormat("#.00000000");
-        mEdtTransferNum.setText(mAmount > 0.0f ? df.format(mAmount).toString() : "");
+        mEdtTransferNum.setHint(mAmount+"(max)");
         mEdtTransferRemark = findViewById(R.id.edt_transfer_remark);
         mBtnNext = findViewById(R.id.btn_next);
         mBtnNext.setOnClickListener(this);
@@ -226,7 +224,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                 if(ret == 0){
                     String hash = extra.getString("hash", "");
                     Log.d("Transaction", "onGetWResult: hash = "+hash);
-                    seekBar.setEnabled(true);
                     resetTranferBtn();
                     ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_transfer_success));
                     TokenTransferActivity.this.finish();
@@ -234,7 +231,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                     String err = extra.getString("err", "");
                     Log.d("Transaction", "onGetWResult: err"+err);
                     resetTranferBtn();
-                    ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_transfer_failed));
+                    ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_transfer_failed)+ret);
                 }
             }
         });
@@ -280,7 +277,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
 
         String address = mEdtWalletAddress.getText().toString();
         String num = mEdtTransferNum.getText().toString();
-
         if (TextUtils.isEmpty(address)) {
             ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_wallet_address), "OK");
             return false;
@@ -299,6 +295,11 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
 
         if ((TextUtils.isEmpty(num) || Util.parseDouble(num) <= 0.0f)) {
             ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_amount_incorrect), "OK");
+            return false;
+        }
+
+        if(Util.parseDouble(mAmount) <=Util.parseDouble(num)){
+            ViewUtil.showSysAlertDialog(this, getString(R.string.toast_insufficient_balance), "OK");
             return false;
         }
         return true;
@@ -320,7 +321,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
      * @param context
      */
     public static void startTokenTransferActivity(Context context, String receiveAddress, String contactAddress,
-                                                  double mAmount, String tokenName,String tokenSymbol, int decimal, double gas) {
+                                                  String mAmount, String tokenName,String tokenSymbol, int decimal, double gas) {
         Intent intent = new Intent(context, TokenTransferActivity.class);
         intent.putExtra(CONTRACT_ADDRESS_KEY, contactAddress);
         intent.putExtra(RECEIVE_ADDRESS_KEY, receiveAddress);

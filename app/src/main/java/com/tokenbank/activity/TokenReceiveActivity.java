@@ -56,7 +56,6 @@ public class TokenReceiveActivity extends BaseActivity {
             finish();
             return;
         }
-        //delete
         mWalletUtil = TBController.getInstance().getWalletUtil();
         if (mWalletUtil == null) {
             this.finish();
@@ -122,7 +121,6 @@ public class TokenReceiveActivity extends BaseActivity {
                         tokenAmount, mToken);
             }
         });
-        //刚开始就钱包地址
         generateAddress(WalletInfoManager.getInstance().getWAddress(), 0.0f, mToken);
     }
 

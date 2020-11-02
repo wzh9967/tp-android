@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ import com.tokenbank.utils.TokenImageLoader;
 import com.tokenbank.utils.ViewUtil;
 import com.zxing.activity.CaptureActivity;
 
+import java.util.function.LongFunction;
 
 
 public class MainWalletFragment extends BaseFragment implements View.OnClickListener,
@@ -164,7 +166,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 break;
             case R.id.wallet_action_transfer:
             case R.id.wallet_action_transfer1:
-                TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", 0,
+                TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", "",
                         "",mWalletUtil.getDefaultTokenSymbol(), mWalletUtil.getDefaultDecimal(), 0);
                 break;
             case R.id.wallet_action_receive:
@@ -413,6 +415,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                     public void onGetWResult(int ret, GsonUtil extra) {
                         if(ret == 0){
                             data.putString("balance",extra.getString("balance",""));
+                            Log.d("getBalance","balance = "+extra.getString("balance",""));
                         }
                         fillTokenData((TokenViewHolder) holder, data);
                     }
@@ -423,6 +426,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                     public void onGetWResult(int ret, GsonUtil extra) {
                         if(ret == 0){
                             data.putString("balance",extra.getString("balance",""));
+                            Log.d("getBalance","balance = "+extra.getString("balance",""));
                         }
                         fillTokenData((TokenViewHolder) holder, data);
                     }

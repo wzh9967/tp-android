@@ -18,6 +18,7 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.jccdex.app.moac.MoacWallet;
 import com.scwang.smartrefresh.layout.internal.ProgressDrawable;
 import com.stealthcopter.networktools.Ping;
 import com.stealthcopter.networktools.PortScan;
@@ -150,6 +151,7 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
                 mProgressDrawable.setColor(0xff666666);
                 mImgLoad.setImageDrawable(mProgressDrawable);
                 mRadioSelected.setClickable(false);
+
                 mLayoutItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -163,6 +165,9 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
                             vh.mRadioSelected.setChecked(false);
                             vh.mLayoutItem.setActivated(false);
                             mSelectedItem = position;
+                            GsonUtil item = publicNodes.getObject(mSelectedItem);
+                            item.putInt("position",mSelectedItem);
+                            MoacServer.getInstance().setNode(item);
                             vh = (VH) mNodeRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
                             vh.mRadioSelected.setChecked(true);
                             vh.mLayoutItem.setActivated(true);
@@ -172,6 +177,9 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
                                 notifyItemChanged(mSelectedItem);
                             }
                             mSelectedItem = position;
+                            GsonUtil item = publicNodes.getObject(mSelectedItem);
+                            item.putInt("position",mSelectedItem);
+                            MoacServer.getInstance().setNode(item);
                             vh = (VH) mNodeRecyclerView.findViewHolderForLayoutPosition(position);
                             vh.mRadioSelected.setChecked(true);
                             vh.mLayoutItem.setActivated(true);
@@ -220,10 +228,22 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
                 return;
             }
             GsonUtil item = publicNodes.getObject(position);
+            if(position == 0 && MoacServer.getInstance().getIndex() == -1){
+                item.putInt("position",position);
+                MoacServer.getInstance().setNode(item);
+                holder.mRadioSelected.setChecked(true);
+                holder.mLayoutItem.setActivated(true);
+                mSelectedItem = position;
+            }
+            if(MoacServer.getInstance().getIndex() != -1 && MoacServer.getInstance().getIndex() == position){
+                holder.mRadioSelected.setChecked(true);
+                holder.mLayoutItem.setActivated(true);
+                mSelectedItem = position;
+            }
             holder.mTvNodeName.setText(item.getString("name", ""));
             String url = item.getString("node", "");
             holder.mTvNodeUrl.setText(url);
-            holder.mLayoutItem.setClickable(true);
+
             holder.mProgressDrawable.start();
             String[] ws = url.replace("http://", "").replace("https://", "").split(":");
             if (ws.length != 2) {
@@ -309,11 +329,10 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
      * 从配置文件读取 默认节点列表
      */
     private void getPublicNode() {
+        publicNodes = new GsonUtil(FileUtil.getConfigFile(this, "publicNode.json"));
         if(publicNodes.toString().equals("{}")){
-            publicNodes = new GsonUtil(FileUtil.getConfigFile(this, "publicNode.json"));
+
             ConfirmNodeListLength = publicNodes.getLength();
-        } else {
-            publicNodes = new GsonUtil(FileUtil.getConfigFile(this, "publicNode.json"));
         }
         getCustomNode();
     }
@@ -360,8 +379,11 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
             return;
         }
         ping = ping.replace("ms", "");
+        Log.d(TAG, "saveNode: "+ MoacServer.getInstance().getNode());
         if (!TextUtils.isEmpty(ping) && !TextUtils.equals(ping, "---")) {
-            MoacServer.getInstance().setNode(url,ping);
+            GsonUtil item = publicNodes.getObject(mSelectedItem);
+            item.putInt("position",mSelectedItem);
+            MoacServer.getInstance().setNode(item);
         }
     }
 
@@ -377,7 +399,6 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
             //从sp删除节点
             GsonUtil item = publicNodes.getObject(index);
             String node = item.getString("node","");
-            Log.d(TAG, "DeleteNode: node "+node);
             String fileName = getContext().getPackageName() + "_customNode";
             SharedPreferences sharedPreferences = getContext().getSharedPreferences(fileName, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();

@@ -1,18 +1,17 @@
 package com.tokenbank.base;
-
-import android.content.Context;
-import android.content.SharedPreferences;
-
+import android.util.Log;
 import com.tokenbank.config.Constant;
-import com.tokenbank.utils.NetUtil;
+import com.tokenbank.utils.GsonUtil;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * 用来检测节点的连接性
  */
 public class MoacServer {
     private static String node ;
-    private static String ping ;
     private static MoacServer instance;
+    private static int index = -1;
     private MoacServer() {
     }
     public static MoacServer getInstance() {
@@ -28,12 +27,12 @@ public class MoacServer {
     public String getNode(){
         return this.node;
     }
-    public String getPing(){
-        return this.ping;
+    public int getIndex(){
+        return this.index;
     }
-
-    public void setNode(String node,String ping){
-        this.node = node;
-        this.ping = ping;
+    public void setNode(GsonUtil node){
+        Log.d(TAG, "setNode: "+node.toString());
+        this.node = node.getString("node", "");
+        this.index = node.getInt("position", 0);
     }
 }

@@ -26,7 +26,6 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
 
     }
 
-
     @Override
     public void createWallet(final String walletPassword, final WCallback callback) {
         int blockType = 1;
@@ -84,32 +83,6 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
-    public void setGasLimit(String gasLimit){
-        this.gasLimit = gasLimit;
-    }
-
-    @Override
-    public Double calculateGasFee() {
-        return 0.0;
-    }
-
-    @Override
-    public String getGasLimit(){
-        return this.gasLimit;
-    }
-
-    @Override
-    public void gasSetting(Context context, double gasPrice, boolean defaultToken, WCallback callback) {
-
-    }
-
-    @Override
-    public double getRecommendGas(double gas) {
-        //从设置的Gas费中获取
-        return 0.01;
-    }
-
-    @Override
     public String getDefaultTokenSymbol() {
         return "moab";
     }
@@ -119,24 +92,6 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
         return Constant.DefaultDecimal;
     }
 
-
-    @Override
-    public void translateAddress(String sourceAddress, WCallback callback) {
-    }
-
-    @Override
-    public boolean checkWalletAddress(String receiveAddress) {
-        if (TextUtils.isEmpty(receiveAddress) || receiveAddress.length() != 42) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean checkWalletPk(String privateKey) {
-        //todo
-        return true;
-    }
 
     @Override
     public void queryErc20TransactionList(int PageSize,int Decimal,final String contract,final String address ,final WCallback callback) {
@@ -179,6 +134,7 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
             }
         });
     }
+
     @Override
     public void sendErc20Transaction(GsonUtil data, WCallback callback) {
         if (!checkInit(callback)) {
@@ -266,9 +222,14 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
         if (decimal <= 0) {
             decimal = getDefaultDecimal();
         }
-        BigDecimal origindate = new BigDecimal(originValue);
-        origindate = Util.translateValue(decimal, origindate);
-        return origindate.setScale(3, BigDecimal.ROUND_DOWN).toString();
+        try{
+            BigDecimal origindate = new BigDecimal(originValue);
+            origindate = Util.translateValue(decimal, origindate);
+            return origindate.setScale(3, BigDecimal.ROUND_DOWN).toString();
+        } catch (Exception err){
+            Log.e("toValue  :","err : "+err);
+            return "";
+        }
     }
 
     @Override
@@ -357,6 +318,49 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
 
     private boolean checkInit(WCallback callback) {
         return JSUtil.getInstance().checkInit(callback);
+    }
+    @Override
+    public void translateAddress(String sourceAddress, WCallback callback) {
+    }
+
+    @Override
+    public boolean checkWalletAddress(String receiveAddress) {
+        if (TextUtils.isEmpty(receiveAddress) || receiveAddress.length() != 42) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean checkWalletPk(String privateKey) {
+        //todo
+        return true;
+    }
+
+    @Override
+    public void setGasLimit(String gasLimit){
+        this.gasLimit = gasLimit;
+    }
+
+    @Override
+    public Double calculateGasFee() {
+        return 0.0;
+    }
+
+    @Override
+    public String getGasLimit(){
+        return this.gasLimit;
+    }
+
+    @Override
+    public void gasSetting(Context context, double gasPrice, boolean defaultToken, WCallback callback) {
+
+    }
+
+    @Override
+    public double getRecommendGas(double gas) {
+        //从设置的Gas费中获取
+        return 0.01;
     }
 
     public void Test(WCallback callback) {

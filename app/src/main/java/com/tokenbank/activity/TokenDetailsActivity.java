@@ -22,6 +22,7 @@ import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.WCallback;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.base.TBController;
+import com.tokenbank.config.Constant;
 import com.tokenbank.utils.FileUtil;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.Util;
@@ -48,6 +49,7 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
     private LinearLayout mLayoutReceive;
 
     private GsonUtil mItem;
+    private String mValue;
     private String mContractAddress;
     private WalletInfoManager.WData mWalletData;
     private BaseWalletUtil mWalletUtil;
@@ -69,7 +71,7 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
     public void onClick(View v) {
         if (v == mLayoutTranster) {
             TokenTransferActivity.startTokenTransferActivity(TokenDetailsActivity.this, "",
-                    mContractAddress, 0.0f, mItem.getString("name", ""),mItem.getString("bl_symbol", ""), mItem.getInt("decimal", 18), 0);
+                    mContractAddress, mValue, mItem.getString("name", ""),mItem.getString("bl_symbol", ""), mItem.getInt("decimal", Constant.DefaultDecimal), 0);
         } else if (v == mLayoutReceive) {
             TokenReceiveActivity.startTokenReceiveActivity(TokenDetailsActivity.this, mItem.getString("bl_symbol", ""));
         }
@@ -161,8 +163,8 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             mUnit = "$";
         }
         //显示余额
-        String value = mWalletUtil.toValue(mItem.getInt("decimal", 0), mItem.getString("balance", "0"));
-        tvBalance.setText("" + value);
+        mValue = mWalletUtil.toValue(mItem.getInt("decimal", 0), mItem.getString("balance", "0"));
+        tvBalance.setText(mValue);
         tvAsset.setText(String.format("≈ %1s %2s", mUnit, Util.formatDoubleToStr(2, Util.strToDouble(
                 mItem.getString("asset", "0")))));
 
