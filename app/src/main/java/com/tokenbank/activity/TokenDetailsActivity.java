@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -163,7 +164,7 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             mUnit = "$";
         }
         //显示余额
-        mValue = mWalletUtil.toValue(mItem.getInt("decimal", 0), mItem.getString("balance", "0"));
+        mValue = mWalletUtil.toValue(mItem.getInt("decimal", Constant.DefaultDecimal), mItem.getString("balance", "0"));
         tvBalance.setText(mValue);
         tvAsset.setText(String.format("≈ %1s %2s", mUnit, Util.formatDoubleToStr(2, Util.strToDouble(
                 mItem.getString("asset", "0")))));
@@ -194,7 +195,7 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             @Override
             public void onItemClick(View view, int position) {
                 GsonUtil item = getItem(position);
-                gotoTransactionDetail(item);
+                gotoTransactionDetail(item.getString("transactionHash",""));
             }
         };
 
@@ -217,18 +218,20 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
                     @Override
                     public void onGetWResult(int ret, GsonUtil extra) {
                         if (ret == 0) {
-                            handleTransactioRecordResult(params, loadmore, extra);
+                            GsonUtil moabTransactionRecord = extra.getArray("moabData", "[]");
+                            handleTransactioRecordResult(params, loadmore, moabTransactionRecord);
                             Retry(params,loadmore);
                         }
                     }
                 });
             } else {
                 Flag = false;
-                mWalletUtil.queryErc20TransactionList(PageSize,mItem.getInt("decimal", 18),mContractAddress, maddress,new WCallback() {
+                mWalletUtil.queryErc20TransactionList(PageSize,mItem.getInt("decimal", Constant.DefaultDecimal),mContractAddress, maddress,new WCallback() {
                     @Override
                     public void onGetWResult(int ret, GsonUtil extra) {
                         if (ret == 0) {
-                            handleTransactioRecordResult(params, loadmore, extra);
+                            GsonUtil Erc20TransactionRecord = extra.getArray("data", "[]");
+                            handleTransactioRecordResult(params, loadmore, Erc20TransactionRecord);
                             Retry(params,loadmore);
                         }
                     }
@@ -259,14 +262,7 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             fillData(viewHolder, getItem(position));
         }
 
-        private void handleTransactioRecordResult(final String params, final boolean loadmore, GsonUtil json) {
-            GsonUtil transactionRecord;
-            GsonUtil moabTransactionRecord = json.getArray("moabData", "[]");
-            if(!moabTransactionRecord.toString().equals("[]")){
-                transactionRecord =  moabTransactionRecord;
-            }else {
-                transactionRecord = json.getArray("data", "[]");
-            }
+        private void handleTransactioRecordResult(final String params, final boolean loadmore, GsonUtil transactionRecord) {
             if (!loadmore) {
                 //第一页
                 setData(transactionRecord);
@@ -318,8 +314,8 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             holder.mTvTransactionCount.setText(label + value);
         }
 
-        private void gotoTransactionDetail(GsonUtil json) {
-            TransactionDetailsActivity.startTransactionDetailActivity(TokenDetailsActivity.this, json);
+        private void gotoTransactionDetail(String hash) {
+            TransactionDetailsActivity.startTransactionDetailActivity(TokenDetailsActivity.this, hash);
         }
         class ViewHolder extends BaseRecyclerViewHolder {
             ImageView mImgIcon;

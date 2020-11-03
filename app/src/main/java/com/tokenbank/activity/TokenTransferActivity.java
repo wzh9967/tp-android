@@ -40,7 +40,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     private Double SettingGasPrice;
     private BaseWalletUtil mWalletUtil;
     private WalletInfoManager.WData mWalletData;
-    private double mGas;
     private String mContractAddress ="";
     private String mOriginAddress = "";
     private String mReceiveAddress = "";
@@ -49,7 +48,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     private String mAmount;
     private String mTokenName;
     private boolean defaultToken;
-    private int mDecimal = 0;
+    private int mDecimal = Constant.DefaultDecimal;
     private int mBlockChain;
     private final static String CONTRACT_ADDRESS_KEY = "Contact_Address";
     private final static String RECEIVE_ADDRESS_KEY = "Receive_Address";
@@ -69,7 +68,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             mContractAddress = getIntent().getStringExtra(CONTRACT_ADDRESS_KEY);
             mTokenSymbol = getIntent().getStringExtra(TOKEN_SYMBOL_KEY);
             mDecimal = getIntent().getIntExtra(TOKEN_DECIMAL, 0);
-            mGas = getIntent().getDoubleExtra(TOEKN_GAS, 0);
             mAmount = getIntent().getStringExtra(TOEKN_AMOUNT);
             mTokenName = getIntent().getStringExtra(TOKEN_NAME);
         }
@@ -86,7 +84,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         mWalletUtil = TBController.getInstance().getWalletUtil();
         defaultToken = true;
         getGasPrice();
-        this.mGasLimit = mWalletUtil.getGasLimit();
+        this.mGasLimit = Constant.gasLimit;
         if(!mContractAddress.equals("")){
             this.mGasLimit = Constant.Erc20gasLimit;
         }
@@ -103,7 +101,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         });
         mEdtWalletAddress = findViewById(R.id.edt_wallet_address);
         mEdtTransferNum = findViewById(R.id.edt_transfer_num);
-        mGas = mWalletUtil.getRecommendGas(mGas);
         mTvGas = findViewById(R.id.tv_transfer_gas);
         mEdtTransferNum.setHint(mAmount+"(max)");
         mEdtTransferRemark = findViewById(R.id.edt_transfer_remark);
@@ -118,7 +115,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             mContractAddress = data.getStringExtra(CONTRACT_ADDRESS_KEY);
             mTokenSymbol = data.getStringExtra(TOKEN_SYMBOL_KEY);
             mDecimal = data.getIntExtra(TOKEN_DECIMAL, 0);
-            defaultToken = TextUtils.equals(mWalletUtil.getDefaultTokenSymbol(), mTokenSymbol);
+            defaultToken = TextUtils.equals(Constant.TokenSymbol, mTokenSymbol);
         }
     }
 
@@ -224,8 +221,9 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                 if(ret == 0){
                     String hash = extra.getString("hash", "");
                     Log.d("Transaction", "onGetWResult: hash = "+hash);
-                    resetTranferBtn();
                     ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_transfer_success));
+                    resetTranferBtn();
+                    TransactionDetailsActivity.startTransactionDetailActivity(TokenTransferActivity.this, hash);
                     TokenTransferActivity.this.finish();
                 }else {
                     String err = extra.getString("err", "");
@@ -261,6 +259,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                     String hash = extra.getString("hash", "");
                     Log.d("sendErc20Transaction", "onGetWResult: hash = "+hash);
                     resetTranferBtn();
+                    TransactionDetailsActivity.startTransactionDetailActivity(TokenTransferActivity.this, hash);
                     ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_transfer_success));
                     TokenTransferActivity.this.finish();
                 }else {

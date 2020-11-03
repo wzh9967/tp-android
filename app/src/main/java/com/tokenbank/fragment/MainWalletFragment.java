@@ -73,6 +73,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private String unit = "¥";
     private boolean isViewCreated = false;
     private double mTotalAsset = 0.0f;
+    private String amount;
 
     public static MainWalletFragment newInstance() {
         MainWalletFragment fragment = new MainWalletFragment();
@@ -166,12 +167,12 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 break;
             case R.id.wallet_action_transfer:
             case R.id.wallet_action_transfer1:
-                TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", "",
-                        "",mWalletUtil.getDefaultTokenSymbol(), mWalletUtil.getDefaultDecimal(), 0);
+                TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", amount,
+                        "",Constant.TokenSymbol, Constant.DefaultDecimal, 0);
                 break;
             case R.id.wallet_action_receive:
             case R.id.wallet_action_receive1:
-                TokenReceiveActivity.startTokenReceiveActivity(getActivity(), mWalletUtil.getDefaultTokenSymbol());
+                TokenReceiveActivity.startTokenReceiveActivity(getActivity(), Constant.TokenSymbol);
                 break;
         }
     }
@@ -399,7 +400,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                             R.drawable.ic_images_asset_eth));
             holder.mTvTokenName.setText(data.getString("bl_symbol", "MOC"));
             if (isAssetVisible) {
-                String value = mWalletUtil.toValue(data.getInt("decimal", 0), data.getString("balance",""));
+                String value = mWalletUtil.toValue(data.getInt("decimal", Constant.DefaultDecimal), data.getString("balance",""));
                 holder.mTvTokenCount.setText("" +value);
             } else {
                 holder.mTvTokenCount.setText("***");
@@ -414,8 +415,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                     @Override
                     public void onGetWResult(int ret, GsonUtil extra) {
                         if(ret == 0){
+                            amount = mWalletUtil.toValue(data.getInt("decimal", Constant.DefaultDecimal), extra.getString("balance",""));
                             data.putString("balance",extra.getString("balance",""));
-                            Log.d("getBalance","balance = "+extra.getString("balance",""));
                         }
                         fillTokenData((TokenViewHolder) holder, data);
                     }
@@ -426,7 +427,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                     public void onGetWResult(int ret, GsonUtil extra) {
                         if(ret == 0){
                             data.putString("balance",extra.getString("balance",""));
-                            Log.d("getBalance","balance = "+extra.getString("balance",""));
                         }
                         fillTokenData((TokenViewHolder) holder, data);
                     }

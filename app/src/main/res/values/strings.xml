@@ -87,6 +87,7 @@
     <string name="content_trading_pending">交易打包中</string>
     <string name="content_trading_failure">交易失败</string>
     <string name="content_trading_unknown">状态未知，请点击交易号查询</string>
+    <string name="content_trading_waiting">查询状态中</string>
     <string name="toast_transaction_info_failure">获取交易信息失败，请稍后重试</string>
     <string name="toast_url_copied">查询url已经复制到剪贴板</string>
     <string name="toast_send_address_copied">发送方地址已经复制到剪贴板</string>

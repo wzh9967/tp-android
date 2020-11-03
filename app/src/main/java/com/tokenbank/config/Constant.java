@@ -66,6 +66,7 @@ public class Constant {
     public final static int CHOOSE_BLOCK_REQUEST_CODE = 1001;
     public final static int CHOOSE_IMPORTWAY_CODE = 1002;
     public final static String BLOCK_KEY = "BLOCK";
+    public final static String gasLimit = "22000";
     public final static String Erc20gasLimit = "70000";
     public final static String CustomNodeName = "自定义节点";
     public final static String TokenSymbol = "mfc";

@@ -38,10 +38,6 @@ public class TestWalletBlockchain implements BaseWalletUtil {
 
     }
 
-    @Override
-    public void signedTransaction(GsonUtil data, WCallback callback) {
-
-    }
 
 
     @Override
@@ -62,35 +58,6 @@ public class TestWalletBlockchain implements BaseWalletUtil {
     @Override
     public String calculateGasInToken(int decimal, String gasLimit, Double gasPrice) {
         return null;
-    }
-
-
-
-    @Override
-    public void gasSetting(Context context, double gasPrice, boolean defaultToken, WCallback callback) {
-
-    }
-
-    @Override
-    public double getRecommendGas(double gas) {
-        return 0;
-    }
-
-
-    @Override
-    public String getDefaultTokenSymbol() {
-        return null;
-    }
-
-    @Override
-    public int getDefaultDecimal() {
-        return 0;
-    }
-
-
-    @Override
-    public void translateAddress(String sourceAddress, WCallback callback) {
-
     }
 
     @Override
@@ -171,20 +138,6 @@ public class TestWalletBlockchain implements BaseWalletUtil {
 
     }
 
-    @Override
-    public String getGasLimit() {
-        return "";
-    }
-
-    @Override
-    public void setGasLimit(String gasLimit) {
-
-    }
-
-    @Override
-    public Double calculateGasFee() {
-        return null;
-    }
 
 
     @Override
@@ -194,6 +147,21 @@ public class TestWalletBlockchain implements BaseWalletUtil {
 
     @Override
     public String getDataByContract(String contract, String key) {
+        return null;
+    }
+
+    @Override
+    public void getTransactionDetail(String hash, WCallback wCallback) {
+
+    }
+
+    @Override
+    public void getTransactionReceipt(String hash, WCallback wCallback) {
+
+    }
+
+    @Override
+    public GsonUtil ConvertJson(GsonUtil json) {
         return null;
     }
 

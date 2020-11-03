@@ -22,8 +22,6 @@ public interface BaseWalletUtil {
 
     void fromIban(String ibanAddress, WCallback callback);
 
-    void signedTransaction(GsonUtil data, WCallback callback);
-
     boolean isValidAddress(String address,WCallback callback);
 
     boolean isValidSecret(String secret,WCallback callback);
@@ -31,16 +29,6 @@ public interface BaseWalletUtil {
     void generateReceiveAddress(String walletAddress, double amount, String token, WCallback callback);
 
     String calculateGasInToken(int decimal,String gasLimit, Double gasPrice);
-
-    void gasSetting(Context context, double gasPrice, boolean defaultToken, WCallback callback);
-
-    double getRecommendGas(double gas);
-
-    String getDefaultTokenSymbol();
-
-    int getDefaultDecimal();
-
-    void translateAddress(String sourceAddress, WCallback callback);
 
     boolean checkWalletAddress(String receiveAddress);
 
@@ -74,13 +62,13 @@ public interface BaseWalletUtil {
 
     void importWords(String words, WCallback wCallback);
 
-    String getGasLimit();
-
-    void setGasLimit(String gasLimit);
-
-    Double calculateGasFee();
-
     void Test(WCallback callback);
 
     String getDataByContract(String contract,String key);
+
+    void getTransactionDetail(String hash,WCallback wCallback );
+
+    void getTransactionReceipt(String hash,WCallback wCallback );
+
+    GsonUtil ConvertJson(GsonUtil json);
 }

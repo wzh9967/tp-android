@@ -76,6 +76,25 @@
             result.data = data
             notifyClient(callid, 0, result);
         }).catch((err) =>{
+            console.log(err)
+            result.err = err;
+            notifyClient(callid, -1, result);
+        })
+    }
+
+    function getTransactionReceipt(params){
+        let paramsjson = JSON.parse(params);
+        let hash = paramsjson.hash;
+        let callid = paramsjson.callid;
+        let url = paramsjson.url;
+        let result = new Object();
+        let fstUtil = new transaction.fst_transaction(url)
+        fstUtil.init();
+        fstUtil.getTransactionReceipt(hash).then((data) =>{
+            result.data = data
+            notifyClient(callid, 0, result);
+        }).catch((err) =>{
+            console.log(err)
             result.err = err;
             notifyClient(callid, -1, result);
         })

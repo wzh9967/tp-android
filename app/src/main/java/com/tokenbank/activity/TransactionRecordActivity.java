@@ -176,7 +176,7 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
             @Override
             public void onItemClick(View view, int position) {
                 GsonUtil item = getItem(position);
-                gotoTransactionDetail(item);
+                gotoTransactionDetail(item.getString("transactionHash",""));
             }
         };
 
@@ -286,8 +286,8 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
             holder.mTvTransactionCount.setText(label + value + item.getString("tokenSymbol", ""));
         }
 
-        private void gotoTransactionDetail(GsonUtil json) {
-            TransactionDetailsActivity.startTransactionDetailActivity(TransactionRecordActivity.this, json);
+        private void gotoTransactionDetail(String hash) {
+            TransactionDetailsActivity.startTransactionDetailActivity(TransactionRecordActivity.this, hash);
         }
 
         class TransactionRecordViewHolder extends BaseRecyclerViewHolder {

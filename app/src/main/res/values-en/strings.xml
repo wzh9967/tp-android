@@ -16,6 +16,7 @@
     <string name="content_version">Version&#160;</string>
     <string name="titleBar_agreement">User Agreement</string>
     <string name="titleBar_privacy">Privacy</string>
+    <string name="content_trading_waiting">waiting</string>
     <string name="toast_latest_version">Already the latest version</string>
     <string name="titleBar_backup_wallet">Backup Wallet</string>
     <string name="title_backup_private_key">Backup your private key now</string>
