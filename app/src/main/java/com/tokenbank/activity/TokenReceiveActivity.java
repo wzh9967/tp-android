@@ -21,6 +21,7 @@ import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.base.WCallback;
+import com.tokenbank.config.Constant;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.QRUtils;
 import com.tokenbank.utils.ToastUtil;
@@ -34,6 +35,7 @@ public class TokenReceiveActivity extends BaseActivity {
     private TitleBar mTitleBar;
 
     private final static String TOKEN = "Token";
+    private final static String CONTRACT = "Contract";
     private String mToken;
 
     private ImageView mImgQr;
@@ -43,6 +45,7 @@ public class TokenReceiveActivity extends BaseActivity {
     private TextView mTvTokenName;
     private TextView mTvCopyAddress;
     private BaseWalletUtil mWalletUtil;
+    private String mContract;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,6 +54,7 @@ public class TokenReceiveActivity extends BaseActivity {
         SysApplication.addActivity(this);
         if (getIntent() != null) {
             mToken = getIntent().getStringExtra(TOKEN);
+            mContract = getIntent().getStringExtra(CONTRACT);
         }
         if (TextUtils.isEmpty(mToken)) {
             finish();
@@ -130,7 +134,7 @@ public class TokenReceiveActivity extends BaseActivity {
             mImgQrShadow.setVisibility(View.VISIBLE);
             return;
         }
-        mWalletUtil.generateReceiveAddress(walletAddress, amount, token, new WCallback() {
+        mWalletUtil.generateReceiveAddress(walletAddress,mContract, amount, token, new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
                 if (ret == 0) {
@@ -165,9 +169,10 @@ public class TokenReceiveActivity extends BaseActivity {
      *
      * @param context
      */
-    public static void startTokenReceiveActivity(Context context, String token) {
+    public static void startTokenReceiveActivity(Context context, String contract ,String token) {
         Intent intent = new Intent(context, TokenReceiveActivity.class);
         intent.putExtra(TOKEN, token);
+        intent.putExtra(CONTRACT, contract);
         context.startActivity(intent);
     }
 }

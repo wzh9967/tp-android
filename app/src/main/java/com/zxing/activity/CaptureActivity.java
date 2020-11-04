@@ -14,6 +14,7 @@ import android.os.Message;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
@@ -140,9 +141,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
                             }
                         }
                     }).start();
-
                     break;
-
             }
         }
     }
@@ -196,6 +195,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     }
 
     private void onResultHandler(String resultString) {
+
         if (TextUtils.isEmpty(resultString)) {
             Toast.makeText(CaptureActivity.this, "Scan failed!", Toast.LENGTH_SHORT).show();
             return;

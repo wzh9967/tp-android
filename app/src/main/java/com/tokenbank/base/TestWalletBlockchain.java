@@ -51,9 +51,10 @@ public class TestWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
-    public void generateReceiveAddress(String walletAddress, double amount, String token, WCallback callback) {
+    public void generateReceiveAddress(String walletAddress, String contract, double amount, String token, WCallback callback) {
 
     }
+
 
     @Override
     public String calculateGasInToken(int decimal, String gasLimit, Double gasPrice) {
@@ -147,6 +148,11 @@ public class TestWalletBlockchain implements BaseWalletUtil {
 
     @Override
     public String getDataByContract(String contract, String key) {
+        return null;
+    }
+
+    @Override
+    public String toDate(String timestamp) {
         return null;
     }
 

@@ -26,7 +26,7 @@ public interface BaseWalletUtil {
 
     boolean isValidSecret(String secret,WCallback callback);
 
-    void generateReceiveAddress(String walletAddress, double amount, String token, WCallback callback);
+    void generateReceiveAddress(String walletAddress,String contract, double amount, String token, WCallback callback);
 
     String calculateGasInToken(int decimal,String gasLimit, Double gasPrice);
 
@@ -65,6 +65,8 @@ public interface BaseWalletUtil {
     void Test(WCallback callback);
 
     String getDataByContract(String contract,String key);
+
+    String toDate(String timestamp);
 
     void getTransactionDetail(String hash,WCallback wCallback );
 

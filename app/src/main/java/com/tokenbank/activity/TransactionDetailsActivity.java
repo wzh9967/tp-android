@@ -28,6 +28,9 @@ import com.tokenbank.utils.Util;
 import com.tokenbank.view.TitleBar;
 
 import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.LongToDoubleFunction;
@@ -53,8 +56,9 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private int mDecimal;
     private Double mGasPrice;
     private String mGasUsed;
+    private String mTimestamp;
     private String mValue;
-    private boolean isTransaction = false;
+    private boolean isTransaction = true;
     private GsonUtil transactionData;
     private BaseWalletUtil mWalletUtil;
 
@@ -70,6 +74,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         }
         if (getIntent() != null) {
             String Hash = getIntent().getStringExtra("hash");
+            isTransaction = getIntent().getBooleanExtra("isTransaction",true);
             mHash = Hash;
             if (TextUtils.isEmpty(mHash)) {
                 ToastUtil.toast(TransactionDetailsActivity.this, getString(R.string.toast_illegal_parameters));
@@ -151,7 +156,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private void updateData(GsonUtil transactionInfo) {
         String contract = transactionData.getString("contract","");
         if(contract != ""){
-            mDecimal = Integer.parseInt(mWalletUtil.getDataByContract(contract.toLowerCase(),"decimal"));
+            mDecimal = Integer.parseInt(mWalletUtil.getDataByContract(contract,"decimal"));
             bl_symbol = mWalletUtil.getDataByContract(contract,"bl_symbol");
         }
         String toAddress = transactionInfo.getString("to", "");
@@ -160,7 +165,6 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         mTvInfo.setText(transactionInfo.getString("input", ""));
         mTvTransactionId.setText(transactionInfo.getString("transactionHash", ""));
         mTvBlockId.setText(transactionInfo.getString("blockNumber", ""));
-        mTvTransactionTime.setText(transactionInfo.getString("timestamp", ""));
         if(isTransaction){
             mTvTransactionStatus.setText(getString(R.string.content_trading_pending));
             new Handler().postDelayed(new Runnable() {
@@ -173,6 +177,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                             if (payment !=null){
                                 boolean status = payment.getBoolean("status",false);
                                 if (status) {
+                                    mTimestamp = payment.getString("timestamp","");
                                     mGasUsed = payment.getString("gasUsed","");
                                     setTransactionSuccess();
                                 } else {
@@ -193,6 +198,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                     if (payment !=null){
                         boolean status = payment.getBoolean("status",false);
                         if (status) {
+                            mTimestamp = payment.getString("timestamp","");
                             mGasUsed = payment.getString("gasUsed","");
                             setTransactionSuccess();
                         } else {
@@ -208,9 +214,10 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         createQRCode(mWalletUtil.getTransactionSearchUrl(mTvTransactionId.getText().toString()));
     }
 
-    public static void startTransactionDetailActivity(Context context, String hash) {
+    public static void startTransactionDetailActivity(Context context, String hash,boolean isTransaction) {
         Intent intent = new Intent(context, TransactionDetailsActivity.class);
         intent.putExtra("hash", hash);
+        intent.putExtra("isTransaction",isTransaction);
         intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
@@ -227,6 +234,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private void setTransactionSuccess(){
         mTvTransactionStatus.setText(getString(R.string.content_trading_success));
         mTvGas.setText(mWalletUtil.calculateGasInToken(mDecimal,mGasUsed,mGasPrice));
+        mTvTransactionTime.setText(mWalletUtil.toDate(mTimestamp));
         mTvCount.setText(mValue);
     }
     private void setTransactionFailed(){

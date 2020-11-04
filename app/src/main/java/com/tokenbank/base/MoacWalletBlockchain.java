@@ -11,8 +11,14 @@ import com.tokenbank.net.load.RequestPresenter;
 import com.tokenbank.utils.FileUtil;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.Util;
+import com.tokenbank.view.TagAdapter;
+
 import java.math.BigDecimal;
-import java.math.BigInteger;;
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;;
 
 public class MoacWalletBlockchain implements BaseWalletUtil {
     private final static String TAG = "MoacWalletBlockchain";
@@ -63,7 +69,9 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
     }
 
     @Override
-    public void generateReceiveAddress(String walletAddress, double amount, String token, WCallback callback) {
+    public void generateReceiveAddress(String walletAddress,String contract,double amount, String token, WCallback callback) {
+        final GsonUtil address = new GsonUtil("{}");
+        final double tmpAmount = amount < 0 ? 0.0f : amount;
         if (!checkInit(callback)) {
             return;
         }
@@ -71,9 +79,10 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
             callback.onGetWResult(-1, new GsonUtil("{}"));
             return;
         }
-        final double tmpAmount = amount < 0 ? 0.0f : amount;
-        final GsonUtil address = new GsonUtil("{}");
-        String receiveStr = String.format("jingtum:%s?amount=%f&token=%s", walletAddress, tmpAmount, token);
+        if(contract.equals("")){
+            contract = "000000000000000000000000000000000000000000";
+        }
+        String receiveStr = String.format("fst:%s?contract=%s#amount=%f&token=%s", walletAddress,contract, tmpAmount, token);
         address.putString("receiveAddress", receiveStr);
         callback.onGetWResult(0, address);
     }
@@ -97,6 +106,7 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
         if (!checkInit(callback)) {
             return;
         }
+        Log.d(TAG, "queryErc20TransactionList: contract" +contract);
 
         new RequestPresenter().loadJtData(new ERC20TransactionRequest(PageSize,contract,address), new RequestPresenter.RequestCallback() {
             @Override
@@ -108,22 +118,26 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
                     int len = payments.getLength();
                     for (int i = 0; i < len; i++) {
                         GsonUtil payment = payments.getObject(i, "{}");
-                        GsonUtil item = new GsonUtil("{}");
-                        item.putString("blockHash", payment.getString("blockHash", ""));
-                        item.putString("blockNumber", payment.getString("blockNumber", ""));
-                        item.putString("contract",payment.getString("to",""));
-                        item.putString("gasUsed", payment.getString("gasUsed", ""));
-                        item.putDouble("gasPrice",payment.getDouble("gasPrice",0.0f));
-                        item.putDouble("status",payment.getDouble("status",0.0f));
-                        item.putString("from", payment.getString("from", ""));
-                        item.putString("timestamp", payment.getString("timestamp", ""));
-                        item.putString("transactionHash", payment.getString("transactionHash", ""));
-                        String input = payment.getString("input","");
-                        String value = new BigInteger(input.substring(74), 16).toString();
-                        item.putString("value",toValue(Decimal, value));
-                        item.putString("to", "0x"+input.substring(34,74));
-                        item.putInt("txreceipt_status",payment.getInt("txreceipt_status",1));
-                        dataList.add(item);
+                        String to = payment.getString("to","");
+                        if(to.equals(contract)){
+                            GsonUtil item = new GsonUtil("{}");
+                            item.putString("blockHash", payment.getString("blockHash", ""));
+                            item.putString("blockNumber", payment.getString("blockNumber", ""));
+                            item.putString("contract",to);
+                            item.putString("gasUsed", payment.getString("gasUsed", ""));
+                            item.putDouble("gasPrice",payment.getDouble("gasPrice",0.0f));
+                            item.putDouble("status",payment.getDouble("status",0.0f));
+                            item.putString("from", payment.getString("from", ""));
+                            item.putString("timestamp", DateFrom(payment.getString("timestamp", "")));
+                            String hash = payment.getString("transactionHash", "");
+                            item.putString("transactionHash", hash);
+                            String input = payment.getString("input","");
+                            String value = new BigInteger(input.substring(74), 16).toString();
+                            item.putString("value",toValue(Decimal, value));
+                            item.putString("to", "0x"+input.substring(34,74));
+                            item.putInt("txreceipt_status",payment.getInt("txreceipt_status",1));
+                            dataList.add(item);
+                        }
                     }
                     translatedData.put("data", dataList);
                     callback.onGetWResult(0, translatedData);
@@ -180,7 +194,7 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
             item.putString("blockHash", payment.getString("blockHash", ""));
             item.putString("blockNumber", payment.getString("blockNumber", ""));
             item.putString("from", payment.getString("from", ""));
-            item.putString("timestamp", payment.getString("timestamp", ""));
+            item.putString("timestamp", DateFrom(payment.getString("timestamp", "")));
             item.putString("transactionHash", payment.getString("transactionHash", ""));
             item.putString("input", payment.getString("input", ""));
             item.putInt("txreceipt_status", payment.getInt("txreceipt_status", 1));
@@ -214,11 +228,19 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
         int len = payments.getLength();
         for (int i = 0; i < len; i++) {
             GsonUtil payment = payments.getObject(i, "{}");
-            if (payment.getString("contract", "").equals(contract)) {
+            String Contract = payment.getString("contract", "");
+            if (Contract.equals(contract) || Contract.equals(contract.toLowerCase())) {
                 return payment.getString(key, "");
             }
         }
         return "";
+    }
+
+    @Override
+    public String toDate(String timestamp) {
+        SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Long time=new Long(timestamp);
+        return format.format(time*1000);
     }
 
     @Override
@@ -345,5 +367,17 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
         String hash = "0x5cef50ad6ebcf0194a9f36d94a5358deb5f4d82165e74a62d41ed282712b0b1c";
         data.putString("hash", hash);
         JSUtil.getInstance().callJS("getTransactionDetail", data, callback);
+    }
+
+    private String DateFrom(String strDate){
+        String date = strDate.replace("Z", " UTC");//注意是空格+UTC
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z");
+        try {
+            Date d = format.parse(date);
+            date=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(d);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 }

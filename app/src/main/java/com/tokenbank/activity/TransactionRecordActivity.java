@@ -287,7 +287,7 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
         }
 
         private void gotoTransactionDetail(String hash) {
-            TransactionDetailsActivity.startTransactionDetailActivity(TransactionRecordActivity.this, hash);
+            TransactionDetailsActivity.startTransactionDetailActivity(TransactionRecordActivity.this, hash,false);
         }
 
         class TransactionRecordViewHolder extends BaseRecyclerViewHolder {

@@ -72,9 +72,9 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
     public void onClick(View v) {
         if (v == mLayoutTranster) {
             TokenTransferActivity.startTokenTransferActivity(TokenDetailsActivity.this, "",
-                    mContractAddress, mValue, mItem.getString("name", ""),mItem.getString("bl_symbol", ""), mItem.getInt("decimal", Constant.DefaultDecimal), 0);
+                    mContractAddress, mValue, mItem.getString("name", ""),mItem.getString("bl_symbol", ""), mItem.getInt("decimal", Constant.DefaultDecimal), 0,"");
         } else if (v == mLayoutReceive) {
-            TokenReceiveActivity.startTokenReceiveActivity(TokenDetailsActivity.this, mItem.getString("bl_symbol", ""));
+            TokenReceiveActivity.startTokenReceiveActivity(TokenDetailsActivity.this, mItem.getString("contract",""),mItem.getString("bl_symbol", ""));
         }
     }
 
@@ -95,9 +95,6 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             return;
         }
         mContractAddress = mItem.getString("contract", "");
-        if(mContractAddress.equals("")){
-
-        }
     }
 
     @Override
@@ -292,7 +289,7 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             String currentAddress = WalletInfoManager.getInstance().getWAddress().toLowerCase();
             String value = item.getString("value", "");;
             boolean in = false;
-            holder.mTvTransactionTime.setText(Util.formatTime(item.getLong("timeStamp", 0l)));
+            holder.mTvTransactionTime.setText(item.getString("timestamp", ""));
             String label = "";
             if (TextUtils.equals(currentAddress, fromAddress)) {
                 label = "-";
@@ -315,7 +312,7 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
         }
 
         private void gotoTransactionDetail(String hash) {
-            TransactionDetailsActivity.startTransactionDetailActivity(TokenDetailsActivity.this, hash);
+            TransactionDetailsActivity.startTransactionDetailActivity(TokenDetailsActivity.this, hash,false);
         }
         class ViewHolder extends BaseRecyclerViewHolder {
             ImageView mImgIcon;

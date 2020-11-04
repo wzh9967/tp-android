@@ -1,7 +1,9 @@
 
 package com.tokenbank.fragment;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +46,7 @@ import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.NetUtil;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.TokenImageLoader;
+import com.tokenbank.utils.Util;
 import com.tokenbank.utils.ViewUtil;
 import com.zxing.activity.CaptureActivity;
 
@@ -122,6 +126,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 }
             }
         });
+
         mAdapter = new MainTokenRecycleViewAdapter();
         mAdapter.setDataLoadingListener(this);
         mRecycleView.addItemDecoration(
@@ -168,11 +173,11 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             case R.id.wallet_action_transfer:
             case R.id.wallet_action_transfer1:
                 TokenTransferActivity.startTokenTransferActivity(getContext(), "", "", amount,
-                        "",Constant.TokenSymbol, Constant.DefaultDecimal, 0);
+                        "",Constant.TokenSymbol, Constant.DefaultDecimal, 0,"");
                 break;
             case R.id.wallet_action_receive:
             case R.id.wallet_action_receive1:
-                TokenReceiveActivity.startTokenReceiveActivity(getActivity(), Constant.TokenSymbol);
+                TokenReceiveActivity.startTokenReceiveActivity(getActivity(),"", Constant.TokenSymbol);
                 break;
         }
     }
@@ -210,7 +215,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 @Override
                 public void onScanClick() {
                     startActivityForResult(new Intent(getActivity(), CaptureActivity.class), SCAN_REQUEST_CODE);
-
                 }
             });
         }
@@ -243,6 +247,56 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 }
             }
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == SCAN_REQUEST_CODE) {
+                //扫描到地址
+                String scanResult = data.getStringExtra("result");
+                //fst:0x7621e62a8d268fb61b4dd6b686dc7c7353b0c8f6?contract=000000000000000000000000000000000000000000?amount=1234.000000&token=mfc
+                //fst:0x7621e62a8d268fb61b4dd6b686dc7c7353b0c8f6?contract=0xba753eb6cc555c867e4e7a554f3e13018a9c075b?amount=0.000000&token=wzh_te
+                Log.d("MainWalletFragment", "onActivityResult: "+scanResult);
+                if (TextUtils.isEmpty(scanResult)) {
+                    ToastUtil.toast(getContext(), getString(R.string.toast_scan_failure));
+                } else {
+                    if (scanResult.startsWith("fst")) {
+                        handleSwtScanResult(scanResult);
+                    } else {
+                        ToastUtil.toast(getContext(), getString(R.string.toast_scan_failure));
+                    }
+                }
+            }
+        }
+    }
+
+    private void handleSwtScanResult(final String scanResult) {
+        int beginIndex = scanResult.indexOf("amount=") + 7;
+        String num = scanResult.substring(beginIndex, scanResult.indexOf("&token"));
+        final String token = scanResult.substring(scanResult.indexOf("&token=") + 7);
+        String receiveAddress = scanResult.substring(scanResult.indexOf("fst:") + 4, scanResult.indexOf("?"));
+        String contract = scanResult.substring(scanResult.indexOf("contract=") + 9, scanResult.indexOf("#"));
+        String finalContract = contract;
+        if(contract.startsWith("0000000")){
+            mWalletUtil.getBalance(WalletInfoManager.getInstance().getWAddress(), new WCallback() {
+                @Override
+                public void onGetWResult(int ret, GsonUtil extra) {
+                    String value = mWalletUtil.toValue(Constant.DefaultDecimal,extra.getString("balance",""));
+                    TokenTransferActivity.startTokenTransferActivity(getContext(),receiveAddress, "",
+                            value,"",token, Constant.DefaultDecimal,0.0,num);
+                }
+            });
+        }
+        int decimal = Integer.parseInt(mWalletUtil.getDataByContract(contract,"decimal"));
+        mWalletUtil.getErc20Balance(contract,WalletInfoManager.getInstance().getWAddress(), new WCallback() {
+            @Override
+            public void onGetWResult(int ret, GsonUtil extra) {
+                String value = mWalletUtil.toValue(decimal,extra.getString("balance",""));
+                TokenTransferActivity.startTokenTransferActivity(getContext(),receiveAddress, finalContract,
+                        value,"",token, Constant.DefaultDecimal,0.0,num);
+            }
+        });
     }
 
     private void update() {

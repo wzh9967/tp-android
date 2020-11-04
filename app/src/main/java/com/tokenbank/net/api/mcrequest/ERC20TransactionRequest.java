@@ -22,7 +22,7 @@ public class ERC20TransactionRequest extends BaseGetApiRequest {
 
     @Override
     public String initUrl() {
-        return Constant.MOC_EXCHANGE_SERVER+mAddress+"/"+contract+"/tx?page="+mPageSize;
+        return Constant.MOC_EXCHANGE_SERVER+this.mAddress+"/"+this.contract+"/tx?page="+this.mPageSize;
     }
 
     @Override
