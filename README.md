@@ -32,17 +32,17 @@ This is a tp-android based Android ink fst Wallet tool. We can use it to manage 
 
   其他为Erc20币的配置，按相同格式替换为联盟链Ecr20币种即可。
 
-  ![image-20201106162622108](/home/wzh/.config/Typora/typora-user-images/image-20201106162622108.png)
+  ![image-20201106162622108](https://github.com/wzh9967/tp-android/blob/dev1/README_PICTURE/image-20201106162622108.png)
 
 -  修改节点的配置文件【assert/publicNode.json】
 
   publicNode.json配置文件将初始化为节点设置页面的节点列表。
 
-![image-20201106162844467](/home/wzh/.config/Typora/typora-user-images/image-20201106162844467.png)
+![image-20201106162844467](https://github.com/wzh9967/tp-android/blob/dev1/README_PICTURE/image-20201106162844467.png)
 
 - 修改Contant中的初始化配置。
 
-![image-20201106170929861](/home/wzh/.config/Typora/typora-user-images/image-20201106170929861.png)
+![image-20201106170929861](https://github.com/wzh9967/tp-android/blob/dev1/README_PICTURE/image-20201106170929861.png)
 
 
 
