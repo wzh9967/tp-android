@@ -21,7 +21,7 @@ import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.TokenImageLoader;
 import com.tokenbank.view.TitleBar;
 
-
+//this activity is no longer in use
 public class ChooseWalletBlockActivity extends BaseActivity {
     private static final int REQUEST_CODE = 1007;
     public final static String TAG = "ChooseWalletBlockActivity";

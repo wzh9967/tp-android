@@ -133,7 +133,7 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
                             item.putString("transactionHash", hash);
                             String input = payment.getString("input","");
                             String value = new BigInteger(input.substring(74), 16).toString();
-                            item.putString("value",toValue(Decimal, value));
+                            item.putString("value",Util.toValue(Decimal, value));
                             item.putString("to", "0x"+input.substring(34,74));
                             item.putInt("txreceipt_status",payment.getInt("txreceipt_status",1));
                             dataList.add(item);
@@ -205,7 +205,7 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
                 String value = new BigInteger(input.substring(74), 16).toString();
                 String contract = payment.getString("to","");
                 int Decimal = Integer.parseInt(getDataByContract(contract,"decimal"));
-                item.putString("value",toValue(Decimal,value));
+                item.putString("value",Util.toValue(Decimal,value));
                 item.putString("to", "0x"+input.substring(34,74));
                 item.putString("isErc20","true");
                 item.putString("contract",contract);
@@ -236,12 +236,6 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
         return "";
     }
 
-    @Override
-    public String toDate(String timestamp) {
-        SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Long time=new Long(timestamp);
-        return format.format(time*1000);
-    }
 
     @Override
     public void getTransactionDetail(String hash, WCallback callback) {
@@ -257,45 +251,10 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
         JSUtil.getInstance().callJS("getTransactionReceipt", data, callback);
     }
 
-    @Override
-    public String toValue(int decimal, String originValue) {
-        if (decimal <= 0) {
-            decimal = Constant.DefaultDecimal;
-        }
-        try{
-            BigDecimal origindate = new BigDecimal(originValue);
-            origindate = Util.translateValue(decimal, origindate);
-            return origindate.setScale(3, BigDecimal.ROUND_DOWN).toString();
-        } catch (Exception err){
-            Log.e("toValue  :","err : "+err);
-            return "";
-        }
-    }
 
-    @Override
-    public String fromValue(int decimal, String Value) {
-        BigDecimal ValueTempe = new BigDecimal(Value);
-        if (decimal <= 0) {
-            decimal = Constant.DefaultDecimal;
-        }
-        ValueTempe = Util.tokenToWei(decimal, ValueTempe);
-        return ValueTempe.setScale(0,BigDecimal.ROUND_DOWN).toString();
-    }
-
-    @Override
-    public String calculateGasInToken(int decimal,String gasLimit, Double gasPrice) {
-        if(decimal < 0 || decimal>30 ){
-            Log.e(TAG, "calculateGasInToken: gasLimit setting err ");
-            return "";
-        }
-        Double gas = Double.valueOf(gasLimit);
-        BigDecimal gasFee = new BigDecimal(gas*gasPrice);
-        gasFee = Util.translateValue(decimal, gasFee);
-        return  gasFee.setScale(7, BigDecimal.ROUND_DOWN).toString();
-    }
     @Override
     public String getTransactionSearchUrl(String hash) {
-        return Constant.swt_transaction_search_url + hash;
+        return Constant.MOC_Hash_SERVER + hash;
     }
 
     @Override
@@ -316,7 +275,6 @@ public class MoacWalletBlockchain implements BaseWalletUtil {
         GsonUtil json = new GsonUtil("{}");
         json.putString("address", address);
         json.putString("contract", contract);
-        json.putInt("gasPrice", 1000000);
         JSUtil.getInstance().callJS("getErc20Balance", json, callback);
     }
 

@@ -1,9 +1,6 @@
 package com.tokenbank.base;
-import android.util.Log;
 import com.tokenbank.config.Constant;
 import com.tokenbank.utils.GsonUtil;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * 用来检测节点的连接性
@@ -31,7 +28,6 @@ public class MoacServer {
         return this.index;
     }
     public void setNode(GsonUtil node){
-        Log.d(TAG, "setNode: "+node.toString());
         this.node = node.getString("node", "");
         this.index = node.getInt("position", 0);
     }

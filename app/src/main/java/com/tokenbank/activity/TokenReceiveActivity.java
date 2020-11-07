@@ -21,14 +21,15 @@ import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.base.WCallback;
-import com.tokenbank.config.Constant;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.QRUtils;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.Util;
 import com.tokenbank.view.TitleBar;
 
-//修改底层
+/**
+ * 交易二维码生成
+ */
 public class TokenReceiveActivity extends BaseActivity {
 
     public final static String TAG = "TokenTransferActivity";

@@ -57,11 +57,6 @@ public class TestWalletBlockchain implements BaseWalletUtil {
 
 
     @Override
-    public String calculateGasInToken(int decimal, String gasLimit, Double gasPrice) {
-        return null;
-    }
-
-    @Override
     public boolean checkWalletAddress(String receiveAddress) {
         return false;
     }
@@ -78,15 +73,6 @@ public class TestWalletBlockchain implements BaseWalletUtil {
 
     }
 
-    @Override
-    public String toValue(int decimal, String originValue) {
-        return null;
-    }
-
-    @Override
-    public String fromValue(int decimal, String Value) {
-        return null;
-    }
 
     @Override
     public String getTransactionSearchUrl(String hash) {
@@ -151,10 +137,6 @@ public class TestWalletBlockchain implements BaseWalletUtil {
         return null;
     }
 
-    @Override
-    public String toDate(String timestamp) {
-        return null;
-    }
 
     @Override
     public void getTransactionDetail(String hash, WCallback wCallback) {

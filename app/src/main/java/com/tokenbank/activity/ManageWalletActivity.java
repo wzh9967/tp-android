@@ -19,7 +19,6 @@ import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
 
 
-//移除区块链选择
 public class ManageWalletActivity extends BaseActivity implements View.OnClickListener, TitleBar.TitleBarClickListener {
 
     private TitleBar mTitleBar;

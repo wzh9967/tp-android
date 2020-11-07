@@ -50,6 +50,9 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.tokenbank.config.AppConfig.getContext;
 
+/**
+ * 节点设置
+ */
 public class NodeSettingActivity extends BaseActivity implements View.OnClickListener, TitleBar.TitleBarClickListener{
 
     private static final String TAG = "NodeSettingActivity" ;
@@ -379,7 +382,6 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
             return;
         }
         ping = ping.replace("ms", "");
-        Log.d(TAG, "saveNode: "+ MoacServer.getInstance().getNode());
         if (!TextUtils.isEmpty(ping) && !TextUtils.equals(ping, "---")) {
             GsonUtil item = publicNodes.getObject(mSelectedItem);
             item.putInt("position",mSelectedItem);
@@ -391,7 +393,6 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
      * 删除节点
      */
     private void DeleteNode(int index) {
-        Log.d(TAG, "DeleteNode: ConfirmNodeListLength" +ConfirmNodeListLength);
         if (index < ConfirmNodeListLength) {
             ToastUtil.toast(NodeSettingActivity.this, "默认节点不可删除！");
             return;

@@ -15,7 +15,6 @@ import com.tokenbank.utils.DeviceUtil;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.view.TitleBar;
 
-//delete?
 public class AboutActivity extends BaseActivity implements View.OnClickListener, TitleBar.TitleBarClickListener {
 
     private TitleBar mTitleBar;

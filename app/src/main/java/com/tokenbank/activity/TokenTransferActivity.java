@@ -27,6 +27,9 @@ import com.tokenbank.utils.Util;
 import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
 
+/**
+ * 交易表单页面
+ */
 public class TokenTransferActivity extends BaseActivity implements View.OnClickListener {
 
     public final static String TAG = "TokenTransferActivity";
@@ -187,14 +190,14 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     }
 
     private void setGasSeekBar(){
-        mTvGas.setText(mWalletUtil.calculateGasInToken(mDecimal,mGasLimit, mGasPrice)+" "+Constant.TokenSymbol);
+        mTvGas.setText(Util.calculateGasInToken(mDecimal,mGasLimit, mGasPrice)+" "+Constant.TokenSymbol);
         seekBar = findViewById(R.id.seekBar2);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 SettingGasPrice = mGasPrice * (100 + progress) / 100.0;
-                mTvGas.setText(mWalletUtil.calculateGasInToken(mDecimal, mGasLimit, SettingGasPrice) + " " + Constant.TokenSymbol);
+                mTvGas.setText(Util.calculateGasInToken(mDecimal, mGasLimit, SettingGasPrice) + " " + Constant.TokenSymbol);
             }
 
             @Override
@@ -219,7 +222,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         data.putString("address",address);
         data.putString("to",to);
         data.putString("secret",secret);
-        data.putString("value",mWalletUtil.fromValue(mDecimal,value));
+        data.putString("value",Util.fromValue(mDecimal,value));
         data.putString("gasLimit",mGasLimit);
         data.putDouble("gasPrice",SettingGasPrice);
         data.putString("data",note);
@@ -256,7 +259,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         data.putString("address",address);
         data.putString("to",to);
         data.putString("secret",secret);
-        data.putString("value",mWalletUtil.fromValue(mDecimal,value));
+        data.putString("value",Util.fromValue(mDecimal,value));
         data.putString("gasLimit",mGasLimit);
         data.putString("data",note);
         data.putDouble("gasPrice",SettingGasPrice);

@@ -57,27 +57,31 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         SwipeRefreshLayout.OnRefreshListener,
         BaseRecycleAdapter.OnDataLodingFinish {
 
-    private final static int SCAN_REQUEST_CODE = 10001;
-    private Context context;
-    private MoacWallet mMoacWallet;
-    private SwipeRefreshLayout mSwipteRefreshLayout;
-    private AppBarLayout mAppbarLayout;
-    private Toolbar mToolbar;
-    private RecyclerView mRecycleView;
-    private MainTokenRecycleViewAdapter mAdapter;
-    private View mEmptyView;
-    private View mWalletAction, mMenuAction;
-    private TextView mTvWalletName, mTvWalletUnit;
 
+    private Context context;
+    private Toolbar mToolbar;
+    private View mEmptyView;
+    private MoacWallet mMoacWallet;
+    private RecyclerView mRecycleView;
+    private AppBarLayout mAppbarLayout;
+    private View mWalletAction, mMenuAction;
+    private MainTokenRecycleViewAdapter mAdapter;
+    private TextView mTvWalletName, mTvWalletUnit;
+    private SwipeRefreshLayout mSwipteRefreshLayout;
+    private final static int SCAN_REQUEST_CODE = 10001;
+
+    private String amount;
+    private String unit = "¥";
+    private double mTotalAsset = 0.0f;
+    private BaseWalletUtil mWalletUtil;
     private WalletMenuPop walletMenuPop;
     private WalletActionPop walletActionPop;
     private boolean isAssetVisible = false;
-    private BaseWalletUtil mWalletUtil;
-    private GsonUtil currency = new GsonUtil("{}");
-    private String unit = "¥";
     private boolean isViewCreated = false;
-    private double mTotalAsset = 0.0f;
-    private String amount;
+    private GsonUtil currency = new GsonUtil("{}");
+
+
+
 
     public static MainWalletFragment newInstance() {
         MainWalletFragment fragment = new MainWalletFragment();
@@ -257,7 +261,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 String scanResult = data.getStringExtra("result");
                 //fst:0x7621e62a8d268fb61b4dd6b686dc7c7353b0c8f6?contract=000000000000000000000000000000000000000000?amount=1234.000000&token=mfc
                 //fst:0x7621e62a8d268fb61b4dd6b686dc7c7353b0c8f6?contract=0xba753eb6cc555c867e4e7a554f3e13018a9c075b?amount=0.000000&token=wzh_te
-                Log.d("MainWalletFragment", "onActivityResult: "+scanResult);
                 if (TextUtils.isEmpty(scanResult)) {
                     ToastUtil.toast(getContext(), getString(R.string.toast_scan_failure));
                 } else {
@@ -282,7 +285,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             mWalletUtil.getBalance(WalletInfoManager.getInstance().getWAddress(), new WCallback() {
                 @Override
                 public void onGetWResult(int ret, GsonUtil extra) {
-                    String value = mWalletUtil.toValue(Constant.DefaultDecimal,extra.getString("balance",""));
+                    String value = Util.toValue(Constant.DefaultDecimal,extra.getString("balance",""));
                     TokenTransferActivity.startTokenTransferActivity(getContext(),receiveAddress, "",
                             value,"",token, Constant.DefaultDecimal,0.0,num);
                 }
@@ -292,7 +295,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mWalletUtil.getErc20Balance(contract,WalletInfoManager.getInstance().getWAddress(), new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
-                String value = mWalletUtil.toValue(decimal,extra.getString("balance",""));
+                String value = Util.toValue(decimal,extra.getString("balance",""));
                 TokenTransferActivity.startTokenTransferActivity(getContext(),receiveAddress, finalContract,
                         value,"",token, Constant.DefaultDecimal,0.0,num);
             }
@@ -323,7 +326,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             }
         } catch (Throwable e) {
         }
-
         return false;
     }
 
@@ -377,7 +379,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     }
 
     class MainTokenRecycleViewAdapter extends BaseRecycleAdapter<String, RecyclerView.ViewHolder> {
-
         private static final String TAG = "MainTokenAdapter";
         private boolean mHasMore = true;
         private int mPageIndex = 0;
@@ -454,7 +455,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                             R.drawable.ic_images_asset_eth));
             holder.mTvTokenName.setText(data.getString("bl_symbol", "MOC"));
             if (isAssetVisible) {
-                String value = mWalletUtil.toValue(data.getInt("decimal", Constant.DefaultDecimal), data.getString("balance",""));
+                String value = Util.toValue(data.getInt("decimal", Constant.DefaultDecimal), data.getString("balance",""));
                 holder.mTvTokenCount.setText("" +value);
             } else {
                 holder.mTvTokenCount.setText("***");
@@ -469,7 +470,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                     @Override
                     public void onGetWResult(int ret, GsonUtil extra) {
                         if(ret == 0){
-                            amount = mWalletUtil.toValue(data.getInt("decimal", Constant.DefaultDecimal), extra.getString("balance",""));
+                            amount = Util.toValue(data.getInt("decimal", Constant.DefaultDecimal), extra.getString("balance",""));
                             data.putString("balance",extra.getString("balance",""));
                         }
                         fillTokenData((TokenViewHolder) holder, data);
@@ -487,6 +488,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 });
             }
         }
+
         private void gotoTokenDetail(GsonUtil data) {
             TokenDetailsActivity.NavToActivity(getActivity(), data.toString(), unit);
         }

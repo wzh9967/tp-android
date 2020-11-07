@@ -1,6 +1,5 @@
 package com.tokenbank.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,22 +18,16 @@ import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.WCallback;
 import com.tokenbank.base.TBController;
 import com.tokenbank.config.Constant;
-import com.tokenbank.utils.FileUtil;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.QRUtils;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.Util;
 import com.tokenbank.view.TitleBar;
-
 import java.math.BigInteger;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.function.LongToDoubleFunction;
 
-
+/**
+ *  交易详情，其数据通过Hash从链上直接获取。
+ */
 public class TransactionDetailsActivity extends BaseActivity implements View.OnClickListener {
 
     private TitleBar mTitleBar;
@@ -60,6 +52,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private String mValue;
     private boolean isTransaction = true;
     private GsonUtil transactionData;
+    private int DelayMills = 1;
     private BaseWalletUtil mWalletUtil;
 
     @Override
@@ -67,6 +60,10 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_details);
         SysApplication.addActivity(this);
+        initData();
+    }
+
+    private void initData() {
         mWalletUtil = TBController.getInstance().getWalletUtil();
         if (mWalletUtil == null) {
             this.finish();
@@ -76,44 +73,45 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             String Hash = getIntent().getStringExtra("hash");
             isTransaction = getIntent().getBooleanExtra("isTransaction",true);
             mHash = Hash;
-            if (TextUtils.isEmpty(mHash)) {
-                ToastUtil.toast(TransactionDetailsActivity.this, getString(R.string.toast_illegal_parameters));
-                this.finish();
-                return;
-            }
-            mWalletUtil.getTransactionDetail(Hash, new WCallback() {
-                @Override
-                public void onGetWResult(int ret, GsonUtil extra) {
-                    if(ret == 0){
-                        GsonUtil payment = extra.getObject("data");
-                        GsonUtil data = new GsonUtil("{}");
-                        data.putString("input",payment.getString("input",""));
-                        data.putString("from",payment.getString("from",""));
-                        data.putString("transactionHash",payment.getString("hash",""));
-                        data.putString("blockNumber", payment.getString("blockNumber",""));
-                        String input = payment.getString("input","");
-                        data.putString("input",input);
-                        mGasPrice = Double.valueOf(payment.getString("gasPrice",""));
-                        if(input.length() == 138 && input.startsWith("0xa9059cbb")){
-                            String value = new BigInteger(input.substring(74), 16).toString();
-                            String contract = payment.getString("to","");
-                            int Decimal = Integer.parseInt(mWalletUtil.getDataByContract(contract.toLowerCase(),"decimal"));
-                            mValue = mWalletUtil.toValue(Decimal,value);
-
-                            data.putString("to", "0x"+input.substring(34,74));
-                            data.putString("isErc20","true");
-                            data.putString("contract",contract);
-                        }else{
-                            mValue = mWalletUtil.toValue(Constant.DefaultDecimal,payment.getString("value", ""));
-                            data.putString("value",payment.getString("value", ""));
-                            data.putString("to", payment.getString("to", ""));
-                        }
-                        transactionData = data;
-                    }
-                    initView();
-                }
-            });
         }
+        if (TextUtils.isEmpty(mHash)) {
+            ToastUtil.toast(TransactionDetailsActivity.this, getString(R.string.toast_illegal_parameters));
+            this.finish();
+            return;
+        }
+        //通过hash 从链上获取交易细节
+        mWalletUtil.getTransactionDetail(mHash, new WCallback() {
+            @Override
+            public void onGetWResult(int ret, GsonUtil extra) {
+                if(ret == 0){
+                    GsonUtil payment = extra.getObject("data");
+                    GsonUtil data = new GsonUtil("{}");
+                    data.putString("input",payment.getString("input",""));
+                    data.putString("from",payment.getString("from",""));
+                    data.putString("transactionHash",payment.getString("hash",""));
+                    data.putString("blockNumber", payment.getString("blockNumber",""));
+                    String input = payment.getString("input","");
+                    data.putString("input",input);
+                    mGasPrice = Double.valueOf(payment.getString("gasPrice",""));
+                    if(input.length() == 138 && input.startsWith("0xa9059cbb")){
+                        String value = new BigInteger(input.substring(74), 16).toString();
+                        String contract = payment.getString("to","");
+                        int Decimal = Integer.parseInt(mWalletUtil.getDataByContract(contract.toLowerCase(),"decimal"));
+                        mValue = Util.toValue(Decimal,value);
+
+                        data.putString("to", "0x"+input.substring(34,74));
+                        data.putString("isErc20","true");
+                        data.putString("contract",contract);
+                    }else{
+                        mValue = Util.toValue(Constant.DefaultDecimal,payment.getString("value", ""));
+                        data.putString("value",payment.getString("value", ""));
+                        data.putString("to", payment.getString("to", ""));
+                    }
+                    transactionData = data;
+                }
+                initView();
+            }
+        });
     }
 
     private void initView() {
@@ -165,51 +163,37 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         mTvInfo.setText(transactionInfo.getString("input", ""));
         mTvTransactionId.setText(transactionInfo.getString("transactionHash", ""));
         mTvBlockId.setText(transactionInfo.getString("blockNumber", ""));
+
+        //从交易跳转过来，需要时间确认交易
         if(isTransaction){
+            DelayMills = 10000;
             mTvTransactionStatus.setText(getString(R.string.content_trading_pending));
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mWalletUtil.getTransactionReceipt(mHash, new WCallback() {
-                        @Override
-                        public void onGetWResult(int ret, GsonUtil extra) {
-                            GsonUtil payment = extra.getObject("data");
-                            if (payment !=null){
-                                boolean status = payment.getBoolean("status",false);
-                                if (status) {
-                                    mTimestamp = payment.getString("timestamp","");
-                                    mGasUsed = payment.getString("gasUsed","");
-                                    setTransactionSuccess();
-                                } else {
-                                    setTransactionFailed();
-                                }
-                            } else {
-                                setTransactionUnknown();
-                            }
-                        }
-                    });
-                }
-            }, 10000);
         } else {
-            mWalletUtil.getTransactionReceipt(mHash, new WCallback() {
-                @Override
-                public void onGetWResult(int ret, GsonUtil extra) {
-                    GsonUtil payment = extra.getObject("data");
-                    if (payment !=null){
-                        boolean status = payment.getBoolean("status",false);
-                        if (status) {
-                            mTimestamp = payment.getString("timestamp","");
-                            mGasUsed = payment.getString("gasUsed","");
-                            setTransactionSuccess();
-                        } else {
-                            setTransactionFailed();
-                        }
-                    } else {
-                        setTransactionUnknown();
-                    }
-                }
-            });
+            mTvTransactionStatus.setText(getString(R.string.content_trading_waiting));
         }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mWalletUtil.getTransactionReceipt(mHash, new WCallback() {
+                    @Override
+                    public void onGetWResult(int ret, GsonUtil extra) {
+                        GsonUtil payment = extra.getObject("data");
+                        if (payment !=null){
+                            boolean status = payment.getBoolean("status",false);
+                            if (status) {
+                                mTimestamp = payment.getString("timestamp","");
+                                mGasUsed = payment.getString("gasUsed","");
+                                setTransactionSuccess();
+                            } else {
+                                setTransactionFailed();
+                            }
+                        } else {
+                            setTransactionUnknown();
+                        }
+                    }
+                });
+            }
+        }, DelayMills);
         mTvSymbol.setText(bl_symbol);
         createQRCode(mWalletUtil.getTransactionSearchUrl(mTvTransactionId.getText().toString()));
     }
@@ -233,8 +217,8 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
 
     private void setTransactionSuccess(){
         mTvTransactionStatus.setText(getString(R.string.content_trading_success));
-        mTvGas.setText(mWalletUtil.calculateGasInToken(mDecimal,mGasUsed,mGasPrice));
-        mTvTransactionTime.setText(mWalletUtil.toDate(mTimestamp));
+        mTvGas.setText(Util.calculateGasInToken(mDecimal,mGasUsed,mGasPrice));
+        mTvTransactionTime.setText(Util.toDate(mTimestamp));
         mTvCount.setText(mValue);
     }
     private void setTransactionFailed(){

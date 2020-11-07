@@ -23,6 +23,7 @@ import com.tokenbank.utils.TokenImageLoader;
 import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
 
+//this activity is no longer in use
 public class ChooseTokenTransferActivity extends BaseActivity implements BaseRecycleAdapter.OnDataLodingFinish {
 
     private final static String TAG = "ChooseTokenTransferActivity";

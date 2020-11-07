@@ -70,21 +70,17 @@ public class StartBakupActivity extends BaseActivity implements View.OnClickList
 
     private boolean verifyData() {
         if (mWalletData == null) {
-            Log.d(TAG, "verifyData: mWalletData == null");
             return false;
         }
         if (mType != PK_TYPE && mType != WORDS_TYPE) {
-            Log.d(TAG, "verifyData: mType != PK_TYPE && mType != WORDS_TYPE");
             return false;
         }
         if (mType == WORDS_TYPE) {
             if (TextUtils.isEmpty(mWalletData.words)) {
-                Log.d(TAG, "verifyData: TextUtils.isEmpty(mWalletData.words)");
                 return false;
             }
             mWords = mWalletData.words.split(" ");
             if (mWords == null || mWords.length < 12) {
-                Log.d(TAG, "mWords == null || mWords.length < 12");
                 return false;
             }
         }
@@ -92,7 +88,6 @@ public class StartBakupActivity extends BaseActivity implements View.OnClickList
     }
 
     private void initView() {
-        Log.d(TAG, "initView: active");
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setTitle(getString(R.string.titleBar_backup_wallet));
 

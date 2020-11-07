@@ -6,9 +6,12 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tokenbank.config.Constant;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -212,5 +215,45 @@ public class Util {
             e.printStackTrace();
             return 0.0f;
         }
+    }
+
+    public static String calculateGasInToken(int decimal, String gasLimit, Double gasPrice) {
+        if(decimal < 0 || decimal>30 ){
+            Log.e(TAG, "calculateGasInToken: gasLimit setting err ");
+            return "";
+        }
+        Double gas = Double.valueOf(gasLimit);
+        BigDecimal gasFee = new BigDecimal(gas*gasPrice);
+        gasFee = Util.translateValue(decimal, gasFee);
+        return  gasFee.setScale(7, BigDecimal.ROUND_DOWN).toString();
+    }
+
+    public static String fromValue(int decimal, String Value) {
+        BigDecimal ValueTempe = new BigDecimal(Value);
+        if (decimal <= 0) {
+            decimal = Constant.DefaultDecimal;
+        }
+        ValueTempe = Util.tokenToWei(decimal, ValueTempe);
+        return ValueTempe.setScale(0,BigDecimal.ROUND_DOWN).toString();
+    }
+
+    public static String toValue(int decimal, String originValue) {
+        if (decimal <= 0) {
+            decimal = Constant.DefaultDecimal;
+        }
+        try{
+            BigDecimal origindate = new BigDecimal(originValue);
+            origindate = Util.translateValue(decimal, origindate);
+            return origindate.setScale(3, BigDecimal.ROUND_DOWN).toString();
+        } catch (Exception err){
+            Log.e("toValue  :","err : "+err);
+            return "";
+        }
+    }
+
+    public static String toDate(String timestamp) {
+        SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Long time=new Long(timestamp);
+        return format.format(time*1000);
     }
 }

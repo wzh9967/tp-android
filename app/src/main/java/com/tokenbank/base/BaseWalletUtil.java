@@ -28,17 +28,12 @@ public interface BaseWalletUtil {
 
     void generateReceiveAddress(String walletAddress,String contract, double amount, String token, WCallback callback);
 
-    String calculateGasInToken(int decimal,String gasLimit, Double gasPrice);
-
     boolean checkWalletAddress(String receiveAddress);
 
     boolean checkWalletPk(String privateKey);
 
     void queryTransactionList(int pagesize,String address, WCallback callback);
 
-    String toValue(int decimal, String originValue);
-
-    String fromValue(int decimal , String Value);
 
     GsonUtil loadTransferTokens(Context context);
 
@@ -66,7 +61,6 @@ public interface BaseWalletUtil {
 
     String getDataByContract(String contract,String key);
 
-    String toDate(String timestamp);
 
     void getTransactionDetail(String hash,WCallback wCallback );
 

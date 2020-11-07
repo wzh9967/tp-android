@@ -99,7 +99,7 @@ public class OrderDetailDialog extends BaseDialog implements View.OnClickListene
         mTvSenderAddress = findViewById(R.id.tv_sender_address);
         mTvSenderAddress.setText(mSenderAddress);
         mTvGasInToken = findViewById(R.id.tv_gas_intoken);
-        mTvGasInToken.setText(mWalletUtil.calculateGasInToken(mDecimal,mGasLimet, mGasPrice)+"moab");
+        mTvGasInToken.setText(Util.calculateGasInToken(mDecimal,mGasLimet, mGasPrice)+"moab");
         mTvGasInfo = findViewById(R.id.tv_gas_info);
         mTvGasInfo.setText("≈ " + mGasPrice + " * " + mGasLimet);
         mTvTokenCount = findViewById(R.id.tv_token_count);

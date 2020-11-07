@@ -24,7 +24,6 @@ import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
 
-//修改底层，移除区块选择
 public class CreateWalletActivity extends BaseActivity implements View.OnClickListener {
 
     public final static String TAG = "CreateWalletActivity";

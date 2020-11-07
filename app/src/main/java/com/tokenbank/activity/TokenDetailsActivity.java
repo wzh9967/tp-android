@@ -33,7 +33,9 @@ import com.tokenbank.view.TitleBar;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-
+/**
+ * 币种详情页，包含原生货币和Erc20币 价值和对应币种交易记录
+ */
 public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAdapter.OnDataLodingFinish, View.OnClickListener {
 
     private static final String TAG = "TokenDetailsActivity";
@@ -161,7 +163,7 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             mUnit = "$";
         }
         //显示余额
-        mValue = mWalletUtil.toValue(mItem.getInt("decimal", Constant.DefaultDecimal), mItem.getString("balance", "0"));
+        mValue = Util.toValue(mItem.getInt("decimal", Constant.DefaultDecimal), mItem.getString("balance", "0"));
         tvBalance.setText(mValue);
         tvAsset.setText(String.format("≈ %1s %2s", mUnit, Util.formatDoubleToStr(2, Util.strToDouble(
                 mItem.getString("asset", "0")))));

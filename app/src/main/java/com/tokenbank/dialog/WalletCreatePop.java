@@ -17,7 +17,7 @@ import com.tokenbank.activity.ImportWalletActivity;
 import com.tokenbank.base.BlockChainData;
 
 
-
+//this activity is no longer in use
 public class WalletCreatePop extends PopupWindow implements View.OnClickListener {
 
     private Context context;

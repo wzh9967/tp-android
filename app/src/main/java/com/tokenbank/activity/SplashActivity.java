@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -14,20 +13,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokenbank.R;
-import com.tokenbank.base.BaseWalletUtil;
 import com.tokenbank.base.SysApplication;
-import com.tokenbank.base.TBController;
-import com.tokenbank.base.WCallback;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.config.AppConfig;
 import com.tokenbank.utils.DeviceUtil;
-import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.NetUtil;
 import com.tokenbank.utils.PermissionUtil;
 import com.tokenbank.utils.ToastUtil;
 
-
-//pass
 public class SplashActivity extends BaseActivity implements View.OnClickListener {
 
     private final static String TAG = "SplashActivity";
@@ -56,6 +49,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
         if (!NetUtil.isNetworkAvailable(this)) {
             ToastUtil.toast(this, getString(R.string.toast_no_network));
         }
+//
 //        checkUpgrade();
         checkPermission();
     }

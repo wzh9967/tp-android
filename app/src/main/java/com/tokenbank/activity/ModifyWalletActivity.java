@@ -20,7 +20,6 @@ import com.tokenbank.utils.Util;
 import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
 
-//不用动
 public class ModifyWalletActivity extends BaseActivity implements View.OnClickListener, TitleBar.TitleBarClickListener,
         PwdDialog.PwdResult {
     private final static String TAG = "ModifyWalletActivity";
@@ -210,5 +209,4 @@ public class ModifyWalletActivity extends BaseActivity implements View.OnClickLi
         }
         StartBakupActivity.startBakupWalletStartActivity(ModifyWalletActivity.this, mWalletData.waddress, 2);
     }
-
 }

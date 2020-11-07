@@ -26,6 +26,9 @@ import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
 
+/**
+ *  从MainUserFragment跳转的 交易记录页面
+ */
 
 public class TransactionRecordActivity extends BaseActivity implements BaseRecycleAdapter.OnDataLodingFinish,
         TitleBar.TitleBarClickListener, SwipeRefreshLayout.OnRefreshListener {
@@ -41,7 +44,7 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
     private int PageSize = 1;
     private View mEmptyView;
     private int mFrom = 2;
-    private String maddress;
+    private String mAddress;
 
     @SuppressLint("LongLogTag")
     @Override
@@ -122,7 +125,7 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
 
         mEmptyView = findViewById(R.id.empty_view);
         mEmptyView.setVisibility(View.GONE);
-        maddress = WalletInfoManager.getInstance().getWAddress();
+        mAddress = WalletInfoManager.getInstance().getWAddress();
         mRecyclerViewTransactionRecord = findViewById(R.id.recyclerview_transaction_record);
         mAdapter = new TransactionRecordAdapter();
         mAdapter.setDataLoadingListener(this);
@@ -187,6 +190,7 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
             } else {
                 mPageIndex++;
             }
+
             if (loadmore && !mHasMore) {
                 return;
             }
@@ -195,7 +199,7 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
                 mDataLoadingListener.onDataLoadingFinish(params, false, loadmore);
             }
 
-            mWalletUtil.queryTransactionList(PageSize, maddress,new WCallback() {
+            mWalletUtil.queryTransactionList(PageSize, mAddress,new WCallback() {
                 @Override
                 public void onGetWResult(int ret, GsonUtil extra) {
                     if (ret == 0) {
