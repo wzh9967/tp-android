@@ -5,9 +5,8 @@ import android.content.Context;
 import android.os.Build;
 
 import com.tokenbank.activity.BaseActivity;
-import com.tokenbank.base.BlockChainData;
 import com.tokenbank.base.JSUtil;
-import com.tokenbank.base.MoacServer;
+import com.tokenbank.base.FstServer;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.base.TBController;
 import com.tokenbank.config.AppConfig;
@@ -29,10 +28,9 @@ public class TApplication extends Application {
         AppConfig.init(this);
         CrashHandler crashHandler = CrashHandler.getInstance();
         crashHandler.init(getApplicationContext());
-        BlockChainData.getInstance().init();
         TBController.getInstance().init();
         WalletInfoManager.getInstance().init();
-        MoacServer.getInstance().initNode();
+        FstServer.getInstance().initNode();
         JSUtil.getInstance().init();
     }
 

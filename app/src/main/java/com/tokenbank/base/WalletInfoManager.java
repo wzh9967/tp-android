@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-//移除区块链的各种跳转，切换
 public class WalletInfoManager {
 
     private static final String TAG = "WalletInfoManager";

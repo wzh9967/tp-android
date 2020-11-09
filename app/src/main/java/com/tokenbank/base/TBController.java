@@ -1,7 +1,6 @@
 package com.tokenbank.base;
 import com.android.jccdex.app.moac.MoacWallet;
 import com.tokenbank.config.AppConfig;
-import com.tokenbank.config.Constant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +33,12 @@ public class TBController {
 
     public void init() {
         mSupportType.add(SWT_INDEX);
-        mMocWalletUtil = new MoacWalletBlockchain();
+        mMocWalletUtil = new FstWalletBlockchain();
         mMocWalletUtil.init();
         mNullWalletUtil = new TestWalletBlockchain();
         mMoacWallet = MoacWallet.getInstance();
         mMoacWallet.init(AppConfig.getContext());
-        mMoacWallet.initChain3Provider(MoacServer.getInstance().getNode());
+        mMoacWallet.initChain3Provider(FstServer.getInstance().getNode());
     }
 
     public BaseWalletUtil getWalletUtil() {

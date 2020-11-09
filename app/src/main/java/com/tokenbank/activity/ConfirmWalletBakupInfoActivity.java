@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokenbank.R;
-import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.ViewUtil;
@@ -59,7 +58,6 @@ public class ConfirmWalletBakupInfoActivity extends BaseActivity implements View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_walletinfo);
-        SysApplication.addActivity(this);
         if (getIntent() != null) {
             mType = getIntent().getIntExtra(BAKUP_TYPE, -1);
             String walletAddress = getIntent().getStringExtra(WALLET_ADDRESS);

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokenbank.R;
-import com.tokenbank.base.SysApplication;
 import com.tokenbank.fragment.BaseFragment;
 
 public class FragmentContainerActivity extends BaseActivity {
@@ -19,7 +18,6 @@ public class FragmentContainerActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fragment);
-        SysApplication.addActivity(this);
         try {
             String frag = getIntent().getStringExtra("__fragment__");
             Fragment fragment = (Fragment) Class.forName(frag).newInstance();

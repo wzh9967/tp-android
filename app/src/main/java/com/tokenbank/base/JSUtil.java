@@ -66,7 +66,7 @@ public class JSUtil {
         }
         mCallID++;
         json.putInt("callid", mCallID);
-        json.putString("url",MoacServer.getInstance().getNode());
+        json.putString("url", FstServer.getInstance().getNode());
         mCallbackHashMap.put(mCallID, walletOptCallback);
 
         String jsonParams = json.toString();
@@ -134,7 +134,7 @@ public class JSUtil {
 
     private void sendNodeToJs(String callbackId) {
         //获取当前node
-        String node = MoacServer.getInstance().getNode();
+        String node = FstServer.getInstance().getNode();
         Log.d(TAG, "sendNodeToJs:  node = "+node);
         GsonUtil result = new GsonUtil("{}");
         result.putString("node",node);

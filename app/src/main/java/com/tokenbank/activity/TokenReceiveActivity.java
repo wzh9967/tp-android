@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.google.zxing.WriterException;
 import com.tokenbank.R;
 import com.tokenbank.base.BaseWalletUtil;
-import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.base.WCallback;
@@ -52,7 +51,6 @@ public class TokenReceiveActivity extends BaseActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.token_receive_activity);
-        SysApplication.addActivity(this);
         if (getIntent() != null) {
             mToken = getIntent().getStringExtra(TOKEN);
             mContract = getIntent().getStringExtra(CONTRACT);

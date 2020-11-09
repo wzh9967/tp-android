@@ -15,7 +15,6 @@ import com.android.jccdex.app.base.JCallback;
 import com.android.jccdex.app.moac.MoacWallet;
 import com.android.jccdex.app.util.JCCJson;
 import com.tokenbank.R;
-import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.config.Constant;
@@ -39,7 +38,6 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_wallet_new);
-        SysApplication.addActivity(this);
         initView();
         mMoacWallet =TBController.getInstance().getMoacWallet();
     }
@@ -152,7 +150,7 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
                             address);
                 } else {
                     resetBtn();
-                    ToastUtil.toast(CreateWalletActivity.this, "创建钱包失败, 错误码 1");
+                    ToastUtil.toast(CreateWalletActivity.this, getString(R.string.btn_create_wallet_fail));
                 }
             }
         });

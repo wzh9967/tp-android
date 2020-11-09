@@ -50,12 +50,12 @@ public class Constant {
     public final static String privilege_url = "";
 
     //社区链浏览器接口
-    public final static String MOC_EXCHANGE_SERVER = "http://dao.moacchain.net/api/v1/wallets/";
+    public final static String FST_EXCHANGE_SERVER = "http://dao.moacchain.net/api/v1/wallets/";
 
     //联盟链浏览器接口  http://consortium.moacchain.net
 
     //社区链节点地址(默认节点地址)
-    public static String moc_node = "http://101.200.174.239:7545";
+    public static String fst_node = "http://101.200.174.239:7545";
 
     //原生货币交易默认gas上限
     public final static String gasLimit = "22000";

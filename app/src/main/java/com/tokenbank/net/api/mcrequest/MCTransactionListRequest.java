@@ -19,7 +19,7 @@ public class MCTransactionListRequest extends BaseGetApiRequest {
 
     @Override
     public String initUrl() {
-        return Constant.MOC_EXCHANGE_SERVER+this.mAddress+"/tx?page="+this.mPageSize;
+        return Constant.FST_EXCHANGE_SERVER+this.mAddress+"/tx?page="+this.mPageSize;
     }
 
     @Override

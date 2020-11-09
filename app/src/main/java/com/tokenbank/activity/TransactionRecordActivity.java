@@ -18,7 +18,6 @@ import com.tokenbank.R;
 import com.tokenbank.adapter.BaseRecycleAdapter;
 import com.tokenbank.adapter.BaseRecyclerViewHolder;
 import com.tokenbank.base.BaseWalletUtil;
-import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.base.WCallback;
 import com.tokenbank.base.TBController;
@@ -50,7 +49,6 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SysApplication.addActivity(this);
         setContentView(R.layout.activity_transaction_record);
         if (getIntent() != null) {
             mFrom = getIntent().getIntExtra("From", 2);

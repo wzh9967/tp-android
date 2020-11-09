@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import com.tokenbank.R;
-import com.tokenbank.base.SysApplication;
 import com.tokenbank.utils.TLog;
 import com.tokenbank.view.TBWebCore;
 import com.tokenbank.view.TitleBar;
@@ -25,7 +24,6 @@ public class WebBrowserActivity extends BaseActivity implements TitleBar.TitleBa
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webbrowser);
-        SysApplication.addActivity(this);
         if (getIntent() != null) {
             mUrl = getIntent().getStringExtra("URL");
             mTitle = getIntent().getStringExtra("TITLE");

@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.tokenbank.R;
-import com.tokenbank.base.SysApplication;
 import com.tokenbank.utils.LanguageUtil;
 import com.tokenbank.view.TitleBar;
 
@@ -31,7 +30,6 @@ public class LanguageActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_language);
-        SysApplication.addActivity(this);
         mTitleBar = (TitleBar) findViewById(R.id.title_bar);
         mTitleBar.setTitle(getString(R.string.title_languages));
         mTitleBar.setLeftDrawable(R.drawable.ic_back);

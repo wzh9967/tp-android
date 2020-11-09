@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,15 +17,13 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.jccdex.app.moac.MoacWallet;
 import com.scwang.smartrefresh.layout.internal.ProgressDrawable;
 import com.stealthcopter.networktools.Ping;
 import com.stealthcopter.networktools.PortScan;
 import com.stealthcopter.networktools.ping.PingResult;
 import com.stealthcopter.networktools.ping.PingStats;
 import com.tokenbank.R;
-import com.tokenbank.base.MoacServer;
-import com.tokenbank.base.SysApplication;
+import com.tokenbank.base.FstServer;
 import com.tokenbank.config.Constant;
 import com.tokenbank.dialog.NodeCustomDialog;
 import com.tokenbank.utils.FileUtil;
@@ -70,7 +67,6 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting_node);
-        SysApplication.addActivity(this);
         initView();
     }
 
@@ -170,7 +166,7 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
                             mSelectedItem = position;
                             GsonUtil item = publicNodes.getObject(mSelectedItem);
                             item.putInt("position",mSelectedItem);
-                            MoacServer.getInstance().setNode(item);
+                            FstServer.getInstance().setNode(item);
                             vh = (VH) mNodeRecyclerView.findViewHolderForLayoutPosition(mSelectedItem);
                             vh.mRadioSelected.setChecked(true);
                             vh.mLayoutItem.setActivated(true);
@@ -182,7 +178,7 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
                             mSelectedItem = position;
                             GsonUtil item = publicNodes.getObject(mSelectedItem);
                             item.putInt("position",mSelectedItem);
-                            MoacServer.getInstance().setNode(item);
+                            FstServer.getInstance().setNode(item);
                             vh = (VH) mNodeRecyclerView.findViewHolderForLayoutPosition(position);
                             vh.mRadioSelected.setChecked(true);
                             vh.mLayoutItem.setActivated(true);
@@ -231,14 +227,14 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
                 return;
             }
             GsonUtil item = publicNodes.getObject(position);
-            if(position == 0 && MoacServer.getInstance().getIndex() == -1){
+            if(position == 0 && FstServer.getInstance().getIndex() == -1){
                 item.putInt("position",position);
-                MoacServer.getInstance().setNode(item);
+                FstServer.getInstance().setNode(item);
                 holder.mRadioSelected.setChecked(true);
                 holder.mLayoutItem.setActivated(true);
                 mSelectedItem = position;
             }
-            if(MoacServer.getInstance().getIndex() != -1 && MoacServer.getInstance().getIndex() == position){
+            if(FstServer.getInstance().getIndex() != -1 && FstServer.getInstance().getIndex() == position){
                 holder.mRadioSelected.setChecked(true);
                 holder.mLayoutItem.setActivated(true);
                 mSelectedItem = position;
@@ -385,7 +381,7 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
         if (!TextUtils.isEmpty(ping) && !TextUtils.equals(ping, "---")) {
             GsonUtil item = publicNodes.getObject(mSelectedItem);
             item.putInt("position",mSelectedItem);
-            MoacServer.getInstance().setNode(item);
+            FstServer.getInstance().setNode(item);
         }
     }
 

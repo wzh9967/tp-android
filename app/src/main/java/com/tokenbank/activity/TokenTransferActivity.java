@@ -14,7 +14,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import com.tokenbank.R;
 import com.tokenbank.base.BaseWalletUtil;
-import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.base.WCallback;
@@ -65,7 +64,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transfer_token);
-        SysApplication.addActivity(this);
         if (getIntent() != null) {
             mOriginAddress = getIntent().getStringExtra(RECEIVE_ADDRESS_KEY);
             mContractAddress = getIntent().getStringExtra(CONTRACT_ADDRESS_KEY);
@@ -86,11 +84,12 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         }
         mWalletUtil = TBController.getInstance().getWalletUtil();
         defaultToken = true;
-        this.mDecimal = Constant.DefaultDecimal;
-        this.mGasLimit = Constant.gasLimit;
         if(!mContractAddress.equals("")){
             this.mDecimal = Integer.parseInt(mWalletUtil.getDataByContract(mContractAddress,"decimal"));
             this.mGasLimit = Constant.Erc20gasLimit;
+        } else {
+            this.mDecimal = Constant.DefaultDecimal;
+            this.mGasLimit = Constant.gasLimit;
         }
         getGasPrice();
         initView();
@@ -109,7 +108,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         mEdtWalletAddress.setText(mOriginAddress);
         mEdtTransferNum = findViewById(R.id.edt_transfer_num);
         mTvGas = findViewById(R.id.tv_transfer_gas);
-        mEdtTransferNum.setHint(mAmount+"(max)");
+        mEdtTransferNum.setHint(mAmount+"("+getString(R.string.tip_max)+")");
         if(!mValue.equals("")){
             mEdtTransferNum.setText(mValue);
         }
@@ -273,11 +272,12 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                     TransactionDetailsActivity.startTransactionDetailActivity(TokenTransferActivity.this, hash,true);
                     ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_transfer_success));
                     TokenTransferActivity.this.finish();
-                }else {
+                } else {
                     String err = extra.getString("err", "");
+                    // ret = -1 发送交易错误     ret = -2 签名错误
                     Log.d("sendErc20Transaction", "onGetWResult: err"+err);
                     resetTranferBtn();
-                    ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_transfer_failed));
+                    ToastUtil.toast(TokenTransferActivity.this, getString(R.string.toast_transfer_failed)+ret);
                 }
             }
         });

@@ -7,7 +7,6 @@
 <body>
 <script type="text/javascript" src="./utils.js"></script>
 <script type="text/javascript" src="./fst.min.js"></script>
-<script type="text/javascript" src="./contract_abi.js"></script>
 <script>
 
     function sendTransaction(params){
@@ -24,7 +23,8 @@
             notifyClient(callid, 0, result);
         }).catch((err) =>{
             result.err = err;
-            notifyClient(callid, 0, result);
+            console.log(err);
+            notifyClient(callid, -1, result);
         })
     }
 
@@ -96,6 +96,7 @@
         }).catch((err) =>{
             console.log(err)
             result.err = err;
+            console.log(err);
             notifyClient(callid, -1, result);
         })
     }
@@ -113,6 +114,7 @@
             notifyClient(callid, 0, result);
         }).catch((err) =>{
             result.err = err;
+            console.log(err);
             notifyClient(callid, -1, result);
         })
     }
@@ -134,6 +136,7 @@
                 notifyClient(callid, 0, result);
             }).catch((err)=>{
                 result.err = err;
+                console.log(err);
                 notifyClient(callid, -1, result);
             })
         }).catch((err)=>{

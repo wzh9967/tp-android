@@ -64,14 +64,9 @@
             android:name=".activity.CreateWalletActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.ChooseWalletBlockActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.NodeSettingActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.ChooseImportWayActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".activity.ImportWalletActivity"
             android:screenOrientation="portrait" />
@@ -110,9 +105,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ConfirmWalletBakupInfoActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.ChooseTokenTransferActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.LanguageActivity"

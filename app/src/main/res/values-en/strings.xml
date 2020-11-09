@@ -43,6 +43,7 @@
     <string name="dialog_content_no_read_service">You have not read and agreed to the Terms and Privacy</string>
     <string name="toast_wallet_created">Wallet create successfully</string>
     <string name="btn_creating_wallet">Creating Wallet</string>
+    <string name="btn_create_wallet_fail">Failed to create wallet  , err code ：</string>
     <string name="titleBar_service_terms">Terms &#038; Privacy</string>
     <string name="titleBar_import_wallet">Import Wallet</string>
     <string name="titleBar_manage_wallet">Manage Wallet</string>
@@ -233,4 +234,5 @@
     <string name="transfer_speed_fast">fast</string>
     <string name="transfer_speed_slow">slow</string>
     <string name="btn_node_setting">Node Setting</string>
+    <string name="tip_max">max</string>
 </resources>

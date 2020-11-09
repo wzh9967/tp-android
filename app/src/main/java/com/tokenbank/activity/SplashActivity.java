@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokenbank.R;
-import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.config.AppConfig;
 import com.tokenbank.utils.DeviceUtil;
@@ -36,7 +35,6 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        SysApplication.addActivity(this);
         instance = this;
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -67,7 +65,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
     public void onBackPressed() {
         if(BackFlag == 0){
             BackFlag--;
-            SysApplication.finish();
+            AppConfig.getContext().clearActivity();
             this.finish();
             return;
         }

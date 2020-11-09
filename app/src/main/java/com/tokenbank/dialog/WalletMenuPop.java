@@ -6,7 +6,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 import com.tokenbank.R;
 import com.tokenbank.activity.CreateWalletActivity;
 import com.tokenbank.adapter.BaseListViewAdapter;
-import com.tokenbank.base.BlockChainData;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.utils.ViewUtil;
 

@@ -13,7 +13,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tokenbank.R;
-import com.tokenbank.base.SysApplication;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.utils.FileUtil;
 import com.tokenbank.utils.ToastUtil;
@@ -36,7 +35,6 @@ public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBar
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_pwd);
-        SysApplication.addActivity(this);
         if (getIntent() != null) {
             String walletAddress = getIntent().getStringExtra("Wallet_Address");
             if (!TextUtils.isEmpty(walletAddress)) {
