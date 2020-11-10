@@ -11,7 +11,7 @@
     <string name="enter_title_prompt">提示信息</string>
     <string name="enter_hint_prompt">可不填</string>
     <string name="btn_create_wallet_done">创建钱包</string>
-    <string name="btn_create_wallet_fail">创建钱包失败，错误代码 ：</string>
+    <string name="btn_create_wallet_fail">创建钱包失败</string>
     <string name="btn_add_node">创建节点</string>
     <string name="titleBar_about">关于我们</string>
     <string name="content_version">当前版本:</string>

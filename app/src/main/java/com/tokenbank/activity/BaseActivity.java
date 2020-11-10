@@ -1,11 +1,13 @@
 package com.tokenbank.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.tokenbank.TApplication;
 import com.tokenbank.utils.LanguageUtil;
@@ -65,13 +67,23 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Locale locale = LanguageUtil.getUserLocale(base);
+            super.attachBaseContext(LanguageUtil.updateLocale(base, locale));
+        } else {
+            super.attachBaseContext(base);
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(String str) {
         switch (str) {
             case "EVENT_REFRESH_LANGUAGE":
                 Locale locale = LanguageUtil.getUserLocale(this);
                 LanguageUtil.updateLocale(this, locale);
-//                recreate();//刷新界面
+                //recreate();//刷新界面
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
