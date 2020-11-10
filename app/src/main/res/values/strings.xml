@@ -231,9 +231,12 @@
     <string name="btn_language_auto">自动</string>
     <string name="btn_language_zh">简体中文</string>
     <string name="btn_language_en">English</string>
+    <string name="dialog_delete_node">删除%s节点？</string>
     <string name="title_languages">语言设置</string>
     <string name="title_SettingNode">节点设置</string>
+
+    <string name="toast_Confirm_exit">确认退出？请重试</string>
     <string name="tip_max">最多</string>
-    <string name="toast_no_jintum_wallet">不存在墨客钱包，请导入或者创建</string>
+    <string name="toast_no_jintum_wallet">不存在联盟链钱包，请导入或者创建</string>
 
 </resources>

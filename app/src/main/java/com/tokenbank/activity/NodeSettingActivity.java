@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -33,6 +34,7 @@ import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
 
 import java.math.BigDecimal;
+import java.nio.file.ClosedFileSystemException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -127,7 +129,7 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
 
     class NodeRecordAdapter extends RecyclerView.Adapter<NodeRecordAdapter.VH>{
         /**
-         * 初始化控件
+         * init view
          */
         class VH extends RecyclerView.ViewHolder {
             RelativeLayout mLayoutItem;
@@ -192,10 +194,10 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
                         AlertDialog.Builder builder=new AlertDialog.Builder(NodeSettingActivity.this);
                         GsonUtil item = publicNodes.getObject(getAdapterPosition());
                         String node = item.getString("node","");
-                        builder.setMessage("节点【"+node+"】将被删除");
-                        builder.setTitle("提示");
+                        builder.setMessage(getString(R.string.dialog_delete_node,node));
+                        builder.setTitle(getString(R.string.dialog_title_reminder));
                         //添加AlertDialog.Builder对象的setPositiveButton()方法
-                        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        builder.setPositiveButton(getString(R.string.dialog_btn_confirm), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 int position = getAdapterPosition();
@@ -203,7 +205,7 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
                             }
                         });
                         //添加AlertDialog.Builder对象的setNegativeButton()方法
-                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        builder.setNegativeButton(getString(R.string.dialog_btn_cancel), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                             }
@@ -329,8 +331,7 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
      */
     private void getPublicNode() {
         publicNodes = new GsonUtil(FileUtil.getConfigFile(this, "publicNode.json"));
-        if(publicNodes.toString().equals("{}")){
-
+        if(!publicNodes.toString().equals("{}")){
             ConfirmNodeListLength = publicNodes.getLength();
         }
         getCustomNode();

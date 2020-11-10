@@ -1,23 +1,15 @@
 package com.tokenbank;
 
 import android.app.Application;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
-import android.util.Log;
-
 import com.tokenbank.activity.BaseActivity;
-import com.tokenbank.activity.MainActivity;
 import com.tokenbank.base.JSUtil;
 import com.tokenbank.base.FstServer;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.base.TBController;
 import com.tokenbank.config.AppConfig;
-import com.tokenbank.utils.LanguageUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 
 public class TApplication extends Application {

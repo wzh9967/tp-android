@@ -37,9 +37,7 @@ public class ConfirmWalletBakupInfoActivity extends BaseActivity implements View
     private TextView mTvBakupTitle;
     private TextView mTvBakupContent;
 
-    //私钥备份view
     private EditText mEdtPk;
-    //助记词相关view
     private LinearLayout mLayoutWords;
     private TagFlowLayout mFlowResult;
     private TagFlowLayout mFlowSource;
@@ -71,7 +69,6 @@ public class ConfirmWalletBakupInfoActivity extends BaseActivity implements View
         }
         if (mType == WORDS_TYPE) {
             mBaseList = Arrays.asList(mWords);
-            //将助记词顺序打乱
             resortWords();
         }
 

@@ -53,7 +53,6 @@ public class BaseActivity extends AppCompatActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         Locale userLocale = LanguageUtil.getUserLocale(this);
-        //系统语言改变了应用保持之前设置的语言
         if (userLocale != null) {
             Locale.setDefault(userLocale);
             Configuration configuration = new Configuration(newConfig);
@@ -83,7 +82,7 @@ public class BaseActivity extends AppCompatActivity {
             case "EVENT_REFRESH_LANGUAGE":
                 Locale locale = LanguageUtil.getUserLocale(this);
                 LanguageUtil.updateLocale(this, locale);
-                //recreate();//刷新界面
+                //recreate();
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);

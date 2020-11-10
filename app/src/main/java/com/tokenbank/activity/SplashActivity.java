@@ -70,7 +70,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
             return;
         }
         if(BackFlag == -1){
-            ToastUtil.toast(SplashActivity.this, "确认退出？请重试！");
+            ToastUtil.toast(SplashActivity.this, getString(R.string.toast_Confirm_exit));
             BackFlag++;
         }
     }
