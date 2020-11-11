@@ -22,7 +22,6 @@ import java.util.Date;;
 
 public class FstWalletBlockchain implements BaseWalletUtil {
     private final static String TAG = "FstWalletBlockchain";
-    private String gasLimit = "22000";
     @Override
     public void init() {
     }

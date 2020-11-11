@@ -236,5 +236,6 @@
     <string name="btn_node_setting">Node Setting</string>
     <string name="dialog_delete_node">delete node : %s ？</string>
     <string name="toast_Confirm_exit">Confirm exit? Please try again</string>
+    <string name="toast_ConfirmNode_delete">The default node cannot be deleted！</string>
     <string name="tip_max">max</string>
 </resources>

@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.LocaleList;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 

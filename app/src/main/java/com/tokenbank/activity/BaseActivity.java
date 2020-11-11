@@ -34,6 +34,9 @@ public class BaseActivity extends AppCompatActivity {
         TApplication application = (TApplication) getApplication();
         application.addActivity(this);
         EventBus.getDefault().register(this);
+        if (LanguageUtil.needUpdateLocale(this,LanguageUtil.getUserLocale(this))) {
+            LanguageUtil.updateLocale(this,LanguageUtil.getUserLocale(this));
+        }
     }
 
     @Override
@@ -63,16 +66,6 @@ public class BaseActivity extends AppCompatActivity {
                 configuration.locale = userLocale;
             }
             getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());
-        }
-    }
-
-    @Override
-    protected void attachBaseContext(Context base) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Locale locale = LanguageUtil.getUserLocale(base);
-            super.attachBaseContext(LanguageUtil.updateLocale(base, locale));
-        } else {
-            super.attachBaseContext(base);
         }
     }
 

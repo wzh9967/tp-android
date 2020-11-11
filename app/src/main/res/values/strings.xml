@@ -235,6 +235,7 @@
     <string name="title_languages">语言设置</string>
     <string name="title_SettingNode">节点设置</string>
 
+    <string name="toast_ConfirmNode_delete">默认节点不可删除！</string>
     <string name="toast_Confirm_exit">确认退出？请重试</string>
     <string name="tip_max">最多</string>
     <string name="toast_no_jintum_wallet">不存在联盟链钱包，请导入或者创建</string>

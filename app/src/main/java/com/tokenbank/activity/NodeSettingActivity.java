@@ -391,7 +391,7 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
      */
     private void DeleteNode(int index) {
         if (index < ConfirmNodeListLength) {
-            ToastUtil.toast(NodeSettingActivity.this, "默认节点不可删除！");
+            ToastUtil.toast(NodeSettingActivity.this, getString(R.string.toast_ConfirmNode_delete));
             return;
         } else {
             //从sp删除节点

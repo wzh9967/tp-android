@@ -83,8 +83,10 @@ public class NodeCustomDialog extends BaseDialog implements View.OnClickListener
             }
         });
         mTvCancel = (TextView) findViewById(R.id.tv_cancel);
+        mTvCancel.setText(getContext().getString(R.string.dialog_btn_confirm));
         mTvCancel.setOnClickListener(this);
         mTvConfirm = (TextView) findViewById(R.id.tv_confirm);
+        mTvCancel.setText(getContext().getString(R.string.dialog_btn_cancel));
         mTvConfirm.setOnClickListener(this);
     }
 
