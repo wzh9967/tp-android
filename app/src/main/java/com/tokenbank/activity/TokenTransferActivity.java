@@ -33,7 +33,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
 
     public final static String TAG = "TokenTransferActivity";
     private TitleBar mTitleBar;
-    private TextView mTvToken;
     private TextView mTvGas;
     private EditText mEdtWalletAddress, mEdtTransferNum, mEdtTransferRemark;
     private SeekBar seekBar;
@@ -50,14 +49,12 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     private String mValue = "";
     private String mAmount;
     private String mTokenName;
-    private boolean defaultToken;
     private int mDecimal;
     private final static String CONTRACT_ADDRESS_KEY = "Contact_Address";
     private final static String RECEIVE_ADDRESS_KEY = "Receive_Address";
     private final static String TOKEN_SYMBOL_KEY = "Token_Symbol";
     private final static String TOKEN_DECIMAL = "Token_Decimal";
     private final static String TOKEN_NAME = "Token_Name";
-    private final static String TOEKN_GAS = "Token_Gas";
     private final static String TOEKN_AMOUNT = "Token_Amount";
     private final static String VALUE = "value";
     @Override
@@ -74,6 +71,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             mTokenName = getIntent().getStringExtra(TOKEN_NAME);
         }
         initData();
+        initView();
     }
 
     private void initData(){
@@ -83,7 +81,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             return;
         }
         mWalletUtil = TBController.getInstance().getWalletUtil();
-        defaultToken = true;
         if(!mContractAddress.equals("")){
             this.mDecimal = Integer.parseInt(mWalletUtil.getDataByContract(mContractAddress,"decimal"));
             this.mGasLimit = Constant.Erc20gasLimit;
@@ -92,7 +89,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             this.mGasLimit = Constant.gasLimit;
         }
         getGasPrice();
-        initView();
     }
     private void initView() {
         mTitleBar = findViewById(R.id.title_bar);
@@ -124,7 +120,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             mContractAddress = data.getStringExtra(CONTRACT_ADDRESS_KEY);
             mTokenSymbol = data.getStringExtra(TOKEN_SYMBOL_KEY);
             mDecimal = data.getIntExtra(TOKEN_DECIMAL, 0);
-            defaultToken = TextUtils.equals(Constant.TokenSymbol, mTokenSymbol);
         }
     }
 
@@ -132,6 +127,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_next:
+                mValue = mEdtTransferNum.getText().toString();
                 if (paramCheck()) {
                     OrderDetailDialog orderDetailDialog = new OrderDetailDialog(TokenTransferActivity.this,
                             new OrderDetailDialog.onConfirmOrderListener() {
@@ -140,7 +136,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
                                     verifyPwd();
                                 }
                             }, mWalletData.waddress, mEdtWalletAddress.getText().toString(),
-                            mDecimal ,SettingGasPrice, mGasLimit, Util.parseDouble(mEdtTransferNum.getText().toString()), 0, mTokenSymbol, defaultToken);
+                            mDecimal ,SettingGasPrice, mGasLimit, Util.parseDouble(mValue), mTokenSymbol);
                     orderDetailDialog.show();
                 }
                 break;
@@ -216,12 +212,11 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         String secret = mWalletData.wpk ;
         String to = mEdtWalletAddress.getText().toString();
         String note = mEdtTransferRemark.getText().toString();
-        String value = mEdtTransferNum.getText().toString();
         GsonUtil data = new GsonUtil("{}");
         data.putString("address",address);
         data.putString("to",to);
         data.putString("secret",secret);
-        data.putString("value",Util.fromValue(mDecimal,value));
+        data.putString("value",Util.fromValue(mDecimal,mValue));
         data.putString("gasLimit",mGasLimit);
         data.putDouble("gasPrice",SettingGasPrice);
         data.putString("data",note);
@@ -250,7 +245,6 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         String secret = mWalletData.wpk ;
         String to = mEdtWalletAddress.getText().toString();
         String note = mEdtTransferRemark.getText().toString();
-        String value = mEdtTransferNum.getText().toString();
         String contract = mContractAddress;
         GsonUtil data = new GsonUtil("{}");
         data.putString("address",address);
@@ -258,7 +252,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         data.putString("address",address);
         data.putString("to",to);
         data.putString("secret",secret);
-        data.putString("value",Util.fromValue(mDecimal,value));
+        data.putString("value",Util.fromValue(mDecimal,mValue));
         data.putString("gasLimit",mGasLimit);
         data.putString("data",note);
         data.putDouble("gasPrice",SettingGasPrice);
@@ -285,9 +279,13 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
 
     private boolean paramCheck() {
         String address = mEdtWalletAddress.getText().toString();
-        String num = mEdtTransferNum.getText().toString();
         if (TextUtils.isEmpty(address)) {
             ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_no_wallet_address), "OK");
+            return false;
+        }
+
+        if(mAmount.equals("***")){
+            ViewUtil.showSysAlertDialog(this, getString(R.string.toast_illegal_parameters), "OK");
             return false;
         }
 
@@ -302,12 +300,12 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         }
 
 
-        if ((TextUtils.isEmpty(num) || Util.parseDouble(num) <= 0.0f)) {
+        if ((TextUtils.isEmpty(mValue) || Util.parseDouble(mValue) <= 0.0f)) {
             ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_amount_incorrect), "OK");
             return false;
         }
 
-        if(Util.parseDouble(mAmount) <=Util.parseDouble(num)){
+        if(Util.parseDouble(mAmount) <=Util.parseDouble(mValue)){
             ViewUtil.showSysAlertDialog(this, getString(R.string.toast_insufficient_balance), "OK");
             return false;
         }
@@ -327,17 +325,23 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     /**
      * 启动Activity
      *
-     * @param context
+     * @param context context
+     * @param receiveAddress 转账目标地址
+     * @param contactAddress 合约地址
+     * @param mAmount 余额
+     * @param tokenName 币种名称
+     * @param tokenSymbol 币种表示
+     * @param decimal 精度
+     * @param value 转账数量
      */
     public static void startTokenTransferActivity(Context context, String receiveAddress, String contactAddress,
-                                                  String mAmount, String tokenName,String tokenSymbol, int decimal, double gas,String value) {
+                                                  String mAmount, String tokenName,String tokenSymbol, int decimal,String value) {
         Intent intent = new Intent(context, TokenTransferActivity.class);
         intent.putExtra(CONTRACT_ADDRESS_KEY, contactAddress);
         intent.putExtra(RECEIVE_ADDRESS_KEY, receiveAddress);
         intent.putExtra(TOKEN_SYMBOL_KEY, tokenSymbol);
         intent.putExtra(TOKEN_DECIMAL, decimal);
         intent.putExtra(TOKEN_NAME, tokenName);
-        intent.putExtra(TOEKN_GAS, gas);
         intent.putExtra(TOEKN_AMOUNT, mAmount);
         intent.putExtra(VALUE, value);
         context.startActivity(intent);

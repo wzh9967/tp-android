@@ -10,11 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokenbank.R;
-import com.tokenbank.base.BaseWalletUtil;
-import com.tokenbank.base.TBController;
-import com.tokenbank.base.WCallback;
-import com.tokenbank.config.Constant;
-import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.Util;
 
 
@@ -39,29 +34,23 @@ public class OrderDetailDialog extends BaseDialog implements View.OnClickListene
     private String mSenderAddress;
     private String mReceiverAddress;
     private String mTokenName;
-    private String mGasLimet;
+    private String mGasLimit;
     private double mTokenCount;
     private Double mGasPrice;
     private int mDecimal;
-    private long mBlockChain;
-    private boolean isDefaultToken;
-    private BaseWalletUtil mWalletUtil;
 
 
     public OrderDetailDialog(@NonNull Context context, onConfirmOrderListener onConfirmOrderListener, String senderAddress,
-                             String receiverAddress, int Decimal ,Double gasPrice, String gasLimt, double tokencount, long blockChain, String tokenName, boolean defaultToken) {
+                             String receiverAddress, int Decimal ,Double gasPrice, String gasLimit, double tokencount, String tokenName) {
         super(context, R.style.DialogStyle);
         mOnConfirmOrderListener = onConfirmOrderListener;
         this.mSenderAddress = senderAddress;
         this.mReceiverAddress = receiverAddress;
         this.mGasPrice = gasPrice;
         this.mTokenName = tokenName;
-        this.mGasLimet = gasLimt;
+        this.mGasLimit = gasLimit;
         this.mDecimal = Decimal;
         this.mTokenCount = tokencount;
-        mBlockChain = blockChain;
-        mWalletUtil = TBController.getInstance().getWalletUtil();
-        isDefaultToken = defaultToken;
     }
 
     @Override
@@ -99,9 +88,9 @@ public class OrderDetailDialog extends BaseDialog implements View.OnClickListene
         mTvSenderAddress = findViewById(R.id.tv_sender_address);
         mTvSenderAddress.setText(mSenderAddress);
         mTvGasInToken = findViewById(R.id.tv_gas_intoken);
-        mTvGasInToken.setText(Util.calculateGasInToken(mDecimal,mGasLimet, mGasPrice)+"moab");
+        mTvGasInToken.setText(Util.calculateGasInToken(mDecimal,mGasLimit, mGasPrice)+"moab");
         mTvGasInfo = findViewById(R.id.tv_gas_info);
-        mTvGasInfo.setText("≈ " + mGasPrice + " * " + mGasLimet);
+        mTvGasInfo.setText("≈ " + mGasPrice + " * " + mGasLimit+"/10^"+mDecimal);
         mTvTokenCount = findViewById(R.id.tv_token_count);
         mTvTokenCount.setText(Util.formatDoubleToStr(5, mTokenCount));
         mTvTokenName = findViewById(R.id.tv_token_name);

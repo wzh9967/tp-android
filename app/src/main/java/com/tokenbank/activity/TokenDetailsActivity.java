@@ -18,9 +18,9 @@ import com.tokenbank.R;
 import com.tokenbank.adapter.BaseRecycleAdapter;
 import com.tokenbank.adapter.BaseRecyclerViewHolder;
 import com.tokenbank.base.BaseWalletUtil;
+import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
 import com.tokenbank.base.WalletInfoManager;
-import com.tokenbank.base.TBController;
 import com.tokenbank.config.Constant;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.Util;
@@ -47,6 +47,9 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
 
     private GsonUtil mItem;
     private String mValue;
+    private int mDecimal;
+    private String bl_symbol;
+    private String TokenName;
     private String mContractAddress;
     private WalletInfoManager.WData mWalletData;
     private BaseWalletUtil mWalletUtil;
@@ -61,16 +64,6 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
         setContentView(R.layout.token_details_activity);
         initData();
         initView();
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v == mLayoutTranster) {
-            TokenTransferActivity.startTokenTransferActivity(TokenDetailsActivity.this, "",
-                    mContractAddress, mValue, mItem.getString("name", ""),mItem.getString("bl_symbol", ""), mItem.getInt("decimal", Constant.DefaultDecimal), 0,"");
-        } else if (v == mLayoutReceive) {
-            TokenReceiveActivity.startTokenReceiveActivity(TokenDetailsActivity.this, mItem.getString("contract",""),mItem.getString("bl_symbol", ""));
-        }
     }
 
     private void initData() {
@@ -90,6 +83,10 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             return;
         }
         mContractAddress = mItem.getString("contract", "");
+        mDecimal = mItem.getInt("decimal", Constant.DefaultDecimal);
+        bl_symbol = mItem.getString("bl_symbol", "");
+        TokenName = mItem.getString("name", "");
+
     }
 
     @Override
@@ -104,6 +101,17 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
                     mEmptyView.setVisibility(View.GONE);
                 }
             }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v == mLayoutTranster) {
+
+            TokenTransferActivity.startTokenTransferActivity(TokenDetailsActivity.this, "",
+                    mContractAddress, mValue, TokenName,bl_symbol, mDecimal, "");
+        } else if (v == mLayoutReceive) {
+            TokenReceiveActivity.startTokenReceiveActivity(TokenDetailsActivity.this, mContractAddress,bl_symbol);
         }
     }
 
@@ -123,7 +131,7 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
                 TokenDetailsActivity.this.finish();
             }
         });
-        mTitleBar.setTitle(mItem.getString("bl_symbol", ""));
+        mTitleBar.setTitle(bl_symbol);
         mEmptyView = findViewById(R.id.empty_view);
         mEmptyView.setVisibility(View.GONE);
         mRecyclerView = findViewById(R.id.recyclerview);
@@ -156,8 +164,15 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             mUnit = "$";
         }
         //显示余额
-        mValue = Util.toValue(mItem.getInt("decimal", Constant.DefaultDecimal), mItem.getString("balance", "0"));
+        String balance = mItem.getString("balance", "0");
+        if(balance.equals("***")){
+            mValue = "***";
+        } else {
+            mValue = Util.toValue(mDecimal, balance);
+        }
         tvBalance.setText(mValue);
+
+        //转换为等值人民币
         tvAsset.setText(String.format("≈ %1s %2s", mUnit, Util.formatDoubleToStr(2, Util.strToDouble(
                 mItem.getString("asset", "0")))));
 
@@ -218,7 +233,7 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
                 });
             } else {
                 Flag = false;
-                mWalletUtil.queryErc20TransactionList(PageSize,mItem.getInt("decimal", Constant.DefaultDecimal),mContractAddress, maddress,new WCallback() {
+                mWalletUtil.queryErc20TransactionList(PageSize,mDecimal,mContractAddress, maddress,new WCallback() {
                     @Override
                     public void onGetWResult(int ret, GsonUtil extra) {
                         if (ret == 0) {

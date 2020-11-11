@@ -14,14 +14,15 @@ import android.widget.TextView;
 import com.google.zxing.WriterException;
 import com.tokenbank.R;
 import com.tokenbank.base.BaseWalletUtil;
-import com.tokenbank.base.WCallback;
 import com.tokenbank.base.TBController;
+import com.tokenbank.base.WCallback;
 import com.tokenbank.config.Constant;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.QRUtils;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.Util;
 import com.tokenbank.view.TitleBar;
+
 import java.math.BigInteger;
 
 /**
@@ -83,29 +84,11 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             public void onGetWResult(int ret, GsonUtil extra) {
                 if(ret == 0){
                     GsonUtil payment = extra.getObject("data");
-                    GsonUtil data = new GsonUtil("{}");
-                    data.putString("input",payment.getString("input",""));
-                    data.putString("from",payment.getString("from",""));
-                    data.putString("transactionHash",payment.getString("hash",""));
-                    data.putString("blockNumber", payment.getString("blockNumber",""));
-                    String input = payment.getString("input","");
-                    data.putString("input",input);
-                    mGasPrice = Double.valueOf(payment.getString("gasPrice",""));
-                    if(input.length() == 138 && input.startsWith("0xa9059cbb")){
-                        String value = new BigInteger(input.substring(74), 16).toString();
-                        String contract = payment.getString("to","");
-                        int Decimal = Integer.parseInt(mWalletUtil.getDataByContract(contract.toLowerCase(),"decimal"));
-                        mValue = Util.toValue(Decimal,value);
-
-                        data.putString("to", "0x"+input.substring(34,74));
-                        data.putString("isErc20","true");
-                        data.putString("contract",contract);
-                    }else{
-                        mValue = Util.toValue(Constant.DefaultDecimal,payment.getString("value", ""));
-                        data.putString("value",payment.getString("value", ""));
-                        data.putString("to", payment.getString("to", ""));
+                    if(payment == null){
+                        transactionData = payment;
+                    } else {
+                        transactionData = ConvertJson(payment);
                     }
-                    transactionData = data;
                 }
                 initView();
             }
@@ -113,7 +96,6 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     }
 
     private void initView() {
-
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
         mTitleBar.setTitle(getString(R.string.titleBar_transaction_details));
@@ -146,6 +128,9 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         bl_symbol = Constant.TokenSymbol;
         if(transactionData !=null){
             updateData(transactionData);
+        } else {
+            setTransactionUnknown();
+            mTvTransactionId.setText(mHash);
         }
     }
 
@@ -175,18 +160,22 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
                 mWalletUtil.getTransactionReceipt(mHash, new WCallback() {
                     @Override
                     public void onGetWResult(int ret, GsonUtil extra) {
-                        GsonUtil payment = extra.getObject("data");
-                        if (payment !=null){
-                            boolean status = payment.getBoolean("status",false);
-                            if (status) {
-                                mTimestamp = payment.getString("timestamp","");
-                                mGasUsed = payment.getString("gasUsed","");
-                                setTransactionSuccess();
+                        if(ret == 0){
+                            GsonUtil payment = extra.getObject("data");
+                            if (payment !=null){
+                                boolean status = payment.getBoolean("status",false);
+                                if (status) {
+                                    mTimestamp = payment.getString("timestamp","");
+                                    mGasUsed = payment.getString("gasUsed","");
+                                    setTransactionSuccess();
+                                } else {
+                                    setTransactionFailed();
+                                }
                             } else {
-                                setTransactionFailed();
+                                setTransactionUnknown();
                             }
                         } else {
-                            setTransactionUnknown();
+                            mTvTransactionStatus.setText(getString(R.string.toast_transaction_info_failure));
                         }
                     }
                 });
@@ -245,5 +234,31 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             WebBrowserActivity.startWebBrowserActivity(TransactionDetailsActivity.this, getString(R.string.titleBar_transaction_query),
                     mWalletUtil.getTransactionSearchUrl(mTvTransactionId.getText().toString()));
         }
+    }
+
+    public GsonUtil ConvertJson(GsonUtil payment){
+        GsonUtil data = new GsonUtil("{}");
+        data.putString("input",payment.getString("input",""));
+        data.putString("from",payment.getString("from",""));
+        data.putString("transactionHash",payment.getString("hash",""));
+        data.putString("blockNumber", payment.getString("blockNumber",""));
+        String input = payment.getString("input","");
+        data.putString("input",input);
+        mGasPrice = Double.valueOf(payment.getString("gasPrice",""));
+        if(input.length() == 138 && input.startsWith("0xa9059cbb")){
+            String value = new BigInteger(input.substring(74), 16).toString();
+            String contract = payment.getString("to","");
+            int Decimal = Integer.parseInt(mWalletUtil.getDataByContract(contract.toLowerCase(),"decimal"));
+            mValue = Util.toValue(Decimal,value);
+
+            data.putString("to", "0x"+input.substring(34,74));
+            data.putString("isErc20","true");
+            data.putString("contract",contract);
+        }else{
+            mValue = Util.toValue(Constant.DefaultDecimal,payment.getString("value", ""));
+            data.putString("value",payment.getString("value", ""));
+            data.putString("to", payment.getString("to", ""));
+        }
+        return data;
     }
 }

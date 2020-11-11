@@ -1,11 +1,6 @@
 package com.tokenbank.config;
 
 
-import com.tokenbank.utils.FileUtil;
-import com.tokenbank.utils.GsonUtil;
-
-import java.lang.reflect.GenericArrayType;
-
 public class Constant {
 
     public final static String wallet_prefs_prefix = "wallet_pref_";
@@ -63,8 +58,11 @@ public class Constant {
     //ERC20交易默认交易上限
     public final static String Erc20gasLimit = "70000";
 
-    //基础货币名称（单位）
+    //基础货币单位符号
     public final static String TokenSymbol = "mfc";
+
+    //基础货币名称
+    public final static String TokenName = "mfc币";
 
     //基础货币默认decimal
     public final static int DefaultDecimal = 18;

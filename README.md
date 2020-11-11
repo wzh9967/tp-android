@@ -8,6 +8,8 @@ This is a tp-android based Android ink fst Wallet tool. We can use it to manage 
 
 ------
 
+### 测试钱包
+
 项目基于社区链创建，关于社区链相关操作均可以直接在项目中进行。
 
 ```
@@ -17,10 +19,12 @@ This is a tp-android based Android ink fst Wallet tool. We can use it to manage 
 社区链测试钱包二  ：  0xb4860ef01adae0f0714776d1c35e7ad4b0937b79
 密钥       ：  0x1642d3005ab9ce6efb682d2ba3f4d54deebd62bb5ba80ee802c3495e78d0eb84
 
-均拥有已经已经配置的Erc20币，供测试使用。
+均拥有已经配置的Erc20币，供测试使用。
 ```
 
 
+
+### 配置流程
 
 也可以按照以下步骤轻松改造其为联盟链钱包，同时熟悉相关配置。
 
@@ -44,11 +48,58 @@ This is a tp-android based Android ink fst Wallet tool. We can use it to manage 
 
 ![image-20201106170929861](https://github.com/wzh9967/tp-android/blob/dev1/README_PICTURE/image-20201106170929861.png)
 
+> ```
+> 注意：
+> 
+> *关于GasPrice 无论社区链节点还是联盟链节点 通过getGasPrice 得到的值均为 10 * 10 。和联盟链默认的GasPrice 相同。故默认交易相关的GasPrice为 通过storm3.fst.getGasPrice()获取的值。
+> *和链的交互通过storm3实现，js放置在assert目录下。
+> ```
 
 
-*关于GasPrice 无论社区链节点还是联盟链节点 通过getGasPrice 得到的值均为 10 * 10 。和联盟链默认的GasPrice 相同。故默认交易相关的GasPrice为 通过storm3.fst.getGasPrice()获取的值。
 
-*和链的交互通过storm3实现，打包前的js源码压缩放置在了assert目录下。
+### 钱包使用
+
+> 1. 创建钱包：钱包备份只显示助记词备份（支持密钥备份，但输入太过繁琐，体验不佳故没有实装），相应密钥可以在钱包管理页面查看，记录。
+>
+>    
+>
+> 2. 导入钱包：支持密钥和助记词导入。可在钱包管理界面导入。
+>
+>    
+>
+> 3. 钱包切换： 通过钱包页面左上角小菜单手动切换，
+>
+>    ​					导入新钱包自动切换，
+>
+>    ​					查看交易记录页面小菜单手动切换。
+>
+>    
+>
+> 4. 转账：主页面【转账/收款】按钮均对应原生货币，进入erc20货币详情页后，【转账/收款】按钮对应相应货币转账。
+>
+>    
+>
+> 5. 收款：扫描二维码后，扫描方自动填写转账的地址和货币数量信息。并非扫描完场当时自动转账。
+>
+>    
+>
+> 6. 修改钱包信息（密码，备注，名称）：钱包管理页面。
+>
+>    
+>
+> 7. 查看密钥：钱包管理页面。
+>
+>    
+>
+> 8. 节点设置：切换到不可使用的节点将会影响余额的获取，转账，查看交易详情 。
+>
+>    ​					节点延迟仅仅代表网络的连通性，而非节点的可用。
+>
+>    ​					长按对应节点，跳出删除提示，默认节点（配置文件中）不可删除。
+
+
+
+
 
 
 
