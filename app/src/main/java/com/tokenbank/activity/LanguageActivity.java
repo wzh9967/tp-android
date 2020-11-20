@@ -15,7 +15,6 @@ import com.tokenbank.utils.LanguageUtil;
 import com.tokenbank.view.TitleBar;
 
 import java.util.Locale;
-
 public class LanguageActivity extends BaseActivity implements View.OnClickListener, TitleBar.TitleBarClickListener {
 
     private TitleBar mTitleBar;
@@ -31,7 +30,6 @@ public class LanguageActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_language);
-
         mTitleBar = (TitleBar) findViewById(R.id.title_bar);
         mTitleBar.setTitle(getString(R.string.title_languages));
         mTitleBar.setLeftDrawable(R.drawable.ic_back);

@@ -19,14 +19,12 @@ import com.tokenbank.fragment.MainUserFragment;
 import com.tokenbank.fragment.MainWalletFragment;
 import com.tokenbank.utils.ViewUtil;
 
-
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private final static int WALLET_INDEX = 0;
     private final static int MINE_INDEX = 1;
     private ViewPager mMainViewPager;
 
-    //tab
     private LinearLayout mLayoutTabWallet;
     private LinearLayout mLayoutTabMine;
 
@@ -72,13 +70,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initViewPager() {
-        //tab
         mLayoutTabWallet = (LinearLayout) findViewById(R.id.layout_tab_wallet);
         mLayoutTabMine = (LinearLayout) findViewById(R.id.layout_tab_mine);
+
         mLayoutTabWallet.setOnClickListener(this);
-
         mLayoutTabMine.setOnClickListener(this);
-
 
         mImgWallet = (ImageView) findViewById(R.id.img_tab_wallet);
         mTvWallet = (TextView) findViewById(R.id.tv_tab_wallet);
@@ -104,7 +100,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             }
         });
-
         mMainViewPager.setAdapter(new MainViewPagerAdapter(getSupportFragmentManager()));
         pageSelected(WALLET_INDEX);
     }

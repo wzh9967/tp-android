@@ -23,8 +23,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class ConfirmWalletBakupInfoActivity extends BaseActivity implements View.OnClickListener {
 
+public class ConfirmWalletBakupInfoActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String WALLET_ADDRESS = "Wallet_Address";
     private static final String BAKUP_TYPE = "Bakup_Type";
@@ -37,10 +37,7 @@ public class ConfirmWalletBakupInfoActivity extends BaseActivity implements View
     private TextView mTvBakupTitle;
     private TextView mTvBakupContent;
 
-    //私钥备份view
     private EditText mEdtPk;
-
-    //助记词相关view
     private LinearLayout mLayoutWords;
     private TagFlowLayout mFlowResult;
     private TagFlowLayout mFlowSource;
@@ -72,7 +69,6 @@ public class ConfirmWalletBakupInfoActivity extends BaseActivity implements View
         }
         if (mType == WORDS_TYPE) {
             mBaseList = Arrays.asList(mWords);
-            //将助记词顺序打乱
             resortWords();
         }
 
@@ -167,7 +163,6 @@ public class ConfirmWalletBakupInfoActivity extends BaseActivity implements View
         });
         mAdapterSource = new WordAdapter(mResortedList);
         mFlowSource.setAdapter(mAdapterSource);
-
         updateUIContent();
     }
 

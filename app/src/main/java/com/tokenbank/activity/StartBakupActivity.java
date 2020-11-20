@@ -11,7 +11,6 @@ import com.tokenbank.R;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.view.TitleBar;
 
-
 public class StartBakupActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String WALLET_ADDRESS = "Wallet_Address";
@@ -19,6 +18,7 @@ public class StartBakupActivity extends BaseActivity implements View.OnClickList
 
     private static final int PK_TYPE = 1;
     private static final int WORDS_TYPE = 2;
+    private static final String TAG = "StartBakupActivity";
 
     private TitleBar mTitleBar;
     private TextView mTvBakupTitle;
@@ -28,7 +28,7 @@ public class StartBakupActivity extends BaseActivity implements View.OnClickList
 
     private WalletInfoManager.WData mWalletData;
     private String[] mWords;
-    private int mType = -1;
+    private int mType = -1;//创建钱包的备份方式，设定为助记词，密钥可在管理钱包页面查看
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +81,6 @@ public class StartBakupActivity extends BaseActivity implements View.OnClickList
                 return false;
             }
         }
-
         return true;
     }
 

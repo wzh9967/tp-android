@@ -4,9 +4,14 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
+
+import com.tokenbank.config.Constant;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -147,13 +152,16 @@ public class Util {
         }
     }
 
-    public static double translateValue(int decimal, double value) {
-        double divider = 1.0f;
+    public static BigDecimal translateValue(int decimal, BigDecimal value) {
+        String divider = "1";
         for(int i = 0; i < decimal; i++) {
-            divider *= 10;
+            divider = divider +"0";
         }
-        return value / divider;
+        BigDecimal divider1 = new BigDecimal(divider);
+        value = value.divide(divider1);
+        return value;
     }
+
 
     //tokenvalue to wei
     public static double toWei(long blockChain, double tokenvalue) {
@@ -166,16 +174,14 @@ public class Util {
         return 0.0f;
     }
 
-    public static double tokenToWei(long blockChain, double tokenValue, int dec) {
-        if(blockChain == 1) {
+    public static BigDecimal tokenToWei(int dec,BigDecimal tokenValue) {
             String decimal = "1";
             for(int i = 0; i < dec; i++)  {
                 decimal = decimal + "0";
             }
-            TLog.e(TAG, "decimal:" + decimal);
-            return tokenValue * parseDouble(decimal);
-        }
-        return 0.0f;
+            BigDecimal decimal1 = new BigDecimal(decimal);
+            tokenValue =tokenValue.multiply(decimal1);
+            return tokenValue;
     }
 
     public static double fromGweToWei(long blockChain, double gwei) {
@@ -209,5 +215,45 @@ public class Util {
             e.printStackTrace();
             return 0.0f;
         }
+    }
+
+    public static String calculateGasInToken(int decimal, String gasLimit, Double gasPrice) {
+        if(decimal < 0 || decimal>30 ){
+            Log.e(TAG, "calculateGasInToken: gasLimit setting err ");
+            return "";
+        }
+        Double gas = Double.valueOf(gasLimit);
+        BigDecimal gasFee = new BigDecimal(gas*gasPrice);
+        gasFee = Util.translateValue(decimal, gasFee);
+        return  gasFee.setScale(7, BigDecimal.ROUND_DOWN).toString();
+    }
+
+    public static String fromValue(int decimal, String Value) {
+        BigDecimal ValueTempe = new BigDecimal(Value);
+        if (decimal <= 0) {
+            decimal = Constant.DefaultDecimal;
+        }
+        ValueTempe = Util.tokenToWei(decimal, ValueTempe);
+        return ValueTempe.setScale(0,BigDecimal.ROUND_DOWN).toString();
+    }
+
+    public static String toValue(int decimal, String originValue) {
+        if (decimal <= 0) {
+            decimal = Constant.DefaultDecimal;
+        }
+        try{
+            BigDecimal origindate = new BigDecimal(originValue);
+            origindate = Util.translateValue(decimal, origindate);
+            return origindate.setScale(3, BigDecimal.ROUND_DOWN).toString();
+        } catch (Exception err){
+            Log.e("toValue  :","err : "+err);
+            return "";
+        }
+    }
+
+    public static String toDate(String timestamp) {
+        SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Long time=new Long(timestamp);
+        return format.format(time*1000);
     }
 }

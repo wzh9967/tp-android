@@ -154,7 +154,6 @@ public class ManageWalletActivity extends BaseActivity implements View.OnClickLi
             holder.mTvWalletName.setText(wallet.wname);
             holder.mTvBakTips.setVisibility(wallet.isBaked ? View.GONE : View.VISIBLE);
             holder.mTvWalletAddress.setText(wallet.waddress);
-//            holder.mTvTotalAsset.setText(Html.fromHtml("<font><big>0</big>ether</font>"));
             return convertView;
         }
 

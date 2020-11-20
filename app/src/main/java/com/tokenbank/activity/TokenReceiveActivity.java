@@ -26,13 +26,16 @@ import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.Util;
 import com.tokenbank.view.TitleBar;
 
-
+/**
+ * 交易二维码生成
+ */
 public class TokenReceiveActivity extends BaseActivity {
 
     public final static String TAG = "TokenTransferActivity";
     private TitleBar mTitleBar;
 
     private final static String TOKEN = "Token";
+    private final static String CONTRACT = "Contract";
     private String mToken;
 
     private ImageView mImgQr;
@@ -42,6 +45,7 @@ public class TokenReceiveActivity extends BaseActivity {
     private TextView mTvTokenName;
     private TextView mTvCopyAddress;
     private BaseWalletUtil mWalletUtil;
+    private String mContract;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,12 +53,13 @@ public class TokenReceiveActivity extends BaseActivity {
         setContentView(R.layout.token_receive_activity);
         if (getIntent() != null) {
             mToken = getIntent().getStringExtra(TOKEN);
+            mContract = getIntent().getStringExtra(CONTRACT);
         }
         if (TextUtils.isEmpty(mToken)) {
             finish();
             return;
         }
-        mWalletUtil = TBController.getInstance().getWalletUtil(WalletInfoManager.getInstance().getWalletType());
+        mWalletUtil = TBController.getInstance().getWalletUtil();
         if (mWalletUtil == null) {
             this.finish();
             return;
@@ -119,7 +124,6 @@ public class TokenReceiveActivity extends BaseActivity {
                         tokenAmount, mToken);
             }
         });
-        //刚开始就钱包地址
         generateAddress(WalletInfoManager.getInstance().getWAddress(), 0.0f, mToken);
     }
 
@@ -129,7 +133,7 @@ public class TokenReceiveActivity extends BaseActivity {
             mImgQrShadow.setVisibility(View.VISIBLE);
             return;
         }
-        mWalletUtil.generateReceiveAddress(walletAddress, amount, token, new WCallback() {
+        mWalletUtil.generateReceiveAddress(walletAddress,mContract, amount, token, new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
                 if (ret == 0) {
@@ -164,9 +168,10 @@ public class TokenReceiveActivity extends BaseActivity {
      *
      * @param context
      */
-    public static void startTokenReceiveActivity(Context context, String token) {
+    public static void startTokenReceiveActivity(Context context, String contract ,String token) {
         Intent intent = new Intent(context, TokenReceiveActivity.class);
         intent.putExtra(TOKEN, token);
+        intent.putExtra(CONTRACT, contract);
         context.startActivity(intent);
     }
 }

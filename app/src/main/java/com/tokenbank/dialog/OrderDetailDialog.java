@@ -10,10 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokenbank.R;
-import com.tokenbank.base.BaseWalletUtil;
-import com.tokenbank.base.TBController;
-import com.tokenbank.base.WCallback;
-import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.Util;
 
 
@@ -37,28 +33,24 @@ public class OrderDetailDialog extends BaseDialog implements View.OnClickListene
 
     private String mSenderAddress;
     private String mReceiverAddress;
-    private double mGasPrice;
     private String mTokenName;
-    private double mGas;
+    private String mGasLimit;
     private double mTokenCount;
-    private long mBlockChain;
-    private boolean isDefaultToken;
-    private BaseWalletUtil mWalletUtil;
+    private Double mGasPrice;
+    private int mDecimal;
 
 
     public OrderDetailDialog(@NonNull Context context, onConfirmOrderListener onConfirmOrderListener, String senderAddress,
-                             String receiverAddress, double gasPrice, double gas, double tokencount, long blockChain, String tokenName, boolean defaultToken) {
+                             String receiverAddress, int Decimal ,Double gasPrice, String gasLimit, double tokencount, String tokenName) {
         super(context, R.style.DialogStyle);
         mOnConfirmOrderListener = onConfirmOrderListener;
         this.mSenderAddress = senderAddress;
         this.mReceiverAddress = receiverAddress;
         this.mGasPrice = gasPrice;
         this.mTokenName = tokenName;
-        this.mGas = gas;
+        this.mGasLimit = gasLimit;
+        this.mDecimal = Decimal;
         this.mTokenCount = tokencount;
-        mBlockChain = blockChain;
-        mWalletUtil = TBController.getInstance().getWalletUtil((int) mBlockChain);
-        isDefaultToken = defaultToken;
     }
 
     @Override
@@ -96,27 +88,14 @@ public class OrderDetailDialog extends BaseDialog implements View.OnClickListene
         mTvSenderAddress = findViewById(R.id.tv_sender_address);
         mTvSenderAddress.setText(mSenderAddress);
         mTvGasInToken = findViewById(R.id.tv_gas_intoken);
-        mWalletUtil.calculateGasInToken(mGas, mGasPrice, isDefaultToken, new WCallback() {
-            @Override
-            public void onGetWResult(int ret, GsonUtil extra) {
-                mTvGasInToken.setText(extra.getString("gas", ""));
-
-            }
-        });
+        mTvGasInToken.setText(Util.calculateGasInToken(mDecimal,mGasLimit, mGasPrice)+"moab");
         mTvGasInfo = findViewById(R.id.tv_gas_info);
-        mTvGasInfo.setText(generateGasInfoByGas());
+        mTvGasInfo.setText("≈ " + mGasPrice + " * " + mGasLimit+"/10^"+mDecimal);
         mTvTokenCount = findViewById(R.id.tv_token_count);
         mTvTokenCount.setText(Util.formatDoubleToStr(5, mTokenCount));
         mTvTokenName = findViewById(R.id.tv_token_name);
         mTvTokenName.setText(mTokenName);
         mTvConfirm = findViewById(R.id.tv_confirm);
         mTvConfirm.setOnClickListener(this);
-    }
-
-    private String generateGasInfoByGas() {
-        if (mBlockChain == TBController.SWT_INDEX) {
-            return "≈ " + mGasPrice + " * " + mGas;
-        }
-        return "";
     }
 }

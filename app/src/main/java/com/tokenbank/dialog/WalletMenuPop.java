@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.tokenbank.R;
 import com.tokenbank.activity.CreateWalletActivity;
 import com.tokenbank.adapter.BaseListViewAdapter;
-import com.tokenbank.base.BlockChainData;
 import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.utils.ViewUtil;
 
@@ -58,8 +57,10 @@ public class WalletMenuPop extends PopupWindow implements View.OnClickListener {
         view.findViewById(R.id.create_wallet).setOnClickListener(this);
         view.findViewById(R.id.pop_wallet_view).setOnClickListener(this);
         setContentView(view);
+        //和父宽度相同
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+        //        setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
 
         //设置动画
         setAnimationStyle(R.style.Pop_up_anim);
@@ -141,14 +142,7 @@ public class WalletMenuPop extends PopupWindow implements View.OnClickListener {
             } else {
                 holder = (ViewHolder) view.getTag();
             }
-            BlockChainData.Block block = BlockChainData.getInstance().getBolckByHid(mList.get(position).type);
-            if (block != null) {
-                holder.name.setText(mList.get(position).wname +
-                        "(" + block.desc + ")");
-            } else {
-                holder.name.setText("");
-            }
-
+            holder.name.setText(mList.get(position).wname);
             if (index == position) {
                 holder.name.setTextColor(ContextCompat.getColor(context, R.color.color_theme));
             } else {
@@ -161,7 +155,6 @@ public class WalletMenuPop extends PopupWindow implements View.OnClickListener {
             public ViewHolder(View view) {
                 this.name = view.findViewById(R.id.wallet_item_name);
             }
-
             TextView name;
         }
     }

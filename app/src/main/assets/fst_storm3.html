@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script type="text/javascript" src="./utils.js"></script>
+<script type="text/javascript" src="./fst.min.js"></script>
+<script>
+
+    function sendTransaction(params){
+        let paramsjson = JSON.parse(params);
+        let url = paramsjson.url;
+        let secret = paramsjson.secret;
+        let callid = paramsjson.callid;
+        let result = new Object();
+        let fstUtils = new transaction.fst_transaction(url);
+        fstUtils.init();
+        let txData = fstUtils.SignTransaction(params);
+        fstUtils.sendtransaction(txData,secret).then((hash) =>{
+            result.hash = hash;
+            notifyClient(callid, 0, result);
+        }).catch((err) =>{
+            result.err = err;
+            console.log(err);
+            notifyClient(callid, -1, result);
+        })
+    }
+
+    function getGasPrice(params){
+        let paramsjson = JSON.parse(params);
+        let callid = paramsjson.callid;
+        let url = paramsjson.url;
+        var result = new Object();
+        let fstUtil = new transaction.fst_transaction(url)
+        fstUtil.init();
+        fstUtil.getGasPrice().then((GasPrice ,err) =>{
+            if(!err){
+                result.GasPrice = GasPrice;
+                notifyClient(callid, 0, result);
+            } else {
+                result.err = err;
+                notifyClient(callid, -1, result);
+            }
+        })
+    }
+
+    function getBalance(params){
+        let paramsjson = JSON.parse(params);
+        let callid = paramsjson.callid;
+        let address = paramsjson.address;
+        let url = paramsjson.url;
+        let result = new Object();
+        let fstUtil = new transaction.fst_transaction(url)
+        fstUtil.init();
+        fstUtil.getBalance(address).then((balance) =>{
+                result.balance = balance;
+                notifyClient(callid, 0, result);
+        }).catch((err) =>{
+            console.log(err);
+            result.err = err;
+            notifyClient(callid, -1, result);
+        })
+    }
+
+    function getTransactionDetail(params){
+        let paramsjson = JSON.parse(params);
+        let hash = paramsjson.hash;
+        let callid = paramsjson.callid;
+        let url = paramsjson.url;
+        let result = new Object();
+        let fstUtil = new transaction.fst_transaction(url)
+        fstUtil.init();
+        fstUtil.getTransactionDetail(hash).then((data) =>{
+            result.data = data
+            notifyClient(callid, 0, result);
+        }).catch((err) =>{
+            console.log(err)
+            result.err = err;
+            notifyClient(callid, -1, result);
+        })
+    }
+
+    function getTransactionReceipt(params){
+        let paramsjson = JSON.parse(params);
+        let hash = paramsjson.hash;
+        let callid = paramsjson.callid;
+        let url = paramsjson.url;
+        let result = new Object();
+        let fstUtil = new transaction.fst_transaction(url)
+        fstUtil.init();
+        fstUtil.getTransactionReceipt(hash).then((data) =>{
+            result.data = data
+            notifyClient(callid, 0, result);
+        }).catch((err) =>{
+            console.log(err)
+            result.err = err;
+            console.log(err);
+            notifyClient(callid, -1, result);
+        })
+    }
+
+    function getErc20Balance(params){
+        let paramsjson = JSON.parse(params);
+        let callid = paramsjson.callid;
+        let contract = paramsjson.contract;
+        let address = paramsjson.address;
+        let url = paramsjson.url;
+        let result = new Object();
+        let fstUtils = new transaction.fst_erc20_transaction(url,contract,address);
+        fstUtils.getErc20Balance(address).then((balance) =>{
+            result.balance = balance;
+            notifyClient(callid, 0, result);
+        }).catch((err) =>{
+            result.err = err;
+            console.log(err);
+            notifyClient(callid, -1, result);
+        })
+    }
+
+    function sendErc20Transaction(params){
+        let paramsjson = JSON.parse(params);
+        let secret = paramsjson.secret;
+        let callid = paramsjson.callid;
+        let url = paramsjson.url;
+        let contract = paramsjson.contract;
+        let address = paramsjson.address;
+        let result = new Object();
+        let fstUtils = new transaction.fst_erc20_transaction(url,contract,address);
+        fstUtils.getB
+
+        fstUtils.SignErc20Transaction(params).then((txData) =>{
+            fstUtils.sendErc20Transaction(txData,secret).then((hash) =>{
+                result.hash = hash;
+                notifyClient(callid, 0, result);
+            }).catch((err)=>{
+                result.err = err;
+                console.log(err);
+                notifyClient(callid, -1, result);
+            })
+        }).catch((err)=>{
+            result.err = err;
+            console.log(err);
+            notifyClient(callid, -2, result);
+        })
+    }
+
+</script>
+</body>
+</html>

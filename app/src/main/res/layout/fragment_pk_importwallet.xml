@@ -22,42 +22,6 @@
             android:textSize="14sp"
             android:text=""/>
 
-        <RelativeLayout
-            android:id="@+id/layout_block_chain"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="20dp">
-
-            <TextView
-                android:id="@+id/block_chain_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="@string/enter_title_import_block"
-                android:textColor="@color/common_black_fontcolor"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/tv_block_chain"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="18dp"
-                android:layout_toRightOf="@id/block_chain_title"
-                android:textColor="@color/common_black_fontcolor"
-                android:textSize="16sp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                 />
-            <!--android:src="@drawable/ic_arrow_right"-->
-        </RelativeLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"

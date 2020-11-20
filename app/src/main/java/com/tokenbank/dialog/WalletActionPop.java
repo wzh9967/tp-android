@@ -43,7 +43,7 @@ public class WalletActionPop extends PopupWindow implements View.OnClickListener
         setAnimationStyle(R.style.Pop_up_anim);
         //设置背景颜色
         setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));//不加背景低版本无法取消
-//        setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.shape_dialog_bg));
+        //setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.shape_dialog_bg));
         //设置可以获取焦点
         setFocusable(true);
         //设置可以触摸弹出框以外的区域

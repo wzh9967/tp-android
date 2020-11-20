@@ -11,19 +11,21 @@ import com.tokenbank.R;
 import com.tokenbank.activity.AboutActivity;
 import com.tokenbank.activity.LanguageActivity;
 import com.tokenbank.activity.ManageWalletActivity;
+import com.tokenbank.activity.NodeSettingActivity;
 import com.tokenbank.activity.TransactionRecordActivity;
 import com.tokenbank.activity.WebBrowserActivity;
 import com.tokenbank.config.Constant;
 
 
 public class MainUserFragment extends BaseFragment implements View.OnClickListener {
-
+    private static final String TAG = "MainUserFragment";
     private RelativeLayout mLayoutManageWallet;
     private RelativeLayout mLayoutRecordTransaction;
     private RelativeLayout mLayoutNotification;
     private RelativeLayout mLayoutHelp;
     private RelativeLayout mLayoutAbout;
     private RelativeLayout mLayoutLanguage;
+    private RelativeLayout mLayoutNodeSetting;
 
     public static MainUserFragment newInstance() {
         Bundle args = new Bundle();
@@ -53,6 +55,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutHelp.setClickable(true);
         mLayoutAbout.setClickable(true);
         mLayoutLanguage.setClickable(true);
+        mLayoutNodeSetting.setClickable(true);
     }
 
     @Override
@@ -75,6 +78,9 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         } else if (view == mLayoutLanguage) {
             mLayoutLanguage.setClickable(false);
             LanguageActivity.startLanguageActivity(getActivity());
+        } else if (view == mLayoutNodeSetting){
+            mLayoutNodeSetting.setClickable(false);
+            NodeSettingActivity.startNodeSettingActivity(getActivity());
         }
     }
 
@@ -86,6 +92,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutHelp = view.findViewById(R.id.layout_help);
         mLayoutAbout = view.findViewById(R.id.layout_about);
         mLayoutLanguage = view.findViewById(R.id.layout_language);
+        mLayoutNodeSetting = view.findViewById(R.id.layout_node_setting);
 
         mLayoutManageWallet.setOnClickListener(this);
         mLayoutRecordTransaction.setOnClickListener(this);
@@ -93,6 +100,7 @@ public class MainUserFragment extends BaseFragment implements View.OnClickListen
         mLayoutHelp.setOnClickListener(this);
         mLayoutAbout.setOnClickListener(this);
         mLayoutLanguage.setOnClickListener(this);
+        mLayoutNodeSetting.setOnClickListener(this);
     }
 
 }

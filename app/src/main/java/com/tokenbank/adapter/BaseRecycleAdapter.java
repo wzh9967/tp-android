@@ -21,7 +21,6 @@ public abstract class BaseRecycleAdapter<T, H extends RecyclerView.ViewHolder> e
 
     @Override
     public int getItemCount() {
-        TLog.e(TAG, "getLength" + getLength());
         return getLength();
     }
 

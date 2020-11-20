@@ -1,6 +1,5 @@
 package com.tokenbank.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,10 +12,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokenbank.R;
-
-import com.tokenbank.base.BlockChainData;
-import com.tokenbank.base.TBController;
-import com.tokenbank.config.Constant;
 import com.tokenbank.fragment.BaseFragment;
 import com.tokenbank.fragment.PKFragment;
 import com.tokenbank.fragment.WordsFragment;
@@ -31,9 +26,6 @@ public class ImportWalletActivity extends BaseActivity implements View.OnClickLi
     private ImportWalletAdapter mAdapter;
     private final static String FROM = "From";
     private final static String BLOCK_ID = "BlockId";
-    private BlockChainData.Block mBlock;
-    private int mFlag = 1;
-    private int mBlockChainId;
 
     public final static String TAG = "ImportWalletActivity";
 
@@ -41,10 +33,7 @@ public class ImportWalletActivity extends BaseActivity implements View.OnClickLi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import_wallet);
-        if (getIntent() != null) {
-            mFlag = getIntent().getIntExtra(FROM, 1);
-        }
-        ChooseWalletBlockActivity.navToActivity(ImportWalletActivity.this, Constant.CHOOSE_BLOCK_REQUEST_CODE);
+        initView();
     }
 
     @Override
@@ -56,34 +45,6 @@ public class ImportWalletActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == Constant.CHOOSE_BLOCK_REQUEST_CODE) {
-                if(data == null) {
-                    this.finish();
-                    return;
-                }
-                mBlock = data.getParcelableExtra(Constant.BLOCK_KEY);
-                if (mBlock == null) {
-                    this.finish();
-                } else {
-                    if (mBlock.hid == TBController.SWT_INDEX) {
-                        Intent intent = new Intent();
-                        intent.putExtra(PKFragment.BLOCK, mBlock);
-                        FragmentContainerActivity.start(ImportWalletActivity.this,
-                                PKFragment.class, intent);
-                        this.finish();
-                    } else {
-                        finish();
-                    }
-                }
-            }
-        } else {
-            this.finish();
-        }
-
-    }
 
     private void initView() {
 
@@ -131,14 +92,6 @@ public class ImportWalletActivity extends BaseActivity implements View.OnClickLi
         mTvPrivateKey.setTextColor(getResources().getColor(R.color.common_black_fontcolor));
     }
 
-    public static void startImportWalletActivity(Context context, int blockChainId) {
-
-        Intent intent = new Intent(context, ImportWalletActivity.class);
-        intent.putExtra(BLOCK_ID, blockChainId);
-        intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
-    }
-
     public static void startImportWalletActivity(Context context) {
         Intent intent = new Intent(context, ImportWalletActivity.class);
         intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -148,8 +101,8 @@ public class ImportWalletActivity extends BaseActivity implements View.OnClickLi
     class ImportWalletAdapter extends FragmentPagerAdapter {
 
         public BaseFragment[] mFragments = new BaseFragment[]{
-                WordsFragment.newInstance(mFlag, mBlock),
-                PKFragment.newInstance(mFlag, mBlock)
+                WordsFragment.newInstance(),
+                PKFragment.newInstance()
         };
 
         public ImportWalletAdapter(FragmentManager fm) {

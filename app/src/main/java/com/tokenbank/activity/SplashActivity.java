@@ -24,15 +24,18 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
 
     private final static String TAG = "SplashActivity";
     private static final int REQUEST_CODE = 1008;
-
     private LinearLayout mLayoutSplashBtn;
     private TextView mTvCreateWallet;
     private TextView mTvImportWallet;
+    private int BackFlag = -1;
+
+    public static SplashActivity instance = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        instance = this;
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
@@ -44,6 +47,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
         if (!NetUtil.isNetworkAvailable(this)) {
             ToastUtil.toast(this, getString(R.string.toast_no_network));
         }
+//
 //        checkUpgrade();
         checkPermission();
     }
@@ -51,9 +55,23 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
     @Override
     public void onClick(View v) {
         if (v == mTvCreateWallet) {
-            gotoCreateWallet();
+             gotoCreateWallet();
         } else if (v == mTvImportWallet) {
             gotoImportWallet();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(BackFlag == 0){
+            BackFlag--;
+            AppConfig.getContext().clearActivity();
+            this.finish();
+            return;
+        }
+        if(BackFlag == -1){
+            ToastUtil.toast(SplashActivity.this, getString(R.string.toast_Confirm_exit));
+            BackFlag++;
         }
     }
 
@@ -65,12 +83,10 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
 
     private void gotoCreateWallet() {
         CreateWalletActivity.navToActivity(SplashActivity.this, REQUEST_CODE);
-        this.finish();
     }
 
     private void gotoImportWallet() {
         ImportWalletActivity.startImportWalletActivity(SplashActivity.this);
-        this.finish();
     }
 
     private void checkPermission() {
@@ -164,5 +180,4 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
             playAlphaAnim();
         }
     }
-
 }

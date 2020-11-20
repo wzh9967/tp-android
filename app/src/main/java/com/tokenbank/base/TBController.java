@@ -1,22 +1,25 @@
 package com.tokenbank.base;
-
+import com.android.jccdex.app.moac.MoacWallet;
+import com.tokenbank.config.AppConfig;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
-
+//后期要作一些修改
 public class TBController {
 
+
+    //关联抽象接口和具体实现
     private final static String TAG = "TBController";
+
 
     public final static int SWT_INDEX = 2;
 
     private BaseWalletUtil mWalletUtil;
-
-    private BaseWalletUtil mSwtWalletUtil;
+    private BaseWalletUtil mMocWalletUtil;
     private TestWalletBlockchain mNullWalletUtil;
-
+    private MoacWallet mMoacWalletUtil;
+    private MoacWallet mMoacWallet;
     private static TBController sInstance = new TBController();
     private  List<Integer> mSupportType = new ArrayList<>();
 
@@ -30,22 +33,25 @@ public class TBController {
 
     public void init() {
         mSupportType.add(SWT_INDEX);
-
-        mSwtWalletUtil = new SWTWalletBlockchain();
-        mSwtWalletUtil.init();
-
+        mMocWalletUtil = new FstWalletBlockchain();
+        mMocWalletUtil.init();
         mNullWalletUtil = new TestWalletBlockchain();
+        mMoacWallet = MoacWallet.getInstance();
+        mMoacWallet.init(AppConfig.getContext());
+        mMoacWallet.initChain3Provider(FstServer.getInstance().getNode());
     }
 
-    public BaseWalletUtil getWalletUtil(int type) {
-        if(type == SWT_INDEX) {
-            mWalletUtil = mSwtWalletUtil;
-        } else {
-            mWalletUtil = mNullWalletUtil;// do nothing
-        }
+    public BaseWalletUtil getWalletUtil() {
+        mWalletUtil = mMocWalletUtil;
         return mWalletUtil;
     }
 
+    public MoacWallet getMoacWallet() {
+        mMoacWalletUtil = mMoacWallet;
+        return mMoacWalletUtil;
+    }
+
+    //delete
     public List<Integer> getSupportType() {
         return mSupportType;
     }

@@ -62,7 +62,7 @@ public class PwdDialog extends Dialog implements View.OnClickListener {
             dismiss();
         } else if (view == mTvOk) {
             if (mPwdResult == null) {
-                TLog.e(TAG, "回掉接口空");
+                TLog.e(TAG, "回调接口为空");
                 dismiss();
                 return;
             }
@@ -82,8 +82,10 @@ public class PwdDialog extends Dialog implements View.OnClickListener {
 
     private void initView() {
         mTvCancel = (TextView) findViewById(R.id.tv_cancel);
+        mTvCancel.setText(getContext().getString(R.string.dialog_btn_cancel));
         mTvCancel.setOnClickListener(this);
         mTvOk = (TextView) findViewById(R.id.tv_ok);
+        mTvOk.setText(getContext().getString(R.string.dialog_btn_confirm));
         mTvOk.setOnClickListener(this);
         mEdtPw = (EditText) findViewById(R.id.edt_dialog_pwd);
     }

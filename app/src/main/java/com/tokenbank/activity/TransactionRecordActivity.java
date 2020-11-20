@@ -1,5 +1,6 @@
 package com.tokenbank.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,11 +22,12 @@ import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.base.WCallback;
 import com.tokenbank.base.TBController;
 import com.tokenbank.utils.GsonUtil;
-import com.tokenbank.utils.TLog;
-import com.tokenbank.utils.Util;
 import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
 
+/**
+ *  从MainUserFragment跳转的 交易记录页面
+ */
 
 public class TransactionRecordActivity extends BaseActivity implements BaseRecycleAdapter.OnDataLodingFinish,
         TitleBar.TitleBarClickListener, SwipeRefreshLayout.OnRefreshListener {
@@ -38,10 +40,12 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
     private RecyclerView mRecyclerViewTransactionRecord;
     private TransactionRecordAdapter mAdapter;
     private BaseWalletUtil mWalletUtil;
-
+    private int PageSize = 1;
     private View mEmptyView;
     private int mFrom = 2;
+    private String mAddress;
 
+    @SuppressLint("LongLogTag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,15 +53,13 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
         if (getIntent() != null) {
             mFrom = getIntent().getIntExtra("From", 2);
         }
-
         initView();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        int blockId = WalletInfoManager.getInstance().getWalletType();
-        mWalletUtil = TBController.getInstance().getWalletUtil(blockId);
+        mWalletUtil = TBController.getInstance().getWalletUtil();
         if (mWalletUtil == null) {
             this.finish();
             return;
@@ -68,11 +70,9 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
         }
         if (mFrom == 1) {
             mTitleBar.setTitle(getString(R.string.titleBar_message_center));
-
         } else {
             mTitleBar.setTitle(WalletInfoManager.getInstance().getWname());
         }
-
     }
 
     @Override
@@ -98,14 +98,16 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
     @Override
     public void onRightClick(View view) {
         ChangeWalletActivity.startChangeWalletActivity(this);
+        this.finish();
     }
+
 
     @Override
     public void onMiddleClick(View view) {
     }
 
+    @SuppressLint("LongLogTag")
     private void initView() {
-
         mSwipeRefreshLayout = findViewById(R.id.root_view);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
@@ -121,7 +123,7 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
 
         mEmptyView = findViewById(R.id.empty_view);
         mEmptyView.setVisibility(View.GONE);
-
+        mAddress = WalletInfoManager.getInstance().getWAddress();
         mRecyclerViewTransactionRecord = findViewById(R.id.recyclerview_transaction_record);
         mAdapter = new TransactionRecordAdapter();
         mAdapter.setDataLoadingListener(this);
@@ -170,14 +172,12 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
         private boolean mHasMore = true;
         private int mPageIndex = 0;
         private final static int PAGE_SIZE = 10;
-        private String mMarker; //jt 需要
 
         private BaseRecyclerViewHolder.ItemClickListener mItemClickListener = new BaseRecyclerViewHolder.ItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 GsonUtil item = getItem(position);
-
-                gotoTransactionDetail(item);
+                gotoTransactionDetail(item.getString("transactionHash",""));
             }
         };
 
@@ -185,10 +185,10 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
         public void loadData(final String params, final boolean loadmore) {
             if (!loadmore) {
                 mPageIndex = 0;
-                mMarker = "";
             } else {
                 mPageIndex++;
             }
+
             if (loadmore && !mHasMore) {
                 return;
             }
@@ -197,17 +197,12 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
                 mDataLoadingListener.onDataLoadingFinish(params, false, loadmore);
             }
 
-            GsonUtil requestParams = new GsonUtil("{}");
-            requestParams.putInt("start", mPageIndex);
-            requestParams.putInt("pagesize", PAGE_SIZE);
-            requestParams.putString("marker", mMarker);
-
-            mWalletUtil.queryTransactionList(requestParams, new WCallback() {
+            mWalletUtil.queryTransactionList(PageSize, mAddress,new WCallback() {
                 @Override
                 public void onGetWResult(int ret, GsonUtil extra) {
                     if (ret == 0) {
                         handleTransactioRecordResult(params, loadmore, extra);
-                        mMarker = extra.getString("marker", "");
+                        Retry(params,loadmore);
                     }
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
@@ -221,14 +216,25 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
             return holder;
         }
 
+        public void Retry(String params,  boolean loadmore){
+            if(PageSize == 1){
+                loadmore = true;
+            }
+            PageSize++;
+            if(PageSize > 10){
+                PageSize =1;
+                return;
+            }
+            loadData(params,loadmore);
+            return;
+        }
+
         @Override
         public void onBindViewHolder(TransactionRecordViewHolder transactionRecordViewHolder, int position) {
-            TLog.e(TAG, "itemcount:" + getItemCount());
             fillData(transactionRecordViewHolder, getItem(position));
         }
 
         private void handleTransactioRecordResult(final String params, final boolean loadmore, GsonUtil json) {
-            TLog.d(TAG, "transaction list:" + json);
             GsonUtil transactionRecord = json.getArray("data", "[]");
             if (!loadmore) {
                 //第一页
@@ -255,14 +261,12 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
             if (item == null || TextUtils.equals(item.toString(), "{}")) {
                 return;
             }
-
-            double value = item.getDouble("real_value", 0.0f);
+            String value= item.getString("value", "");
             String toAddress = item.getString("to", "");
-
             String fromAddress = item.getString("from", "");
             String currentAddress = WalletInfoManager.getInstance().getWAddress().toLowerCase();
             boolean in = false;
-            holder.mTvTransactionTime.setText(Util.formatTime(item.getLong("timeStamp", 0l)));
+            holder.mTvTransactionTime.setText(item.getString("timestamp", ""));
             String label = "";
             if (TextUtils.equals(currentAddress, fromAddress)) {
                 label = "-";
@@ -281,12 +285,11 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
                 holder.mImgIcon.setImageResource(R.drawable.ic_transaction_out);
                 holder.mTvTransactionCount.setTextColor(getResources().getColor(R.color.common_red));
             }
-
             holder.mTvTransactionCount.setText(label + value + item.getString("tokenSymbol", ""));
         }
 
-        private void gotoTransactionDetail(GsonUtil json) {
-            TransactionDetailsActivity.startTransactionDetailActivity(TransactionRecordActivity.this, json);
+        private void gotoTransactionDetail(String hash) {
+            TransactionDetailsActivity.startTransactionDetailActivity(TransactionRecordActivity.this, hash,false);
         }
 
         class TransactionRecordViewHolder extends BaseRecyclerViewHolder {
@@ -304,5 +307,4 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
             }
         }
     }
-
 }

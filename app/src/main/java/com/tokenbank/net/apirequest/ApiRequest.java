@@ -1,7 +1,7 @@
 package com.tokenbank.net.apirequest;
 
 import android.preference.PreferenceManager;
-
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.tokenbank.R;
@@ -81,6 +81,13 @@ public abstract class ApiRequest<T> implements IApiRequest {
         return apiResponseObservable;
     }
 
+
+    // create() 是 RxJava 最基本的创造事件序列的方法
+    // 此处传入了一个 OnSubscribe 对象参数
+    // 当 Observable 被订阅时，OnSubscribe 的 call() 方法会自动被调用，即事件序列就会依照设定依次被触发
+    // 即观察者会依次调用对应事件的复写方法从而响应事件
+    // 从而实现被观察者调用了观察者的回调方法 & 由被观察者向观察者的事件传递，即观察者模式
+
     public Observable<String> getStrObservable(final boolean shouldCache) {
         return Observable.create(new Observable.OnSubscribe<String>() {
             @Override
@@ -89,7 +96,6 @@ public abstract class ApiRequest<T> implements IApiRequest {
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String s) {
-                                TLog.d(TAG, "RxJava request response = " + s);
                                 subscriber.onNext(s);
                                 subscriber.onCompleted();
                             }
@@ -97,7 +103,6 @@ public abstract class ApiRequest<T> implements IApiRequest {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError volleyError) {
-                                TLog.d(TAG, "RxJava request Exception = " + volleyError);
                                 String errMsg = AppConfig.getContext().getString(R.string.content_network_err);
                                 int errCode = AppConfig.ERR_CODE.NETWORK_ERR;
                                 if (volleyError != null && volleyError.networkResponse != null) {
@@ -113,5 +118,8 @@ public abstract class ApiRequest<T> implements IApiRequest {
             }
         });
     }
-
+    @Override
+    public int getMethod(){
+        return Request.Method.GET;
+    }
 }

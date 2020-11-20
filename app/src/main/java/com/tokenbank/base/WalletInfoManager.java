@@ -1,7 +1,9 @@
 package com.tokenbank.base;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tokenbank.R;
 import com.tokenbank.activity.SplashActivity;
@@ -17,6 +19,7 @@ import java.util.List;
 
 public class WalletInfoManager {
 
+    private static final String TAG = "WalletInfoManager";
     private static WalletInfoManager instance = new WalletInfoManager();
     private WData mCurrentWallet;
 
@@ -32,7 +35,6 @@ public class WalletInfoManager {
         WData wallet = new WData();
         if (validWalletData(Constant.wallet_def_file)) {
             wallet.wid = FileUtil.getLongFromSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.wid);
-            wallet.type = FileUtil.getIntFromSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.wtype);
             wallet.wname = FileUtil.getStringFromSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.wname);
             wallet.waddress = FileUtil.getStringFromSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.waddress);
             wallet.whash = FileUtil.getStringFromSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.whash);
@@ -40,6 +42,8 @@ public class WalletInfoManager {
                     Constant.wallet_def_file, Constant.wpk);
             wallet.words = FileUtil.getStringFromSp(AppConfig.getContext(),
                     Constant.wallet_def_file, Constant.words);
+            wallet.tips = FileUtil.getStringFromSp(AppConfig.getContext(),
+                    Constant.wallet_def_file, Constant.tips);
             wallet.isBaked = FileUtil.getBooleanFromSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.baked);
             mCurrentWallet = wallet;
         } else {
@@ -56,7 +60,6 @@ public class WalletInfoManager {
                             if (validWalletData(spFileName)) {
                                 WData dwallet = new WData();
                                 dwallet.wid = FileUtil.getLongFromSp(AppConfig.getContext(), spFileName, Constant.wid);
-                                dwallet.type = FileUtil.getIntFromSp(AppConfig.getContext(), spFileName, Constant.wtype);
                                 dwallet.wname = FileUtil.getStringFromSp(AppConfig.getContext(), spFileName, Constant.wname);
                                 dwallet.waddress = FileUtil.getStringFromSp(AppConfig.getContext(), spFileName, Constant.waddress);
                                 dwallet.whash = FileUtil.getStringFromSp(AppConfig.getContext(), spFileName, Constant.whash);
@@ -64,8 +67,9 @@ public class WalletInfoManager {
                                         spFileName, Constant.wpk);
                                 dwallet.words = FileUtil.getStringFromSp(AppConfig.getContext(),
                                         spFileName, Constant.words);
+                                dwallet.tips = FileUtil.getStringFromSp(AppConfig.getContext(),
+                                        spFileName, Constant.tips);
                                 wallet.isBaked = FileUtil.getBooleanFromSp(AppConfig.getContext(), spFileName, Constant.baked);
-
                                 setCurrentWallet(dwallet);
                                 return;
 
@@ -102,10 +106,10 @@ public class WalletInfoManager {
         return false;
     }
 
-    public boolean hasWallet(int walletType) {
+    public boolean hasWallet(String waddress) {
         List<WData> allWalletData = getAllWallet();
         for (WData walletData : allWalletData) {
-            if (walletData.type == walletType) {
+            if (walletData.waddress == waddress) {
                 return true;
             }
         }
@@ -116,24 +120,23 @@ public class WalletInfoManager {
         if (wallet == null || TextUtils.isEmpty(wallet.wname) ||
                 TextUtils.isEmpty(wallet.waddress) || TextUtils.isEmpty(wallet.whash) ||
                 TextUtils.isEmpty(wallet.wpk) ||
-                wallet.wid <= 0l ||
-                wallet.type <= 0) {
+                wallet.wid <= 0l) {
             return;
         }
 
 
         String spFileName = Constant.wallet_prefs_prefix + wallet.waddress;
         FileUtil.putLongToSp(AppConfig.getContext(), spFileName, Constant.wid, wallet.wid);
-        FileUtil.putIntToSp(AppConfig.getContext(), spFileName, Constant.wtype, wallet.type);
         FileUtil.putStringToSp(AppConfig.getContext(), spFileName, Constant.wname, wallet.wname);
         FileUtil.putStringToSp(AppConfig.getContext(), spFileName, Constant.waddress, wallet.waddress);
         FileUtil.putStringToSp(AppConfig.getContext(), spFileName, Constant.whash, wallet.whash);
         FileUtil.putStringToSp(AppConfig.getContext(), spFileName, Constant.wpk,
                 wallet.wpk);
+        FileUtil.putStringToSp(AppConfig.getContext(), spFileName, Constant.tips,
+                wallet.tips);
         FileUtil.putStringToSp(AppConfig.getContext(), spFileName, Constant.words,
                 wallet.words);
         FileUtil.putBooleanToSp(AppConfig.getContext(), spFileName, Constant.baked, wallet.isBaked);
-
         setCurrentWallet(wallet);
     }
 
@@ -246,7 +249,6 @@ public class WalletInfoManager {
         }
         WData walletData = new WData();
         walletData.wid = FileUtil.getLongFromSp(AppConfig.getContext(), spFileName, Constant.wid);
-        walletData.type = FileUtil.getIntFromSp(AppConfig.getContext(), spFileName, Constant.wtype);
         walletData.wname = FileUtil.getStringFromSp(AppConfig.getContext(), spFileName, Constant.wname);
         walletData.waddress = FileUtil.getStringFromSp(AppConfig.getContext(), spFileName, Constant.waddress);
         walletData.whash = FileUtil.getStringFromSp(AppConfig.getContext(), spFileName, Constant.whash);
@@ -254,6 +256,8 @@ public class WalletInfoManager {
                 spFileName, Constant.wpk);
         walletData.words = FileUtil.getStringFromSp(AppConfig.getContext(),
                 spFileName, Constant.words);
+        walletData.tips = FileUtil.getStringFromSp(AppConfig.getContext(),
+                spFileName, Constant.tips);
         walletData.isBaked = FileUtil.getBooleanFromSp(AppConfig.getContext(), spFileName, Constant.baked);
         return walletData;
     }
@@ -288,13 +292,6 @@ public class WalletInfoManager {
         }
     }
 
-    public int getWalletType() {
-        if (mCurrentWallet == null) {
-            return 0;
-        } else {
-            return mCurrentWallet.type;
-        }
-    }
 
     public String getWalletWord() {
         if (mCurrentWallet == null) {
@@ -311,10 +308,10 @@ public class WalletInfoManager {
         }
     }
 
-    public boolean setCurrentWallet(int walletType) {
+    public boolean setCurrentWallet(int walletId) {
         List<WData> walletDataList = WalletInfoManager.getInstance().getAllWallet();
         for (WData walletData : walletDataList) {
-            if (walletData.type == walletType) {
+            if (walletData.wid == walletId) {
                 WalletInfoManager.getInstance().setCurrentWallet(walletData);
                 return true;
             }
@@ -336,7 +333,6 @@ public class WalletInfoManager {
                 !TextUtils.isEmpty(currentWallet.waddress)
                 && !TextUtils.isEmpty(currentWallet.whash) &&
                 !TextUtils.isEmpty(currentWallet.wpk) &&
-                currentWallet.type > 0 &&
                 currentWallet.wid > 0l) {
 
             this.mCurrentWallet = currentWallet;
@@ -360,13 +356,14 @@ public class WalletInfoManager {
                         String fileName = spFile.getName().substring(0, spFile.getName().lastIndexOf("."));
                         if (validWalletData(fileName) && !TextUtils.equals(fileName, Constant.wallet_def_file)) {
                             WData dwallet = new WData();
-                            dwallet.type = FileUtil.getIntFromSp(AppConfig.getContext(), fileName, Constant.wtype);
                             dwallet.wid = FileUtil.getLongFromSp(AppConfig.getContext(), fileName, Constant.wid);
                             dwallet.wname = FileUtil.getStringFromSp(AppConfig.getContext(), fileName, Constant.wname);
                             dwallet.waddress = FileUtil.getStringFromSp(AppConfig.getContext(), fileName, Constant.waddress);
                             dwallet.whash = FileUtil.getStringFromSp(AppConfig.getContext(), fileName, Constant.whash);
                             dwallet.wpk = FileUtil.getStringFromSp(AppConfig.getContext(),
                                     fileName, Constant.wpk);
+                            dwallet.tips = FileUtil.getStringFromSp(AppConfig.getContext(),
+                                    fileName, Constant.tips);
                             dwallet.words = FileUtil.getStringFromSp(AppConfig.getContext(),
                                     fileName, Constant.words);
                             dwallet.isBaked = FileUtil.getBooleanFromSp(AppConfig.getContext(), fileName, Constant.baked);
@@ -385,7 +382,6 @@ public class WalletInfoManager {
                 !TextUtils.isEmpty(FileUtil.getStringFromSp(AppConfig.getContext(), fileName, Constant.waddress))
                 && !TextUtils.isEmpty(FileUtil.getStringFromSp(AppConfig.getContext(), fileName, Constant.whash)) &&
                 !TextUtils.isEmpty(FileUtil.getStringFromSp(AppConfig.getContext(), fileName, Constant.wpk)) &&
-                FileUtil.getIntFromSp(AppConfig.getContext(), fileName, Constant.wtype) > 0 &&
                 FileUtil.getLongFromSp(AppConfig.getContext(), fileName, Constant.wid) > 0) {
             return true;
         }
@@ -400,17 +396,16 @@ public class WalletInfoManager {
         if (TextUtils.isEmpty(wallet.wname) ||
                 TextUtils.isEmpty(wallet.waddress) || TextUtils.isEmpty(wallet.whash) ||
                 TextUtils.isEmpty(wallet.wpk) ||
-                wallet.wid <= 0 ||
-                wallet.type <= 0) {
+                wallet.wid <= 0) {
             ToastUtil.toast(AppConfig.getContext(), AppConfig.getContext().getString(R.string.toast_update_default_wallet_failed));
             return;
         }
-        FileUtil.putIntToSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.wtype, wallet.type);
         FileUtil.putLongToSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.wid, wallet.wid);
         FileUtil.putStringToSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.wname, wallet.wname);
         FileUtil.putStringToSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.waddress, wallet.waddress);
         FileUtil.putStringToSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.whash, wallet.whash);
         FileUtil.putStringToSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.wpk, wallet.wpk);
+        FileUtil.putStringToSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.tips, wallet.tips);
         FileUtil.putStringToSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.words, wallet.words);
         FileUtil.putBooleanToSp(AppConfig.getContext(), Constant.wallet_def_file, Constant.baked, wallet.isBaked);
     }
@@ -422,15 +417,14 @@ public class WalletInfoManager {
         public String waddress;
         public String whash;
         public String wpk;
-        public int type;
         public boolean isBaked = false;
         public String words = "";
-
+        public String tips ="";
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof WData) {
                 WData wallet = (WData) obj;
-                if (TextUtils.equals(wallet.waddress, this.waddress) && wallet.type == this.type) {
+                if (TextUtils.equals(wallet.waddress, this.waddress) && wallet.wid == this.wid) {
                     return true;
                 }
             }
