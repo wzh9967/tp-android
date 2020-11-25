@@ -26,6 +26,7 @@ public class Constant {
     public final static String privatekey_intro_url = "";
     public final static String sys_prefs = "sys_prefs";
     public final static String init_keys = "init_keys";
+    public static final String LOAD_URL = "load_url";
     //服务协议
     public final static String service_term_url = "";
 

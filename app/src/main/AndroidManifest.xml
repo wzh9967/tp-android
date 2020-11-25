@@ -14,11 +14,7 @@
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.GET_TOP_ACTIVITY_INFO"
         tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <!-- 附近功能要求gps -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!-- 在SDCard中创建与删除文件权限 -->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
@@ -108,6 +104,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.LanguageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".web.WebActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.AboutActivity"

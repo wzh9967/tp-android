@@ -1,13 +1,11 @@
 package com.tokenbank.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.tokenbank.TApplication;
 import com.tokenbank.utils.LanguageUtil;

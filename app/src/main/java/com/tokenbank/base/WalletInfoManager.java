@@ -1,10 +1,7 @@
 package com.tokenbank.base;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.TextUtils;
-import android.util.Log;
-
 import com.tokenbank.R;
 import com.tokenbank.activity.SplashActivity;
 import com.tokenbank.config.AppConfig;

@@ -389,6 +389,18 @@ public class GsonUtil implements Serializable {
         return this;
     }
 
+
+    public GsonUtil putBoolean(String key, boolean value) {
+        if (obj != null) {
+            try {
+                obj.put(key, value);
+            } catch (Throwable e) {
+            }
+        }
+
+        return this;
+    }
+
     public GsonUtil putString(String key, String value) {
         if (obj != null) {
             try {

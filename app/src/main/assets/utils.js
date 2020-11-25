@@ -1,34 +1,3 @@
-function getNodeFromNative(callback){
-     var tpCallbackFun = _getCallbackName();
-        window[tpCallbackFun] = function (result) {
-            result = result.replace(/\r/ig, "").replace(/\n/ig, "");
-            try {
-                let res = JSON.parse(result);
-                callback(res.node,0)
-            } catch (err) {
-                callback(res.node,err)
-                console.log(err);
-            }
-        }
-     _sendTpRequest('sendNodeToJs', '', tpCallbackFun);
-}
-var _getCallbackName = function () {
-    var ramdom = parseInt(Math.random() * 100000);
-    return 'tp_callback_' + new Date().getTime() + ramdom;
-}
-
-var _sendTpRequest = function (methodName, params, callback) {
-    if (window.client) {
-        window.client.callHandler(methodName, params, callback);
-    }
-}
-
-var _getTypeByStr = function (typeStr) {
-    var reTrim = /^\s+|\s+$/g;
-    typeStr += '';
-    typeStr = typeStr.replace(reTrim, '').toLowerCase();
-    return TYPE_MAP[typeStr] || typeStr;
-}
 
 function notifyClient(callid, ret, extra) {
     let result = new Object();

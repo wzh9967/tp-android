@@ -2,6 +2,7 @@ package com.zxing.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
@@ -61,6 +62,13 @@ public class CaptureActivity extends BaseActivity implements Callback {
         Intent intent = new Intent(context, CaptureActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivityForResult(intent, requestCode);
+    }
+
+    public static void startCaptureActivity(Context context, String callBackId) {
+        Intent intent = new Intent(context, CaptureActivity.class);
+        intent.putExtra("callBackId", callBackId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
     }
 
     /**
