@@ -24,16 +24,23 @@ import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.tokenbank.R;
 import com.tokenbank.activity.BaseActivity;
 import com.tokenbank.utils.QRUtils;
 import com.tokenbank.view.TitleBar;
+import com.tokenbank.web.JsEvent;
 import com.zxing.camera.CameraManager;
 import com.zxing.decoding.CaptureActivityHandler;
 import com.zxing.decoding.InactivityTimer;
 import com.zxing.view.ViewfinderView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -57,6 +64,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     private static final int PARSE_BARCODE_FAIL = 303;
     private ProgressDialog mProgress;
     private String photo_path;
+    private String mCallBackId;
 
     public static void navToActivity(Activity context, int requestCode) {
         Intent intent = new Intent(context, CaptureActivity.class);
@@ -83,6 +91,10 @@ public class CaptureActivity extends BaseActivity implements Callback {
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
 
+        if (getIntent() != null) {
+            mCallBackId = getIntent().getStringExtra("callBackId");
+        }
+
         TitleBar mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
         mTitleBar.setTitle(getString(R.string.titleBar_scan));
@@ -101,6 +113,14 @@ public class CaptureActivity extends BaseActivity implements Callback {
             mProgress.dismiss();
             switch (msg.what) {
                 case PARSE_BARCODE_SUC:
+                    if (!TextUtils.isEmpty(mCallBackId)) {
+                        JsEvent jsEvent = new JsEvent();
+                        jsEvent.setMsg((String) msg.obj);
+                        jsEvent.setCallBackId(mCallBackId);
+                        EventBus.getDefault().post(jsEvent);
+                        finish();
+                        return;
+                    }
                     onResultHandler((String) msg.obj);
                     break;
                 case PARSE_BARCODE_FAIL:
@@ -127,6 +147,39 @@ public class CaptureActivity extends BaseActivity implements Callback {
                     }
                     cursor.close();
 
+                    mProgress = new ProgressDialog(CaptureActivity.this);
+                    mProgress.setMessage(getString(R.string.dialog_content_scanning));
+                    mProgress.setCancelable(false);
+                    mProgress.show();
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Result result = QRUtils.scanningImage(photo_path);
+                            if (result != null) {
+                                Message m = mHandler.obtainMessage();
+                                m.what = PARSE_BARCODE_SUC;
+                                m.obj = result.getText();
+                                mHandler.sendMessage(m);
+                            } else {
+                                Message m = mHandler.obtainMessage();
+                                m.what = PARSE_BARCODE_FAIL;
+                                m.obj = "Scan failed!";
+                                mHandler.sendMessage(m);
+                            }
+                        }
+                    }).start();
+                    break;
+
+                case PictureConfig.CHOOSE_REQUEST:
+                    List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
+                    if (selectList != null && selectList.size() > 0) {
+                        photo_path = selectList.get(0).getPath();
+                    }
+
+                    if (TextUtils.isEmpty(photo_path)) {
+                        return;
+                    }
                     mProgress = new ProgressDialog(CaptureActivity.this);
                     mProgress.setMessage(getString(R.string.dialog_content_scanning));
                     mProgress.setCancelable(false);
@@ -203,6 +256,10 @@ public class CaptureActivity extends BaseActivity implements Callback {
     }
 
     private void onResultHandler(String resultString) {
+
+
+
+
 
         if (TextUtils.isEmpty(resultString)) {
             Toast.makeText(CaptureActivity.this, "Scan failed!", Toast.LENGTH_SHORT).show();

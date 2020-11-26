@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -117,10 +118,12 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
         String walletPwdRepeat = mEdtWalletPwdRepeat.getText().toString();
         String walletName = mEdtWalletName.getText().toString();
         boolean readedTerms = mImgboxTerms.isSelected();
+
         if (TextUtils.isEmpty(walletName)) {
             ViewUtil.showSysAlertDialog(getActivity(), getString(R.string.enter_hint_wallet_name), "OK");
             return false;
         }
+
         if (TextUtils.isEmpty(walletPrivateKey)) {
             ViewUtil.showSysAlertDialog(getActivity(), getString(R.string.dialog_title_no_private_key), "OK");
             return false;
@@ -130,6 +133,7 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
             ViewUtil.showSysAlertDialog(getActivity(), getString(R.string.dialog_title_key_format_incorrect), "OK");
             return false;
         }
+
         if (TextUtils.isEmpty(walletPwd)) {
             ViewUtil.showSysAlertDialog(getActivity(), getString(R.string.dialog_content_no_password), "OK");
             return false;
@@ -144,26 +148,30 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
             ViewUtil.showSysAlertDialog(getActivity(), getString(R.string.dialog_content_passwords_unmatch), "OK");
             return false;
         }
+
         if (walletPwd.length() < 8) {
             ViewUtil.showSysAlertDialog(getActivity(), getString(R.string.dialog_content_short_password), "OK");
             return false;
         }
+
         if (!readedTerms) {
             ViewUtil.showSysAlertDialog(getActivity(), getString(R.string.dialog_content_no_read_service), "OK");
             return false;
         }
+
         return true;
     }
 
     private void importWallet() {
         final String secret = mEdtWalletPrivateKey.getText().toString();
         final String password = mEdtWalletPwd.getText().toString();
-
+        Log.d(TAG, "importWallet:+++++++++++++++++++11111111111");
         mMoacWallet.importSecret(secret, new JCallback() {
             @Override
             public void completion(JCCJson jccJson) {
                 String secret = jccJson.getString("secret");
                 String address = jccJson.getString("address");
+                Log.d(TAG, "importWallet:+++++++++++++++++++222222222222222");
                 if(secret ==null && address ==null){
                     ToastUtil.toast(getActivity(),getString(R.string.toast_import_wallet_failed));
                     return;
@@ -172,6 +180,7 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
                         ToastUtil.toast(getActivity(),getString(R.string.toast_wallet_exists));
                         return;
                     } else {
+                        Log.d(TAG, "importWallet:+++++++++++++++++++33333333333333333");
                         uploadWallet(mEdtWalletName.getText().toString(), FileUtil.getStringContent(password),
                                 secret, address);
                     }

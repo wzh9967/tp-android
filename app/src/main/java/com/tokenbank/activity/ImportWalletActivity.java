@@ -98,6 +98,8 @@ public class ImportWalletActivity extends BaseActivity implements View.OnClickLi
         context.startActivity(intent);
     }
 
+
+
     class ImportWalletAdapter extends FragmentPagerAdapter {
 
         public BaseFragment[] mFragments = new BaseFragment[]{

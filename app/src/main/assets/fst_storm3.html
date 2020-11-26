@@ -128,8 +128,6 @@
         let address = paramsjson.address;
         let result = new Object();
         let fstUtils = new transaction.fst_erc20_transaction(url,contract,address);
-        fstUtils.getB
-
         fstUtils.SignErc20Transaction(params).then((txData) =>{
             fstUtils.sendErc20Transaction(txData,secret).then((hash) =>{
                 result.hash = hash;
