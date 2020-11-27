@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokenbank.R;
-import com.tokenbank.base.WalletInfoManager;
+import com.tokenbank.wallet.WalletInfoManager;
 import com.tokenbank.fragment.DappFragment;
 import com.tokenbank.fragment.MainUserFragment;
 import com.tokenbank.fragment.MainWalletFragment;

@@ -15,7 +15,6 @@ import android.os.Message;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
@@ -24,9 +23,6 @@ import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
-import com.luck.picture.lib.PictureSelector;
-import com.luck.picture.lib.config.PictureConfig;
-import com.luck.picture.lib.entity.LocalMedia;
 import com.tokenbank.R;
 import com.tokenbank.activity.BaseActivity;
 import com.tokenbank.utils.QRUtils;
@@ -40,7 +36,6 @@ import com.zxing.view.ViewfinderView;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Vector;
 
 /**
@@ -107,12 +102,13 @@ public class CaptureActivity extends BaseActivity implements Callback {
     }
 
     private Handler mHandler = new Handler() {
-
         @Override
         public void handleMessage(Message msg) {
             mProgress.dismiss();
             switch (msg.what) {
+
                 case PARSE_BARCODE_SUC:
+
                     if (!TextUtils.isEmpty(mCallBackId)) {
                         JsEvent jsEvent = new JsEvent();
                         jsEvent.setMsg((String) msg.obj);
@@ -156,50 +152,15 @@ public class CaptureActivity extends BaseActivity implements Callback {
                         @Override
                         public void run() {
                             Result result = QRUtils.scanningImage(photo_path);
+                            Message m = mHandler.obtainMessage();
                             if (result != null) {
-                                Message m = mHandler.obtainMessage();
                                 m.what = PARSE_BARCODE_SUC;
                                 m.obj = result.getText();
-                                mHandler.sendMessage(m);
                             } else {
-                                Message m = mHandler.obtainMessage();
                                 m.what = PARSE_BARCODE_FAIL;
                                 m.obj = "Scan failed!";
-                                mHandler.sendMessage(m);
                             }
-                        }
-                    }).start();
-                    break;
-
-                case PictureConfig.CHOOSE_REQUEST:
-                    List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
-                    if (selectList != null && selectList.size() > 0) {
-                        photo_path = selectList.get(0).getPath();
-                    }
-
-                    if (TextUtils.isEmpty(photo_path)) {
-                        return;
-                    }
-                    mProgress = new ProgressDialog(CaptureActivity.this);
-                    mProgress.setMessage(getString(R.string.dialog_content_scanning));
-                    mProgress.setCancelable(false);
-                    mProgress.show();
-
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Result result = QRUtils.scanningImage(photo_path);
-                            if (result != null) {
-                                Message m = mHandler.obtainMessage();
-                                m.what = PARSE_BARCODE_SUC;
-                                m.obj = result.getText();
-                                mHandler.sendMessage(m);
-                            } else {
-                                Message m = mHandler.obtainMessage();
-                                m.what = PARSE_BARCODE_FAIL;
-                                m.obj = "Scan failed!";
-                                mHandler.sendMessage(m);
-                            }
+                            mHandler.sendMessage(m);
                         }
                     }).start();
                     break;
@@ -256,13 +217,16 @@ public class CaptureActivity extends BaseActivity implements Callback {
     }
 
     private void onResultHandler(String resultString) {
-
-
-
-
-
         if (TextUtils.isEmpty(resultString)) {
             Toast.makeText(CaptureActivity.this, "Scan failed!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!TextUtils.isEmpty(mCallBackId)) {
+            JsEvent jsEvent = new JsEvent();
+            jsEvent.setMsg(resultString);
+            jsEvent.setCallBackId(mCallBackId);
+            EventBus.getDefault().post(jsEvent);
+            finish();
             return;
         }
         Intent resultIntent = new Intent();

@@ -1,4 +1,3 @@
-
 package com.tokenbank.fragment;
 
 import android.app.Activity;
@@ -22,24 +21,23 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.android.jccdex.app.base.JCallback;
-import com.android.jccdex.app.moac.MoacWallet;
-import com.android.jccdex.app.util.JCCJson;
 import com.tokenbank.R;
 import com.tokenbank.activity.TokenDetailsActivity;
 import com.tokenbank.activity.TokenReceiveActivity;
 import com.tokenbank.activity.TokenTransferActivity;
 import com.tokenbank.adapter.BaseRecycleAdapter;
 import com.tokenbank.adapter.BaseRecyclerViewHolder;
-import com.tokenbank.base.BaseWalletUtil;
+import com.tokenbank.wallet.FstServer;
+import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
-import com.tokenbank.base.WalletInfoManager;
+import com.tokenbank.wallet.WalletInfoManager;
 import com.tokenbank.config.Constant;
 import com.tokenbank.dialog.WalletActionPop;
 import com.tokenbank.dialog.WalletMenuPop;
 import com.tokenbank.utils.DefaultItemDecoration;
 import com.tokenbank.utils.FileUtil;
+import com.tokenbank.utils.FstWalletUtil;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.NetUtil;
 import com.tokenbank.utils.ToastUtil;
@@ -57,7 +55,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private Context context;
     private Toolbar mToolbar;
     private View mEmptyView;
-    private MoacWallet mMoacWallet;
     private RecyclerView mRecycleView;
     private AppBarLayout mAppbarLayout;
     private View mWalletAction, mMenuAction;
@@ -69,7 +66,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private String amount;
     private String unit = "¥";
     private double mTotalAsset = 0.0f;
-    private BaseWalletUtil mWalletUtil;
+    private FstWallet mFstWallet;
     private WalletMenuPop walletMenuPop;
     private WalletActionPop walletActionPop;
     private boolean isAssetVisible = false;
@@ -97,7 +94,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     }
 
     private void initView(View view) {
-        mWalletUtil = TBController.getInstance().getWalletUtil();
+        mFstWallet = TBController.getInstance().getFstWallet();
         isAssetVisible = FileUtil.getBooleanFromSp(getContext(), Constant.common_prefs, Constant.asset_visible_key, true);
         mSwipteRefreshLayout = view.findViewById(R.id.swiperefreshlayout);
         mSwipteRefreshLayout.setOnRefreshListener(this);
@@ -144,7 +141,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         view.findViewById(R.id.wallet_action_transfer1).setOnClickListener(this);
         isViewCreated = true;
         this.context = getActivity().getApplicationContext();
-        mMoacWallet =TBController.getInstance().getMoacWallet();
         currency =new GsonUtil(FileUtil.getConfigFile(this.context, "currency.json"));
     }
 
@@ -203,7 +199,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private void refreshWallet() {
         setWalletName();
         refresh();
-        mWalletUtil = TBController.getInstance().getWalletUtil();
+        mFstWallet = TBController.getInstance().getFstWallet();
     }
 
     /**
@@ -279,7 +275,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         String finalContract = contract;
         //合约为 000000  为原生转账，
         if(contract.startsWith("0000000")){
-            mWalletUtil.getBalance(WalletInfoManager.getInstance().getWAddress(), new WCallback() {
+            mFstWallet.getBalance(WalletInfoManager.getInstance().getWAddress(), new WCallback() {
                 @Override
                 public void onGetWResult(int ret, GsonUtil extra) {
                     String value = Util.toValue(Constant.DefaultDecimal,extra.getString("balance",""));
@@ -288,9 +284,11 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 }
             });
         } else {
-            int decimal = Integer.parseInt(mWalletUtil.getDataByContract(contract,"decimal"));
-            String tokenName = mWalletUtil.getDataByContract(contract,"name");
-            mWalletUtil.getErc20Balance(contract,WalletInfoManager.getInstance().getWAddress(), new WCallback() {
+            int decimal = Integer.parseInt(FstWalletUtil.getDataByContract(contract,"decimal"));
+            String tokenName = FstWalletUtil.getDataByContract(contract,"name");
+            String address = WalletInfoManager.getInstance().getWAddress();
+            mFstWallet.initContract(contract, address, FstServer.getInstance().getNode());
+            mFstWallet.getErc20Balance(contract, address, new WCallback() {
                 @Override
                 public void onGetWResult(int ret, GsonUtil extra) {
                     String value = Util.toValue(decimal,extra.getString("balance",""));
@@ -418,11 +416,13 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             if (mDataLoadingListener != null) {
                 mDataLoadingListener.onDataLoadingFinish(params, false, loadmore);
             }
-            mMoacWallet.gasPrice(new JCallback() {
+            mFstWallet.getGasPrice(new WCallback() {
                 @Override
-                public void completion(JCCJson jccJson) {
-                    handleTokenRequestResult(params, loadmore, currency);
-                    mSwipteRefreshLayout.setRefreshing(false);
+                public void onGetWResult(int ret, GsonUtil extra) {
+                    if(ret == 0){
+                        handleTokenRequestResult(params, loadmore, currency);
+                        mSwipteRefreshLayout.setRefreshing(false);
+                    }
                 }
             });
         }
@@ -470,7 +470,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             String contract = data.getString("contract","");
             String address = WalletInfoManager.getInstance().getWAddress();
             if(contract.equals("")){
-                mWalletUtil.getBalance(address,new WCallback() {
+                mFstWallet.getBalance(address,new WCallback() {
                     @Override
                     public void onGetWResult(int ret, GsonUtil extra) {
                         if(ret == 0){
@@ -484,7 +484,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                     }
                 });
             } else {
-                mWalletUtil.getErc20Balance(contract,address,new WCallback() {
+                mFstWallet.initContract(contract,address, FstServer.getInstance().getNode());
+                mFstWallet.getErc20Balance(contract,address,new WCallback() {
                     @Override
                     public void onGetWResult(int ret, GsonUtil extra) {
                         if(ret == 0){

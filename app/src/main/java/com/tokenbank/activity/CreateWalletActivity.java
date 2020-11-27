@@ -11,14 +11,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.android.jccdex.app.base.JCallback;
-import com.android.jccdex.app.moac.MoacWallet;
-import com.android.jccdex.app.util.JCCJson;
+
 import com.tokenbank.R;
+import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
-import com.tokenbank.base.WalletInfoManager;
+import com.tokenbank.base.WCallback;
+import com.tokenbank.wallet.WalletInfoManager;
 import com.tokenbank.config.Constant;
 import com.tokenbank.utils.FileUtil;
+import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
@@ -32,14 +33,14 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
     private ImageView mImgServiceTerms;
     private TextView mTvServiceTerms;
     private Button mBtnConfirm;
-    private MoacWallet mMoacWallet;
+    private FstWallet mFstWallet;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_wallet_new);
         initView();
-        mMoacWallet =TBController.getInstance().getMoacWallet();
+        mFstWallet =TBController.getInstance().getFstWallet();
     }
 
 
@@ -138,16 +139,21 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
 
     private void createMocWallet(final String walletName, final String walletPwd) {
         setBtnStateToCreating();
-        mMoacWallet.createWallet(new JCallback() {
+        mFstWallet.createWallet(new WCallback() {
             @Override
-            public void completion(JCCJson jccJson) {
-                String secret = jccJson.getString("secret");
-                String address = jccJson.getString("address");
-                String words = jccJson.getString("words");
-                if (secret != null && address != null && words != null) {
-                    String hash = FileUtil.getStringContent(walletPwd);
-                    recordWallet(walletName, hash, secret, words, mEdtWalletTips.getText().toString(),
-                            address);
+            public void onGetWResult(int ret, GsonUtil extra) {
+                if(ret == 0){
+                    String secret = extra.getString("secret","");
+                    String address = extra.getString("address","");
+                    String words = extra.getString("words","");
+                    if (secret != null && address != null && words != null) {
+                        String hash = FileUtil.getStringContent(walletPwd);
+                        recordWallet(walletName, hash, secret, words, mEdtWalletTips.getText().toString(),
+                                address);
+                    } else {
+                        resetBtn();
+                        ToastUtil.toast(CreateWalletActivity.this, getString(R.string.btn_create_wallet_fail));
+                    }
                 } else {
                     resetBtn();
                     ToastUtil.toast(CreateWalletActivity.this, getString(R.string.btn_create_wallet_fail));

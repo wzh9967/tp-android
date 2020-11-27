@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.tokenbank.R;
 import com.tokenbank.activity.CreateWalletActivity;
 import com.tokenbank.adapter.BaseListViewAdapter;
-import com.tokenbank.base.WalletInfoManager;
+import com.tokenbank.wallet.WalletInfoManager;
 import com.tokenbank.utils.ViewUtil;
 
 import java.util.ArrayList;

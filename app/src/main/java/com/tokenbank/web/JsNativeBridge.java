@@ -1,7 +1,6 @@
 package com.tokenbank.web;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -12,22 +11,13 @@ import android.text.Spanned;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
-import com.android.jccdex.app.moac.MoacWallet;
 import com.just.agentweb.AgentWeb;
 import com.tokenbank.activity.ImportWalletActivity;
-import com.tokenbank.activity.SplashActivity;
-import com.tokenbank.activity.TokenTransferActivity;
-import com.tokenbank.base.BaseWalletUtil;
-import com.tokenbank.base.FstServer;
-import com.tokenbank.base.TBController;
-import com.tokenbank.base.WCallback;
-import com.tokenbank.base.WalletInfoManager;
+import com.tokenbank.wallet.FstServer;
+import com.tokenbank.wallet.WalletInfoManager;
 import com.tokenbank.config.AppConfig;
-import com.tokenbank.config.Constant;
-import com.tokenbank.dialog.OrderDetailDialog;
 import com.tokenbank.utils.DeviceUtil;
 import com.tokenbank.utils.GsonUtil;
-import com.tokenbank.utils.Util;
 import com.zxing.activity.CaptureActivity;
 
 import java.util.List;
@@ -50,14 +40,12 @@ public class JsNativeBridge {
     private String mFrom, mTo, mValue, mToken, mIssuer, mGas, mMemo,mGasPrice;
     private IWebCallBack mWebCallBack;
     private WalletInfoManager.WData mCurrentWallet;
-    private BaseWalletUtil moacWallet;
 
     public JsNativeBridge(AgentWeb agent, Context context, IWebCallBack callback) {
         this.mAgentWeb = agent;
         this.mContext = context;
         this.mWebCallBack = callback;
         this.mWalletManager = WalletInfoManager.getInstance();
-        this.moacWallet = TBController.getInstance().getWalletUtil();
     }
 
     @JavascriptInterface
@@ -108,7 +96,7 @@ public class JsNativeBridge {
                 this.mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + result.toString() + "')");
                 break;
 
-            case "getDeviceId":
+            case "getDevice":
                 String deviceId = DeviceUtil.generateDeviceUniqueId();
                 result.putString("deviceId", deviceId);
                 result.putString("msg", MSG_SUCCESS);
@@ -147,7 +135,7 @@ public class JsNativeBridge {
                 String walletName = mCurrentWallet.wname;
                 GsonUtil data = new GsonUtil("{}");
                 data.putString("address", mCurrentWallet.waddress);
-                GsonUtil name1 = data.putString("name", walletName);
+                data.putString("name",walletName);
                 result.putBoolean("result", true);
                 result.put("data", data);
                 result.putString("msg", MSG_SUCCESS);
@@ -182,6 +170,7 @@ public class JsNativeBridge {
                 break;
 
             case "setMenubar":
+                //未开发导航栏
                 //导航栏隐藏与否
                 break;
 
@@ -218,6 +207,7 @@ public class JsNativeBridge {
                 break;
 
             default:
+                Log.e(TAG, "callHandler: no such method : "+methodName);
                 break;
         }
 

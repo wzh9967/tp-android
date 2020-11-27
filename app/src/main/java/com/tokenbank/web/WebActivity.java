@@ -2,17 +2,16 @@ package com.tokenbank.web;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
+import android.webkit.ConsoleMessage;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
-
 
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.DefaultWebClient;
@@ -68,6 +67,14 @@ public class WebActivity extends BaseActivity implements IWebCallBack {
         public void onReceivedTitle(WebView view, String title) {
             super.onReceivedTitle(view, title);
         }
+
+        @Override
+        public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+            Log.i("console", "["+consoleMessage.messageLevel()+"] "+ consoleMessage.message() + "(" +consoleMessage.sourceId()  + ":" + consoleMessage.lineNumber()+")");
+            return super.onConsoleMessage(consoleMessage);
+        }
+
+
     };
 
     //用户需要在打开WebActivity时传递对应的url
@@ -124,12 +131,9 @@ public class WebActivity extends BaseActivity implements IWebCallBack {
     public void onEvent(JsEvent jsEvent) {
         String msg = jsEvent.getMsg();
         String callbackId = jsEvent.getCallBackId();
-        GsonUtil msgJson = new GsonUtil(msg);
-        if (msgJson.isValid()) {
-            mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + msg + "')");
-        } else {
-            mAgentWeb.getJsAccessEntrace().quickCallJs(callbackId, msg);
-        }
+        GsonUtil result = new GsonUtil("{}");
+        result.putString("result",msg);
+        mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + result.toString() + "')");
     }
 
     @Override

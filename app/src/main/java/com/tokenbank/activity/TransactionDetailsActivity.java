@@ -13,10 +13,11 @@ import android.widget.TextView;
 
 import com.google.zxing.WriterException;
 import com.tokenbank.R;
-import com.tokenbank.base.BaseWalletUtil;
+import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
 import com.tokenbank.config.Constant;
+import com.tokenbank.utils.FstWalletUtil;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.QRUtils;
 import com.tokenbank.utils.ToastUtil;
@@ -53,7 +54,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private boolean isTransaction = true;
     private GsonUtil transactionData;
     private int DelayMills = 1;
-    private BaseWalletUtil mWalletUtil;
+    private FstWallet mFstWallet;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,8 +64,8 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     }
 
     private void initData() {
-        mWalletUtil = TBController.getInstance().getWalletUtil();
-        if (mWalletUtil == null) {
+        mFstWallet = TBController.getInstance().getFstWallet();
+        if (mFstWallet == null) {
             this.finish();
             return;
         }
@@ -79,7 +80,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             return;
         }
         //通过hash 从链上获取交易细节
-        mWalletUtil.getTransactionDetail(mHash, new WCallback() {
+        mFstWallet.getTransactionDetail(mHash, new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
                 if(ret == 0){
@@ -137,8 +138,8 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private void updateData(GsonUtil transactionInfo) {
         String contract = transactionData.getString("contract","");
         if(contract != ""){
-            mDecimal = Integer.parseInt(mWalletUtil.getDataByContract(contract,"decimal"));
-            bl_symbol = mWalletUtil.getDataByContract(contract,"bl_symbol");
+            mDecimal = Integer.parseInt(FstWalletUtil.getDataByContract(contract,"decimal"));
+            bl_symbol = FstWalletUtil.getDataByContract(contract,"bl_symbol");
         }
         String toAddress = transactionInfo.getString("to", "");
         mTvSender.setText(transactionInfo.getString("from", ""));
@@ -157,7 +158,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mWalletUtil.getTransactionReceipt(mHash, new WCallback() {
+                mFstWallet.getTransactionReceipt(mHash, new WCallback() {
                     @Override
                     public void onGetWResult(int ret, GsonUtil extra) {
                         if(ret == 0){
@@ -182,7 +183,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             }
         }, DelayMills);
         mTvSymbol.setText(bl_symbol);
-        createQRCode(mWalletUtil.getTransactionSearchUrl(mTvTransactionId.getText().toString()));
+        createQRCode(FstWalletUtil.getTransactionSearchUrl(mTvTransactionId.getText().toString()));
     }
 
     public static void startTransactionDetailActivity(Context context, String hash,boolean isTransaction) {
@@ -220,7 +221,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     public void onClick(View v) {
         if (v == mTvCopyUrl) {
             Util.clipboard(TransactionDetailsActivity.this, "",
-                    mWalletUtil.getTransactionSearchUrl(mTvTransactionId.getText().toString()));
+                    FstWalletUtil.getTransactionSearchUrl(mTvTransactionId.getText().toString()));
             ToastUtil.toast(TransactionDetailsActivity.this, getString(R.string.toast_url_copied));
         } else if (v == mTvSender) {
             Util.clipboard(TransactionDetailsActivity.this, "", mTvSender.getText().toString());
@@ -232,7 +233,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             ;
         } else if (v == mTvTransactionId) {
             WebBrowserActivity.startWebBrowserActivity(TransactionDetailsActivity.this, getString(R.string.titleBar_transaction_query),
-                    mWalletUtil.getTransactionSearchUrl(mTvTransactionId.getText().toString()));
+                    FstWalletUtil.getTransactionSearchUrl(mTvTransactionId.getText().toString()));
         }
     }
 
@@ -248,7 +249,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         if(input.length() == 138 && input.startsWith("0xa9059cbb")){
             String value = new BigInteger(input.substring(74), 16).toString();
             String contract = payment.getString("to","");
-            int Decimal = Integer.parseInt(mWalletUtil.getDataByContract(contract.toLowerCase(),"decimal"));
+            int Decimal = Integer.parseInt(FstWalletUtil.getDataByContract(contract.toLowerCase(),"decimal"));
             mValue = Util.toValue(Decimal,value);
 
             data.putString("to", "0x"+input.substring(34,74));

@@ -13,7 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tokenbank.R;
-import com.tokenbank.base.WalletInfoManager;
+import com.tokenbank.wallet.WalletInfoManager;
 import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
 

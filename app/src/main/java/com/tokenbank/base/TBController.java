@@ -1,27 +1,25 @@
 package com.tokenbank.base;
-import com.android.jccdex.app.moac.MoacWallet;
+
+import android.util.Log;
+
 import com.tokenbank.config.AppConfig;
+import com.tokenbank.net.query.QueryDataFromNet;
+import com.tokenbank.net.query.QueryTransaction;
+import com.tokenbank.wallet.FstServer;
+import com.tokenbank.wallet.FstWallet;
 
 import java.util.ArrayList;
 import java.util.List;
-
-//后期要作一些修改
 public class TBController {
 
 
     //关联抽象接口和具体实现
     private final static String TAG = "TBController";
-
-
     public final static int SWT_INDEX = 2;
-
-    private BaseWalletUtil mWalletUtil;
-    private BaseWalletUtil mMocWalletUtil;
-    private TestWalletBlockchain mNullWalletUtil;
-    private MoacWallet mMoacWalletUtil;
-    private MoacWallet mMoacWallet;
+    private FstWallet mFstWallet;
     private static TBController sInstance = new TBController();
     private  List<Integer> mSupportType = new ArrayList<>();
+    private QueryDataFromNet mQueryTransaction;
 
     private TBController() {
 
@@ -33,25 +31,22 @@ public class TBController {
 
     public void init() {
         mSupportType.add(SWT_INDEX);
-        mMocWalletUtil = new FstWalletBlockchain();
-        mMocWalletUtil.init();
-        mNullWalletUtil = new TestWalletBlockchain();
-        mMoacWallet = MoacWallet.getInstance();
-        mMoacWallet.init(AppConfig.getContext());
-        mMoacWallet.initChain3Provider(FstServer.getInstance().getNode());
+        mFstWallet = mFstWallet.getInstance();
+        mFstWallet.init(AppConfig.getContext());
+        Log.d(TAG, "init: "+ FstServer.getInstance().getNode());
+        mFstWallet.initStorm3Provider(FstServer.getInstance().getNode());
+        mQueryTransaction = new QueryTransaction();
     }
 
-    public BaseWalletUtil getWalletUtil() {
-        mWalletUtil = mMocWalletUtil;
-        return mWalletUtil;
+    public FstWallet getFstWallet() {
+        return mFstWallet;
     }
 
-    public MoacWallet getMoacWallet() {
-        mMoacWalletUtil = mMoacWallet;
-        return mMoacWalletUtil;
+    public QueryDataFromNet getmQueryTransaction(){
+        return mQueryTransaction;
     }
 
-    //delete
+
     public List<Integer> getSupportType() {
         return mSupportType;
     }

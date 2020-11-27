@@ -12,14 +12,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
 import com.tokenbank.R;
-import com.tokenbank.base.BaseWalletUtil;
+import com.tokenbank.wallet.FstServer;
+import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
-import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.base.WCallback;
+import com.tokenbank.wallet.WalletInfoManager;
 import com.tokenbank.config.Constant;
 import com.tokenbank.dialog.OrderDetailDialog;
 import com.tokenbank.dialog.PwdDialog;
+import com.tokenbank.utils.FstWalletUtil;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.Util;
@@ -39,7 +42,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     private Button mBtnNext;
     private Double mGasPrice;
     private Double SettingGasPrice;
-    private BaseWalletUtil mWalletUtil;
+    private FstWallet mFstWallet;
     private WalletInfoManager.WData mWalletData;
     private String mContractAddress ="";
     private String mOriginAddress = "";
@@ -80,9 +83,10 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             this.finish();
             return;
         }
-        mWalletUtil = TBController.getInstance().getWalletUtil();
+        mFstWallet = TBController.getInstance().getFstWallet();
+
         if(!mContractAddress.equals("")){
-            this.mDecimal = Integer.parseInt(mWalletUtil.getDataByContract(mContractAddress,"decimal"));
+            this.mDecimal = Integer.parseInt(FstWalletUtil.getDataByContract(mContractAddress,"decimal"));
             this.mGasLimit = Constant.Erc20gasLimit;
         } else {
             this.mDecimal = Constant.DefaultDecimal;
@@ -172,7 +176,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         }
     }
     private void getGasPrice(){
-        mWalletUtil.getGasPrice(new WCallback() {
+        mFstWallet.getGasPrice(new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
                 if(ret == 0){
@@ -220,7 +224,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         data.putString("gasLimit",mGasLimit);
         data.putDouble("gasPrice",SettingGasPrice);
         data.putString("data",note);
-        mWalletUtil.sendTransaction(data,new WCallback(){
+        mFstWallet.sendTransaction(data,new WCallback(){
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
                 if(ret == 0){
@@ -256,7 +260,8 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         data.putString("gasLimit",mGasLimit);
         data.putString("data",note);
         data.putDouble("gasPrice",SettingGasPrice);
-        mWalletUtil.sendErc20Transaction(data,new WCallback(){
+        mFstWallet.initContract(contract,address, FstServer.getInstance().getNode());
+        mFstWallet.sendErc20Transaction(data,new WCallback(){
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
                 if(ret == 0){
@@ -294,7 +299,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             return false;
         }
 
-        if (!mWalletUtil.checkWalletAddress(address)) {
+        if (!FstWalletUtil.checkWalletAddress(address)) {
             ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_content_address_format_incorrect), "OK");
             return false;
         }

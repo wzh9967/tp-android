@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokenbank.R;
-import com.tokenbank.base.WalletInfoManager;
+import com.tokenbank.wallet.WalletInfoManager;
 import com.tokenbank.view.TitleBar;
 
 public class StartBakupActivity extends BaseActivity implements View.OnClickListener {

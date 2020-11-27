@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokenbank.R;
-import com.tokenbank.base.WalletInfoManager;
+import com.tokenbank.wallet.WalletInfoManager;
 import com.tokenbank.dialog.PKDialog;
 import com.tokenbank.dialog.PwdDialog;
 import com.tokenbank.utils.ToastUtil;

@@ -17,13 +17,13 @@ import android.widget.TextView;
 import com.tokenbank.R;
 import com.tokenbank.adapter.BaseRecycleAdapter;
 import com.tokenbank.adapter.BaseRecyclerViewHolder;
-import com.tokenbank.base.BaseWalletUtil;
-import com.tokenbank.base.WalletInfoManager;
-import com.tokenbank.base.WCallback;
 import com.tokenbank.base.TBController;
+import com.tokenbank.base.WCallback;
+import com.tokenbank.net.query.QueryDataFromNet;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
+import com.tokenbank.wallet.WalletInfoManager;
 
 /**
  *  从MainUserFragment跳转的 交易记录页面
@@ -39,12 +39,11 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
 
     private RecyclerView mRecyclerViewTransactionRecord;
     private TransactionRecordAdapter mAdapter;
-    private BaseWalletUtil mWalletUtil;
     private int PageSize = 1;
     private View mEmptyView;
     private int mFrom = 2;
     private String mAddress;
-
+    private QueryDataFromNet mQueryTransaction;
     @SuppressLint("LongLogTag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,16 +53,12 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
             mFrom = getIntent().getIntExtra("From", 2);
         }
         initView();
+        mQueryTransaction = TBController.getInstance().getmQueryTransaction();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mWalletUtil = TBController.getInstance().getWalletUtil();
-        if (mWalletUtil == null) {
-            this.finish();
-            return;
-        }
         if (mAdapter != null) {
             mAdapter.refresh();
             mSwipeRefreshLayout.setRefreshing(true);
@@ -197,7 +192,7 @@ public class TransactionRecordActivity extends BaseActivity implements BaseRecyc
                 mDataLoadingListener.onDataLoadingFinish(params, false, loadmore);
             }
 
-            mWalletUtil.queryTransactionList(PageSize, mAddress,new WCallback() {
+            mQueryTransaction.queryTransactionList(PageSize, mAddress,new WCallback() {
                 @Override
                 public void onGetWResult(int ret, GsonUtil extra) {
                     if (ret == 0) {

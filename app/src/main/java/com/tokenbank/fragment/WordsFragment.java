@@ -11,18 +11,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.jccdex.app.base.JCallback;
-import com.android.jccdex.app.moac.MoacWallet;
-import com.android.jccdex.app.util.JCCJson;
 import com.tokenbank.R;
 import com.tokenbank.activity.MainActivity;
 import com.tokenbank.activity.SplashActivity;
 import com.tokenbank.activity.WebBrowserActivity;
-import com.tokenbank.base.BaseWalletUtil;
-import com.tokenbank.base.WalletInfoManager;
+import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
+import com.tokenbank.base.WCallback;
+import com.tokenbank.wallet.WalletInfoManager;
 import com.tokenbank.config.Constant;
 import com.tokenbank.utils.FileUtil;
+import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.ViewUtil;
 
@@ -39,8 +38,7 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
     private ImageView mImgboxTerms;
     private TextView mTvTerms;
     private TextView mTvImportWallet;
-    private BaseWalletUtil mWalletUtil;
-    private MoacWallet mMoacWallet;
+    private FstWallet mFstWallet;
     public static WordsFragment newInstance() {
         WordsFragment fragment = new WordsFragment();
         return fragment;
@@ -49,7 +47,7 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMoacWallet =TBController.getInstance().getMoacWallet();
+        mFstWallet =TBController.getInstance().getFstWallet();
     }
 
     @Nullable
@@ -90,7 +88,6 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
         mTvTerms.setOnClickListener(this);
         mTvImportWallet = view.findViewById(R.id.tv_import_wallet);
         mTvImportWallet.setOnClickListener(this);
-        mWalletUtil = TBController.getInstance().getWalletUtil();
     }
 
     private void gotoServiceTermPage() {
@@ -139,19 +136,21 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
     private void importWallet() {
         final String words = mEdtWalletWords.getText().toString();
         final String password = mEdtWalletPwd.getText().toString();
-        mMoacWallet.importWords(words, new JCallback() {
+        mFstWallet.importWords(words,"", new WCallback() {
             @Override
-            public void completion(JCCJson jccJson) {
-                String secret = jccJson.getString("secret");
-                String address = jccJson.getString("address");
-                if (secret == null || address == null) {
-                    ToastUtil.toast(getActivity(), getString(R.string.toast_import_wallet_failed));
-                } else {
-                    if (isWalletExsit(address)) {
-                        ToastUtil.toast(getActivity(), getString(R.string.toast_wallet_exists));
+            public void onGetWResult(int ret, GsonUtil extra) {
+                if(ret == 0){
+                    String secret = extra.getString("secret","");
+                    String address = extra.getString("address","");
+                    if (secret == null || address == null) {
+                        ToastUtil.toast(getActivity(), getString(R.string.toast_import_wallet_failed));
                     } else {
-                        uploadWallet(mEdtWalletName.getText().toString(), FileUtil.getStringContent(password),
-                                secret, address);
+                        if (isWalletExsit(address)) {
+                            ToastUtil.toast(getActivity(), getString(R.string.toast_wallet_exists));
+                        } else {
+                            uploadWallet(mEdtWalletName.getText().toString(), FileUtil.getStringContent(password),
+                                    secret, address);
+                        }
                     }
                 }
             }

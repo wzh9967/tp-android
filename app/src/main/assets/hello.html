@@ -19,7 +19,7 @@
         }
     </style>
   <link rel="stylesheet" type="text/css" href="./button.css">
-  <script type="text/javascript" src="./dapp_support.js"></script>
+  <script type="text/javascript" src="./dapp_api.min.js"></script>
   <script>
 
         test();
@@ -31,44 +31,53 @@
                 alert(typeof(window.android));
                 isConnected = "false"
             }
-            // alert("isConnected: " + isConnected);
+            alert("isConnected: " + isConnected);
 
+            /*
             //获取app版本
-            dappApi.getAppInfo.then((ret,result)=>{
-              showElement("获取app版本        result = " +JSON.stringify(result));
+            dappApi.getAppInfo().then((result) =>{
+                 showElement("获取app版本        result = " +JSON.stringify(result));
             })
 
             //获取钱包列表
-            getWalletList((ret,result)=>{
-              showElement("获取钱包列表        result = " +JSON.stringify(result));
+            dappApi.getWalletList().then((result)=>{
+                console.log(result)
+                 showElement("钱包列表        result = " +JSON.stringify(result));
             })
 
-            //获取设备号
-            getDeviceId((ret,result)=>{
+            dappApi.getDevice().then((result) =>{
               showElement("获取设备号        result = " +JSON.stringify(result));
             })
 
-            //获取当前交易钱包
-            getCurrentWallet((ret,result)=>{
-              showElement("获取当前交易钱包        result = " +JSON.stringify(result));
+            dappApi.getCurrentWallet().then((result) =>{
+                 showElement("获取当前交易钱包        result = " +JSON.stringify(result));
             })
 
-             //获取节点url
-            getNodeUrl((ret,result)=>{
-              showElement("获取节点url        result = " +JSON.stringify(result));
+            dappApi.getNodeUrl().then((result) =>{
+                 showElement("获取节点url        result = " +JSON.stringify(result));
+            })
+            */
+
+            dappApi.getNodeUrl().then((result) =>{
+                 showElement("获取节点url        result = " +JSON.stringify(result));
             })
 
-            //打开扫描
-            invokeQRScanner((ret,result)=>{
-              showElement("扫描结果 +" +JSON.stringify(result))
+            dappApi.invokeQRScanner().then((result) =>{
+                 showElement("扫描结果        result = " +JSON.stringify(result));
             })
+
+
 
             /*
+
+            //打开扫描
+
+
+
             //分享
             shareToSNS((ret,result)=>{
               showElement("ret = "+ret + "        result = " +JSON.stringify(result))
             })
-
 
 
             //跳转到导入钱包页面

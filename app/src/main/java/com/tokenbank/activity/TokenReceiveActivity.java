@@ -16,11 +16,8 @@ import android.widget.TextView;
 
 import com.google.zxing.WriterException;
 import com.tokenbank.R;
-import com.tokenbank.base.BaseWalletUtil;
-import com.tokenbank.base.TBController;
-import com.tokenbank.base.WalletInfoManager;
-import com.tokenbank.base.WCallback;
-import com.tokenbank.utils.GsonUtil;
+import com.tokenbank.wallet.WalletInfoManager;
+import com.tokenbank.utils.FstWalletUtil;
 import com.tokenbank.utils.QRUtils;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.Util;
@@ -44,7 +41,6 @@ public class TokenReceiveActivity extends BaseActivity {
     private TextView mTvAddress;
     private TextView mTvTokenName;
     private TextView mTvCopyAddress;
-    private BaseWalletUtil mWalletUtil;
     private String mContract;
 
     @Override
@@ -57,11 +53,6 @@ public class TokenReceiveActivity extends BaseActivity {
         }
         if (TextUtils.isEmpty(mToken)) {
             finish();
-            return;
-        }
-        mWalletUtil = TBController.getInstance().getWalletUtil();
-        if (mWalletUtil == null) {
-            this.finish();
             return;
         }
         initView();
@@ -133,21 +124,14 @@ public class TokenReceiveActivity extends BaseActivity {
             mImgQrShadow.setVisibility(View.VISIBLE);
             return;
         }
-        mWalletUtil.generateReceiveAddress(walletAddress,mContract, amount, token, new WCallback() {
-            @Override
-            public void onGetWResult(int ret, GsonUtil extra) {
-                if (ret == 0) {
-                    String receiveAddress = extra.getString("receiveAddress", ""); //不同体系生成的格式不同
-                    if (!TextUtils.isEmpty(receiveAddress)) {
-                        mImgQrShadow.setVisibility(View.GONE);
-                        createQRCode(receiveAddress);
-                    }
-                } else {
-                    ToastUtil.toast(TokenReceiveActivity.this, getString(R.string.toast_collect_code_err));
-                    mImgQrShadow.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+        String receiveAddress = FstWalletUtil.generateReceiveAddress(walletAddress,mContract, amount, token);
+        if (!TextUtils.isEmpty(receiveAddress)) {
+            mImgQrShadow.setVisibility(View.GONE);
+            createQRCode(receiveAddress);
+        } else {
+            ToastUtil.toast(TokenReceiveActivity.this, getString(R.string.toast_collect_code_err));
+            mImgQrShadow.setVisibility(View.VISIBLE);
+        }
     }
 
     private void createQRCode(String content) {

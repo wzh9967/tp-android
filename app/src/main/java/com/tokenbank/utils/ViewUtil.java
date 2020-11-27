@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.tokenbank.R;
 import com.tokenbank.activity.StartBakupActivity;
-import com.tokenbank.base.WalletInfoManager;
+import com.tokenbank.wallet.WalletInfoManager;
 import com.tokenbank.dialog.PwdDialog;
 import com.tokenbank.dialog.WarnDialog;
 

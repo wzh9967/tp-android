@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,18 +12,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.jccdex.app.base.JCallback;
-import com.android.jccdex.app.moac.MoacWallet;
-import com.android.jccdex.app.util.JCCJson;
 import com.tokenbank.R;
 import com.tokenbank.activity.MainActivity;
 import com.tokenbank.activity.SplashActivity;
 import com.tokenbank.activity.WebBrowserActivity;
-import com.tokenbank.base.BaseWalletUtil;
+import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
-import com.tokenbank.base.WalletInfoManager;
+import com.tokenbank.base.WCallback;
+import com.tokenbank.wallet.WalletInfoManager;
 import com.tokenbank.config.Constant;
 import com.tokenbank.utils.FileUtil;
+import com.tokenbank.utils.FstWalletUtil;
+import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.ViewUtil;
 
@@ -42,8 +41,7 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
     private TextView mTvTerms;
     private TextView mTvImportWallet;
     private TextView mTvAboutPrivateKey;
-    private BaseWalletUtil walletblockchain;
-    private MoacWallet mMoacWallet;
+    private FstWallet mFstWallet;
     public static BaseFragment newInstance() {
         PKFragment fragment = new PKFragment();
         return fragment;
@@ -52,7 +50,7 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMoacWallet =TBController.getInstance().getMoacWallet();
+        mFstWallet =TBController.getInstance().getFstWallet();
     }
 
     @Nullable
@@ -100,7 +98,6 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
         mTvAboutPrivateKey = view.findViewById(R.id.tv_about_privatekey);
         mTvAboutPrivateKey.setOnClickListener(this);
 
-        walletblockchain = TBController.getInstance().getWalletUtil();
     }
 
     private void checkPrivateKey() {
@@ -129,7 +126,7 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
             return false;
         }
 
-        if (!walletblockchain.checkWalletPk(walletPrivateKey)) {
+        if (!FstWalletUtil.checkWalletPk(walletPrivateKey)) {
             ViewUtil.showSysAlertDialog(getActivity(), getString(R.string.dialog_title_key_format_incorrect), "OK");
             return false;
         }
@@ -165,24 +162,23 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
     private void importWallet() {
         final String secret = mEdtWalletPrivateKey.getText().toString();
         final String password = mEdtWalletPwd.getText().toString();
-        Log.d(TAG, "importWallet:+++++++++++++++++++11111111111");
-        mMoacWallet.importSecret(secret, new JCallback() {
+        mFstWallet.importSecret(secret, "",new WCallback() {
             @Override
-            public void completion(JCCJson jccJson) {
-                String secret = jccJson.getString("secret");
-                String address = jccJson.getString("address");
-                Log.d(TAG, "importWallet:+++++++++++++++++++222222222222222");
-                if(secret ==null && address ==null){
-                    ToastUtil.toast(getActivity(),getString(R.string.toast_import_wallet_failed));
-                    return;
-                } else {
-                    if (isWalletExsit(address)) {
-                        ToastUtil.toast(getActivity(),getString(R.string.toast_wallet_exists));
+            public void onGetWResult(int ret, GsonUtil extra) {
+                if(ret == 0){
+                    String secret = extra.getString("secret","");
+                    String address = extra.getString("address","");
+                    if(secret ==null && address ==null){
+                        ToastUtil.toast(getActivity(),getString(R.string.toast_import_wallet_failed));
                         return;
                     } else {
-                        Log.d(TAG, "importWallet:+++++++++++++++++++33333333333333333");
-                        uploadWallet(mEdtWalletName.getText().toString(), FileUtil.getStringContent(password),
-                                secret, address);
+                        if (isWalletExsit(address)) {
+                            ToastUtil.toast(getActivity(),getString(R.string.toast_wallet_exists));
+                            return;
+                        } else {
+                            uploadWallet(mEdtWalletName.getText().toString(), FileUtil.getStringContent(password),
+                                    secret, address);
+                        }
                     }
                 }
             }

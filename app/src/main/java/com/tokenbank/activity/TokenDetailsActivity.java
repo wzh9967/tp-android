@@ -17,15 +17,15 @@ import android.widget.TextView;
 import com.tokenbank.R;
 import com.tokenbank.adapter.BaseRecycleAdapter;
 import com.tokenbank.adapter.BaseRecyclerViewHolder;
-import com.tokenbank.base.BaseWalletUtil;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
-import com.tokenbank.base.WalletInfoManager;
 import com.tokenbank.config.Constant;
+import com.tokenbank.net.query.QueryDataFromNet;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.Util;
 import com.tokenbank.utils.ViewUtil;
 import com.tokenbank.view.TitleBar;
+import com.tokenbank.wallet.WalletInfoManager;
 
 /**
  * 币种详情页，包含原生货币和Erc20币 价值和对应币种交易记录
@@ -52,11 +52,11 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
     private String TokenName;
     private String mContractAddress;
     private WalletInfoManager.WData mWalletData;
-    private BaseWalletUtil mWalletUtil;
     private String mUnit;
     private boolean Flag = true;
     private String maddress;
     private int PageSize = 1;
+    private QueryDataFromNet mQueryTransaction;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,12 +73,8 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             mItem = new GsonUtil(getIntent().getStringExtra(TOKEN));
         }
         mWalletData = WalletInfoManager.getInstance().getCurrentWallet();
+        mQueryTransaction = TBController.getInstance().getmQueryTransaction();
         if (mWalletData == null) {
-            this.finish();
-            return;
-        }
-        mWalletUtil = TBController.getInstance().getWalletUtil();
-        if (mWalletUtil == null) {
             this.finish();
             return;
         }
@@ -221,7 +217,7 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
             }
             if(mContractAddress.equals("")){
                 Flag = true;
-                mWalletUtil.queryTransactionList(PageSize,maddress,new WCallback() {
+                mQueryTransaction.queryTransactionList(PageSize,maddress,new WCallback() {
                     @Override
                     public void onGetWResult(int ret, GsonUtil extra) {
                         if (ret == 0) {
@@ -233,7 +229,7 @@ public class TokenDetailsActivity extends BaseActivity implements BaseRecycleAda
                 });
             } else {
                 Flag = false;
-                mWalletUtil.queryErc20TransactionList(PageSize,mDecimal,mContractAddress, maddress,new WCallback() {
+                mQueryTransaction.queryErc20TransactionList(PageSize,mDecimal,mContractAddress, maddress,new WCallback() {
                     @Override
                     public void onGetWResult(int ret, GsonUtil extra) {
                         if (ret == 0) {

@@ -1,12 +1,11 @@
-
-function notifyClient(callid, ret, extra) {
+function notifyClient(ret, extra,responseCallback) {
     let result = new Object();
     result.ret = ret;
-    result.callid = callid;
     result.extra = extra;
     let resultStr = toJsonString(result);
-    window.client.notifyWeb3Result(resultStr);
+    responseCallback(resultStr);
 }
+
 
 function toJsonString(obj) {
     if (obj == undefined) {
@@ -15,6 +14,7 @@ function toJsonString(obj) {
         return JSON.stringify(obj);
     }
 }
+
 function addPreZero(num){
     var t = (num+'').length,
         s = '';
@@ -31,6 +31,7 @@ function outputObj(obj) {
     }
     console.log(description);
 }
+
 function printAccount(account) {
     var description = "";
     for (var i in account) {
