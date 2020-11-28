@@ -99,6 +99,7 @@
                 let wallet = fstInstance.importSecret(secret,password);
                 result.address= wallet.address;
                 result.secret= secret;
+                console.log("address = "+wallet.secret)
                 notifyClient(0, result,responseCallback);
             }catch (err){
                 result.err = err;

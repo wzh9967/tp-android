@@ -39,12 +39,6 @@
                  showElement("获取app版本        result = " +JSON.stringify(result));
             })
 
-            //获取钱包列表
-            dappApi.getWalletList().then((result)=>{
-                console.log(result)
-                 showElement("钱包列表        result = " +JSON.stringify(result));
-            })
-
             dappApi.getDevice().then((result) =>{
               showElement("获取设备号        result = " +JSON.stringify(result));
             })
@@ -56,86 +50,59 @@
             dappApi.getNodeUrl().then((result) =>{
                  showElement("获取节点url        result = " +JSON.stringify(result));
             })
-            */
 
-            dappApi.getNodeUrl().then((result) =>{
-                 showElement("获取节点url        result = " +JSON.stringify(result));
-            })
+            //跳转到导入钱包页面
+            dappApi.importWallet()
 
+            //打开扫描
             dappApi.invokeQRScanner().then((result) =>{
                  showElement("扫描结果        result = " +JSON.stringify(result));
             })
 
+            //分享
+            dappApi.shareToSNS().then((ret,result)=>{
+              showElement("ret = "+ret + "        result = " +JSON.stringify(result))
+            })
+
+            //全屏  params   true (全屏)/ false（关闭）
+            dappApi.fullScreen(true)
+
+            //关闭Dapp
+            dappApi.close()
+
+            //返回
+            dappApi.back();
+
+            //横屏
+            dappApi.rollHorizontal()
+
+            //禁止iOS自带的左滑手势返回，对安卓无影响
+            dappApi.popGestureRecognizerEnable(ret,result)=>{
+              showElement("ret = "+ret + "        result = " +JSON.stringify(result))
+            }
+
+            //设置导航条
+            dappApi.setMenubar()
+
+
+            */
+
+
+            //禁止webview自带的左滑手势触发goback
+            dappApi.forwardNavigationGesturesEnable()
 
 
             /*
 
-            //打开扫描
-
-
-
-            //分享
-            shareToSNS((ret,result)=>{
-              showElement("ret = "+ret + "        result = " +JSON.stringify(result))
-            })
-
-
-            //跳转到导入钱包页面
-            importWallet((ret,result)=>{
-              showElement("ret = "+ret + "        result = " +JSON.stringify(result))
-            })
-
             //交易签名
-            sign((ret,result)=>{
-              showElement("ret = "+ret + "        result = " +JSON.stringify(result))
-            })
-
-            //返回
-            back((ret,result)=>{
-              showElement("ret = "+ret + "        result = " +JSON.stringify(result))
-            })
-
-            //关闭Dapp
-            close((ret,result)=>{
-              showElement("ret = "+ret + "        result = " +JSON.stringify(result))
-            })
-
-            //全屏
-            fullScreen((ret,result)=>{
-              showElement("ret = "+ret + "        result = " +JSON.stringify(result))
-            })
-
-            //跳转到导入钱包页面
-            importWallet((ret,result)=>{
-              showElement("ret = "+ret + "        result = " +JSON.stringify(result))
-            })
-
-            //设置导航条
-            setMenubar((ret,result)=>{
+            dappApi.sign((ret,result)=>{
               showElement("ret = "+ret + "        result = " +JSON.stringify(result))
             })
 
             //保存图片
-            saveImage((ret,result)=>{
+            appApi.saveImage((ret,result)=>{
               showElement("ret = "+ret + "        result = " +JSON.stringify(result))
             })
-
-            //横屏
-            rollHorizontal((ret,result)=>{
-              showElement("ret = "+ret + "        result = " +JSON.stringify(result))
-            })
-
-            //禁止iOS自带的左滑手势返回，对安卓无影响
-            popGestureRecognizerEnable(ret,result)=>{
-              showElement("ret = "+ret + "        result = " +JSON.stringify(result))
-            }
-
-            //禁止webview自带的左滑手势触发goback
-            forwardNavigationGesturesEnable((ret,result)=>{
-              showElement("ret = "+ret + "        result = " +JSON.stringify(result))
-            })
-
-
             */
         }
 
@@ -145,9 +112,6 @@
             ele.innerHTML = msg;                //设置h2节点的内容
             div.appendChild(ele);                    //添加子节点ele
         }
-
-
-
 
     </script>
 </head>

@@ -2,8 +2,6 @@ package com.tokenbank.utils;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokenbank.wallet.JSUtil;
-import com.tokenbank.base.WCallback;
 import com.tokenbank.config.AppConfig;
 import com.tokenbank.config.Constant;
 
@@ -143,9 +141,6 @@ public class FstWalletUtil{
         return null;
     }
 
-    public static boolean checkInit(WCallback callback) {
-        return JSUtil.getInstance().checkInit(callback);
-    }
 
     /**
      * 时间格式转换
@@ -162,12 +157,5 @@ public class FstWalletUtil{
             e.printStackTrace();
         }
         return date;
-    }
-
-    public void Test(WCallback callback) {
-        GsonUtil data = new GsonUtil("{}");
-        String hash = "0x5cef50ad6ebcf0194a9f36d94a5358deb5f4d82165e74a62d41ed282712b0b1c";
-        data.putString("hash", hash);
-        JSUtil.getInstance().callJS("getTransactionDetail", data, callback);
     }
 }

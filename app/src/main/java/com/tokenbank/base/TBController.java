@@ -33,7 +33,6 @@ public class TBController {
         mSupportType.add(SWT_INDEX);
         mFstWallet = mFstWallet.getInstance();
         mFstWallet.init(AppConfig.getContext());
-        Log.d(TAG, "init: "+ FstServer.getInstance().getNode());
         mFstWallet.initStorm3Provider(FstServer.getInstance().getNode());
         mQueryTransaction = new QueryTransaction();
     }
@@ -45,7 +44,6 @@ public class TBController {
     public QueryDataFromNet getmQueryTransaction(){
         return mQueryTransaction;
     }
-
 
     public List<Integer> getSupportType() {
         return mSupportType;

@@ -6,4 +6,6 @@ public interface IWebCallBack {
     void onClose();
 
     void switchFullScreen(String status);
+
+    void rollHorizontal();
 }

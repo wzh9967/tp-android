@@ -5,12 +5,11 @@ import android.content.Context;
 import android.os.Build;
 
 import com.tokenbank.activity.BaseActivity;
-import com.tokenbank.wallet.FstServer;
-import com.tokenbank.wallet.JSUtil;
 import com.tokenbank.base.TBController;
-import com.tokenbank.wallet.WalletInfoManager;
 import com.tokenbank.config.AppConfig;
 import com.tokenbank.utils.LanguageUtil;
+import com.tokenbank.wallet.FstServer;
+import com.tokenbank.wallet.WalletInfoManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,6 @@ public class TApplication extends Application {
         crashHandler.init(getApplicationContext());
         TBController.getInstance().init();
         WalletInfoManager.getInstance().init();
-        JSUtil.getInstance().init();
     }
 
     public void addActivity(BaseActivity activity) {

@@ -13,11 +13,12 @@ import android.webkit.JavascriptInterface;
 
 import com.just.agentweb.AgentWeb;
 import com.tokenbank.activity.ImportWalletActivity;
-import com.tokenbank.wallet.FstServer;
-import com.tokenbank.wallet.WalletInfoManager;
 import com.tokenbank.config.AppConfig;
 import com.tokenbank.utils.DeviceUtil;
 import com.tokenbank.utils.GsonUtil;
+import com.tokenbank.wallet.FstServer;
+import com.tokenbank.wallet.FstWallet;
+import com.tokenbank.wallet.WalletInfoManager;
 import com.zxing.activity.CaptureActivity;
 
 import java.util.List;
@@ -40,12 +41,14 @@ public class JsNativeBridge {
     private String mFrom, mTo, mValue, mToken, mIssuer, mGas, mMemo,mGasPrice;
     private IWebCallBack mWebCallBack;
     private WalletInfoManager.WData mCurrentWallet;
+    private FstWallet mFstWallet;
 
     public JsNativeBridge(AgentWeb agent, Context context, IWebCallBack callback) {
         this.mAgentWeb = agent;
         this.mContext = context;
         this.mWebCallBack = callback;
         this.mWalletManager = WalletInfoManager.getInstance();
+
     }
 
     @JavascriptInterface
@@ -144,9 +147,12 @@ public class JsNativeBridge {
 
             case "sign":
 
+
                 Log.d(TAG, "sign: ");
                 break;
+            case "transfer":
 
+                break;
             case "back":
                 if (mWebCallBack != null) {
                     mWebCallBack.onBack();
@@ -179,12 +185,15 @@ public class JsNativeBridge {
                 break;
 
             case "rollHorizontal":
-
                 //横屏
+                if (mWebCallBack != null) {
+                    mWebCallBack.rollHorizontal();
+                }
                 break;
 
             case "popGestureRecognizerEnable":
 
+                //苹果接口 安卓无效
                 break;
 
             case "forwardNavigationGesturesEnable":
@@ -194,14 +203,6 @@ public class JsNativeBridge {
             case "getNodeUrl":
                 String node = FstServer.getInstance().getNode();
                 result.putString("node", node);
-                result.putString("msg", MSG_SUCCESS);
-                this.mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + result.toString() + "')");
-                break;
-
-            case "getWalletList":
-                //在存在多链的情况下，获取链的钱包列表
-                String walletList = "fst";
-                result.putString("data", walletList);
                 result.putString("msg", MSG_SUCCESS);
                 this.mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + result.toString() + "')");
                 break;

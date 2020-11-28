@@ -2,6 +2,7 @@ package com.tokenbank.web;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -17,6 +18,7 @@ import com.just.agentweb.AgentWeb;
 import com.just.agentweb.DefaultWebClient;
 import com.tokenbank.R;
 import com.tokenbank.activity.BaseActivity;
+import com.tokenbank.config.AppConfig;
 import com.tokenbank.config.Constant;
 import com.tokenbank.utils.GsonUtil;
 
@@ -138,7 +140,13 @@ public class WebActivity extends BaseActivity implements IWebCallBack {
 
     @Override
     public void onBack() {
-        onBackPressed();
+        AppConfig.postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                onBackPressed();
+            }
+        });
+
     }
 
     @Override
@@ -146,22 +154,44 @@ public class WebActivity extends BaseActivity implements IWebCallBack {
         finish();
     }
 
-    private static final String STATUS_FULLSCREEN = "1";
+    private static final String STATUS_FULLSCREEN = "true";
 
     @Override
     public void switchFullScreen(String status) {
-        if (TextUtils.equals(status, STATUS_FULLSCREEN)) {
-            //设置为全屏
-            WindowManager.LayoutParams lp = getWindow().getAttributes();
-            lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-            getWindow().setAttributes(lp);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        } else {
-            //设置为非全屏
-            WindowManager.LayoutParams lp = getWindow().getAttributes();
-            lp.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            getWindow().setAttributes(lp);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        }
+        AppConfig.postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (TextUtils.equals(status, STATUS_FULLSCREEN)) {
+                    //设置为全屏
+                    WindowManager.LayoutParams lp = getWindow().getAttributes();
+                    lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                    getWindow().setAttributes(lp);
+                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+                } else {
+                    //设置为非全屏
+                    WindowManager.LayoutParams lp = getWindow().getAttributes();
+                    lp.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                    getWindow().setAttributes(lp);
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void rollHorizontal() {
+        AppConfig.postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                    //切换竖屏
+                    WebActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                }else{
+                    //切换横屏
+                    WebActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                }
+            }
+        });
     }
 }

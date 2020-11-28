@@ -14,9 +14,6 @@ public class QueryTransaction implements QueryDataFromNet{
 
     @Override
     public  void queryErc20TransactionList(int PageSize, int Decimal, final String contract, final String address, final WCallback callback) {
-        if (!FstWalletUtil.checkInit(callback)) {
-            return;
-        }
         new RequestPresenter().loadJtData(new ERC20TransactionRequest(PageSize,contract,address), new RequestPresenter.RequestCallback() {
             @Override
             public void onRequesResult(int ret, GsonUtil json) {
@@ -60,9 +57,6 @@ public class QueryTransaction implements QueryDataFromNet{
 
     @Override
     public  void queryTransactionList(int pagesize, final String address, final WCallback callback) {
-        if (!FstWalletUtil.checkInit(callback)) {
-            return;
-        }
         new RequestPresenter().loadJtData(new MCTransactionListRequest(pagesize,address), new RequestPresenter.RequestCallback() {
             @Override
             public void onRequesResult(int ret, GsonUtil json) {

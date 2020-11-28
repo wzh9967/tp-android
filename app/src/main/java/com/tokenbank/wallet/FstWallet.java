@@ -60,7 +60,6 @@ public class FstWallet implements IFst {
         });
     }
 
-
     /**
      * 创建一个钱包，返回密钥，地址，助记词
      * @param callback {"secret":"","address":"","words":""}
