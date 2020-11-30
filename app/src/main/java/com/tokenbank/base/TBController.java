@@ -1,6 +1,5 @@
 package com.tokenbank.base;
 
-import android.util.Log;
 
 import com.tokenbank.config.AppConfig;
 import com.tokenbank.net.query.QueryDataFromNet;

@@ -84,12 +84,17 @@
             //设置导航条
             dappApi.setMenubar()
 
+            //禁止webview自带的左滑手势触发goback
+            dappApi.forwardNavigationGesturesEnable()
+
 
             */
 
+            //保存图片
+            dappApi.saveImage("http://www.baidu.com/img/flexible/logo/pc/result.png")
 
-            //禁止webview自带的左滑手势触发goback
-            dappApi.forwardNavigationGesturesEnable()
+
+
 
 
             /*
@@ -99,10 +104,7 @@
               showElement("ret = "+ret + "        result = " +JSON.stringify(result))
             })
 
-            //保存图片
-            appApi.saveImage((ret,result)=>{
-              showElement("ret = "+ret + "        result = " +JSON.stringify(result))
-            })
+
             */
         }
 

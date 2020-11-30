@@ -40,6 +40,9 @@ public class Constant {
     //本地web3文件地址
     public final static String base_web3_url = "file:///android_asset/fst_storm3.html";
 
+    //图片保存路径
+    public final static String photo_path = "/TokenPocket/dapp/img/";
+
     //帮助
     public final static String help_url = "";
     //隐私策略

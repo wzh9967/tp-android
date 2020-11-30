@@ -3,6 +3,8 @@ package com.tokenbank.web;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,15 +14,23 @@ import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 import com.just.agentweb.AgentWeb;
+import com.tokenbank.R;
 import com.tokenbank.activity.ImportWalletActivity;
 import com.tokenbank.config.AppConfig;
+import com.tokenbank.dialog.MsgDialog;
 import com.tokenbank.utils.DeviceUtil;
+import com.tokenbank.utils.FileUtil;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.wallet.FstServer;
 import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.wallet.WalletInfoManager;
 import com.zxing.activity.CaptureActivity;
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 
 import static com.tokenbank.activity.CreateWalletActivity.TAG;
@@ -181,7 +191,34 @@ public class JsNativeBridge {
                 break;
 
             case "saveImage":
-                //保存图片
+                Log.d(TAG, "callHandler: 开始保存图片 url = "+params);
+                String picUrl = params;
+                if(!picUrl.equals("")){
+                    try {
+                        //通过url获取图片
+                        URL iconUrl=new URL(picUrl);
+                        URLConnection connection=iconUrl.openConnection();
+                        HttpURLConnection httpURLConnection= (HttpURLConnection) connection;
+                        int length = httpURLConnection.getContentLength();
+                        connection.connect();
+                        InputStream inputStream=connection.getInputStream();
+                        BufferedInputStream bufferedInputStream=new BufferedInputStream(inputStream,length);
+                        Bitmap mBitmap= BitmapFactory.decodeStream(bufferedInputStream);
+                        bufferedInputStream.close();
+                        inputStream.close();
+                        //保存图片
+                        FileUtil.saveBitmap(AppConfig.getContext(),mBitmap);
+                    } catch (Exception e) {
+                        Log.d(TAG, "callHandler: 保存失败");
+                        AppConfig.postOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                new MsgDialog(AppConfig.getContext(), mContext.getString(R.string.picture_save_false)).show();
+                            }
+                        });
+                        e.printStackTrace();
+                    }
+                }
                 break;
 
             case "rollHorizontal":

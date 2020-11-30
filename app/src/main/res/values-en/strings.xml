@@ -55,6 +55,8 @@
     <string name="dialog_content_old_password_incorrect">The original password is incorrect, please re-enter.</string>
     <string name="toast_password_changed">The password is changed</string>
     <string name="titleBar_change_pwd">Change Password</string>
+    <string name="picture_save_success">save picture success</string>
+    <string name="picture_save_false">save picture false</string>
     <string name="titleBar_completed">Done</string>
     <string name="content_forgot_password"><![CDATA[<font color=\'#929da6\'>Forgot password? Import mnemonic or private key to reset password</font><font color=\'#2890fe\'>Import now?</font>]]></string>
     <string name="toast_wallet_address_copied">Wallet address has been copied to the clipboard</string>

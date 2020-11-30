@@ -60,6 +60,8 @@
     <string name="toast_wallet_address_copied">钱包地址已经复制到剪贴板</string>
     <string name="toast_password_incorrect">密码错误</string>
     <string name="titleBar_save">保存</string>
+    <string name="picture_save_success">图片保存成功</string>
+    <string name="picture_save_false">图片保存失败</string>
     <string name="dialog_title_warning">警告</string>
     <string name="dialog_content_no_wallet_backup">钱包未备份，删除钱包将导致钱包无法找回</string>
     <string name="dialog_btn_backup">去备份</string>

@@ -25,6 +25,8 @@
     <color name="viewfinder_frame">#ff000000</color>
     <color name="viewfinder_laser">#ffff0000</color>
     <color name="viewfinder_mask">#60000000</color>
+    <color name="color_receive">#2F5794</color>
+    <color name="color_send">#25A886</color>
 
     <!--common-->
     <color name="common_blue">#2890FE</color>
@@ -40,5 +42,7 @@
     <color name="color_split">#D5D2D2</color>
     <color name="color_ping_quick">#04E00C</color>
     <color name="color_ping_normal">#FF9800</color>
+    <color name="color_detail_receive">#FF27B498</color>
+    <color name="color_detail_send">#FFF55758</color>
     <color name="color_ping_low">#ffff0000</color>
 </resources>
