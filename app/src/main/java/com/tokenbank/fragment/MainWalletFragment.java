@@ -27,6 +27,7 @@ import com.tokenbank.activity.TokenReceiveActivity;
 import com.tokenbank.activity.TokenTransferActivity;
 import com.tokenbank.adapter.BaseRecycleAdapter;
 import com.tokenbank.adapter.BaseRecyclerViewHolder;
+import com.tokenbank.config.AppConfig;
 import com.tokenbank.wallet.FstServer;
 import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
@@ -72,9 +73,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private boolean isAssetVisible = false;
     private boolean isViewCreated = false;
     private GsonUtil currency = new GsonUtil("{}");
-
-
-
 
     public static MainWalletFragment newInstance() {
         MainWalletFragment fragment = new MainWalletFragment();
@@ -422,6 +420,16 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                     if(ret == 0){
                         handleTokenRequestResult(params, loadmore, currency);
                         mSwipteRefreshLayout.setRefreshing(false);
+                    } else if(ret == -101) {
+                        //申请不通过时有可能是
+                        AppConfig.postDelayOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                refreshWallet();
+                            }
+                        }, 500);
+                    } else {
+                        ToastUtil.toast(getContext(), getString(R.string.toast_transfer_failed)+ret);
                     }
                 }
             });

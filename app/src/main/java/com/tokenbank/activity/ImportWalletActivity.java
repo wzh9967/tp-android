@@ -24,15 +24,18 @@ public class ImportWalletActivity extends BaseActivity implements View.OnClickLi
     private TextView mTvPrivateKey;
     private ViewPager mViewPager;
     private ImportWalletAdapter mAdapter;
-    private final static String FROM = "From";
-    private final static String BLOCK_ID = "BlockId";
+    private int flag;
 
     public final static String TAG = "ImportWalletActivity";
-
+    public final static String IMPORT_FLAG = "flag";
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import_wallet);
+
+        if (getIntent() != null) {
+            flag = getIntent().getIntExtra(IMPORT_FLAG, -1);
+        }
         initView();
     }
 
@@ -45,9 +48,7 @@ public class ImportWalletActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
-
     private void initView() {
-
         mTitleBar = findViewById(R.id.title_bar);
         mTitleBar.setLeftDrawable(R.drawable.ic_back);
         mTitleBar.setTitle(getString(R.string.titleBar_import_wallet));
@@ -92,13 +93,17 @@ public class ImportWalletActivity extends BaseActivity implements View.OnClickLi
         mTvPrivateKey.setTextColor(getResources().getColor(R.color.common_black_fontcolor));
     }
 
-    public static void startImportWalletActivity(Context context) {
+    /**
+     * 判断跳转方式（从原生 还是 Dapp）
+     * @param context context
+     * @param Flag 0 为Dapp ； 1 为原生 ；
+     */
+    public static void startImportWalletActivity(Context context,int Flag) {
         Intent intent = new Intent(context, ImportWalletActivity.class);
+        intent.putExtra(IMPORT_FLAG, Flag);
         intent.addFlags(context instanceof BaseActivity ? 0 : Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
-
-
 
     class ImportWalletAdapter extends FragmentPagerAdapter {
 
@@ -113,6 +118,9 @@ public class ImportWalletActivity extends BaseActivity implements View.OnClickLi
 
         @Override
         public Fragment getItem(int position) {
+            Bundle bundle = new Bundle();
+            bundle.putInt(IMPORT_FLAG, flag);
+            mFragments[position].setArguments(bundle);
             return mFragments[position];
         }
 

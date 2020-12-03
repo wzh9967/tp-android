@@ -28,7 +28,6 @@ public class ManageWalletActivity extends BaseActivity implements View.OnClickLi
     private ListView mLsWallet;
     private WalletAdapter mAdapter;
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,7 +113,7 @@ public class ManageWalletActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void gotoImportWallet() {
-        ImportWalletActivity.startImportWalletActivity(ManageWalletActivity.this);
+        ImportWalletActivity.startImportWalletActivity(ManageWalletActivity.this,-1);
     }
 
 

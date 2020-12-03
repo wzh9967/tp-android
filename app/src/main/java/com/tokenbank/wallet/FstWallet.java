@@ -3,42 +3,38 @@ package com.tokenbank.wallet;
 import android.content.Context;
 
 import com.github.lzyzsd.jsbridge.BridgeWebView;
-import com.github.lzyzsd.jsbridge.CallBackFunction;
-import com.tokenbank.base.IFst;
+import com.tokenbank.base.WalletUtil;
 import com.tokenbank.base.WCallback;
+import com.tokenbank.config.Constant;
 import com.tokenbank.utils.GsonUtil;
 
 
 /**
  * 用于和链进行交互 （Storm3.js 的函数调用）
  */
-public class FstWallet implements IFst {
+public class FstWallet implements WalletUtil {
 
-    private static final String MOAC_JS = "file:///android_asset/fst_storm3.html";
     private static final String TAG = "FstWallet";
     private static BridgeWebView mWebview;
     private static FstWallet instance = new FstWallet();
-
-    public void init(Context context) {
-        mWebview = new BridgeWebView(context);
-        mWebview.loadUrl(MOAC_JS);
-    }
 
     public static FstWallet getInstance() {
         return instance;
     }
 
     /**
-     * 初始化Storm3 节点
-     * @param node  节点
+     * 初始化 BridgeWebView
+     * @param context
      */
-    public void initStorm3Provider(String node) {
-        mWebview.callHandler("initStorm3", node, new CallBackFunction() {
-            @Override
-            public void onCallBack(String data) {
+    public void init(Context context) {
+        mWebview = new BridgeWebView(context);
+        mWebview.loadUrl(Constant.FST_JS);
+    }
 
-            }
-        });
+    public void initStorm3(String node){
+        GsonUtil params = new GsonUtil("{}");
+        params.putString("node",node);
+        JSUtil.getInstance().callJS("init", params, null);
     }
 
     /**
@@ -52,12 +48,7 @@ public class FstWallet implements IFst {
         params.putString("node",node);
         params.putString("contract",contract);
         params.putString("address",address);
-        mWebview.callHandler("initContract", params.toString(), new CallBackFunction() {
-            @Override
-            public void onCallBack(String data) {
-
-            }
-        });
+        JSUtil.getInstance().callJS("initContract", params, null);
     }
 
     /**
@@ -66,15 +57,11 @@ public class FstWallet implements IFst {
      */
     @Override
     public void createWallet(WCallback callback) {
-        mWebview.callHandler("createWallet", null, new CallBackFunction() {
-            @Override
-            public void onCallBack(String data) {
-                GsonUtil json = new GsonUtil(data);
-                int ret = json.getInt("ret",-1);
-                GsonUtil extra = json.getObject("extra", "{}");
-                callback.onGetWResult(ret,extra);
-            }
-        });
+        if (!checkInit(callback)) {
+            return;
+        }
+        GsonUtil params = new GsonUtil("{}");
+        JSUtil.getInstance().callJS("createWallet", params, callback);
     }
 
     /**
@@ -84,15 +71,12 @@ public class FstWallet implements IFst {
      */
     @Override
     public void isValidAddress(String address, WCallback callback) {
-        mWebview.callHandler("isValidAddress", address, new CallBackFunction() {
-            @Override
-            public void onCallBack(String data) {
-                GsonUtil json = new GsonUtil(data);
-                int ret = json.getInt("ret",-1);
-                GsonUtil extra = json.getObject("extra", "{}");
-                callback.onGetWResult(ret,extra);
-            }
-        });
+        if (!checkInit(callback)) {
+            return;
+        }
+        GsonUtil params = new GsonUtil("{}");
+        params.putString("address",address);
+        JSUtil.getInstance().callJS("isValidAddress", params, callback);
 
     }
 
@@ -103,15 +87,12 @@ public class FstWallet implements IFst {
      */
     @Override
     public void isValidSecret(String secret, WCallback callback) {
-        mWebview.callHandler("isValidSecret", secret, new CallBackFunction() {
-            @Override
-            public void onCallBack(String data) {
-                GsonUtil json = new GsonUtil(data);
-                int ret = json.getInt("ret",-1);
-                GsonUtil extra = json.getObject("extra", "{}");
-                callback.onGetWResult(ret,extra);
-            }
-        });
+        if (!checkInit(callback)) {
+            return;
+        }
+        GsonUtil params = new GsonUtil("{}");
+        params.putString("secret",secret);
+        JSUtil.getInstance().callJS("isValidSecret", params, callback);
     }
 
     /**
@@ -122,19 +103,13 @@ public class FstWallet implements IFst {
      */
     @Override
     public void importSecret(String secret,String password, WCallback callback) {
+        if (!checkInit(callback)) {
+            return;
+        }
         GsonUtil params = new GsonUtil("{}");
         params.putString("secret",secret);
         params.putString("password",password);
-
-        mWebview.callHandler("importSecret", params.toString(), new CallBackFunction() {
-            @Override
-            public void onCallBack(String data) {
-                GsonUtil json = new GsonUtil(data);
-                int ret = json.getInt("ret",-1);
-                GsonUtil extra = json.getObject("extra", "{}");
-                callback.onGetWResult(ret,extra);
-            }
-        });
+        JSUtil.getInstance().callJS("importSecret", params, callback);
     }
 
     /**
@@ -145,18 +120,13 @@ public class FstWallet implements IFst {
      */
     @Override
     public void importWords(String words,String password, WCallback callback) {
+        if (!checkInit(callback)) {
+            return;
+        }
         GsonUtil params = new GsonUtil("{}");
         params.putString("words",words);
         params.putString("password",password);
-        mWebview.callHandler("importWords", params.toString(), new CallBackFunction() {
-            @Override
-            public void onCallBack(String data) {
-                GsonUtil json = new GsonUtil(data);
-                int ret = json.getInt("ret",-1);
-                GsonUtil extra = json.getObject("extra", "{}");
-                callback.onGetWResult(ret,extra);
-            }
-        });
+        JSUtil.getInstance().callJS("importWords", params, callback);
 
     }
 
@@ -167,16 +137,12 @@ public class FstWallet implements IFst {
      */
     @Override
     public void toIban(String address, WCallback callback) {
-        mWebview.callHandler("toIban", address, new CallBackFunction() {
-            @Override
-            public void onCallBack(String data) {
-                GsonUtil json = new GsonUtil(data);
-                int ret = json.getInt("ret",-1);
-                GsonUtil extra = json.getObject("extra", "{}");
-                callback.onGetWResult(ret,extra);
-            }
-        });
-
+        if (!checkInit(callback)) {
+            return;
+        }
+        GsonUtil params = new GsonUtil("{}");
+        params.putString("address",address);
+        JSUtil.getInstance().callJS("toIban", params, callback);
     }
 
     /**
@@ -186,15 +152,12 @@ public class FstWallet implements IFst {
      */
     @Override
     public void fromIban(String iban, WCallback callback) {
-        mWebview.callHandler("fromIban", iban, new CallBackFunction() {
-            @Override
-            public void onCallBack(String data) {
-                GsonUtil json = new GsonUtil(data);
-                int ret = json.getInt("ret",-1);
-                GsonUtil extra = json.getObject("extra", "{}");
-                callback.onGetWResult(ret,extra);
-            }
-        });
+        if (!checkInit(callback)) {
+            return;
+        }
+        GsonUtil params = new GsonUtil("{}");
+        params.putString("iban",iban);
+        JSUtil.getInstance().callJS("fromIban", params, callback);
 
     }
 
@@ -206,16 +169,12 @@ public class FstWallet implements IFst {
      */
     @Override
     public void getBalance(String address, WCallback callback) {
-        mWebview.callHandler("getBalance", address, new CallBackFunction() {
-            @Override
-            public void onCallBack(String data) {
-                GsonUtil json = new GsonUtil(data);
-                int ret = json.getInt("ret",-1);
-                GsonUtil extra = json.getObject("extra", "{}");
-                callback.onGetWResult(ret,extra);
-            }
-        });
-
+        if (!checkInit(callback)) {
+            return;
+        }
+        GsonUtil params = new GsonUtil("{}");
+        params.putString("address",address);
+        JSUtil.getInstance().callJS("getBalance", params, callback);
     }
 
     /**
@@ -225,15 +184,10 @@ public class FstWallet implements IFst {
      */
     @Override
     public void sendErc20Transaction(GsonUtil data, WCallback callback) {
-        mWebview.callHandler("sendErc20Transaction", data.toString(), new CallBackFunction() {
-            @Override
-            public void onCallBack(String data) {
-                GsonUtil json = new GsonUtil(data);
-                int ret = json.getInt("ret",-1);
-                GsonUtil extra = json.getObject("extra", "{}");
-                callback.onGetWResult(ret,extra);
-            }
-        });
+        if (!checkInit(callback)) {
+            return;
+        }
+        JSUtil.getInstance().callJS("sendErc20Transaction", data, callback);
 
     }
 
@@ -244,15 +198,10 @@ public class FstWallet implements IFst {
      */
     @Override
     public void sendTransaction(GsonUtil data, WCallback callback) {
-        mWebview.callHandler("sendTransaction", data.toString(), new CallBackFunction() {
-            @Override
-            public void onCallBack(String data) {
-                GsonUtil json = new GsonUtil(data);
-                int ret = json.getInt("ret",-1);
-                GsonUtil extra = json.getObject("extra", "{}");
-                callback.onGetWResult(ret,extra);
-            }
-        });
+        if (!checkInit(callback)) {
+            return;
+        }
+        JSUtil.getInstance().callJS("sendTransaction", data, callback);
     }
 
     /**
@@ -263,18 +212,13 @@ public class FstWallet implements IFst {
      */
     @Override
     public void getErc20Balance(String Contract, String address, WCallback callback) {
+        if (!checkInit(callback)) {
+            return;
+        }
         GsonUtil params = new GsonUtil("{}");
         params.putString("contract",Contract);
         params.putString("address",address);
-        mWebview.callHandler("getErc20Balance", params.toString(), new CallBackFunction() {
-            @Override
-            public void onCallBack(String data) {
-                GsonUtil json = new GsonUtil(data);
-                int ret = json.getInt("ret",-1);
-                GsonUtil extra = json.getObject("extra", "{}");
-                callback.onGetWResult(ret,extra);
-            }
-        });
+        JSUtil.getInstance().callJS("getErc20Balance", params, callback);
 
     }
 
@@ -284,16 +228,11 @@ public class FstWallet implements IFst {
      */
     @Override
     public void getGasPrice(WCallback callback) {
-        mWebview.callHandler("getGasPrice", null, new CallBackFunction() {
-            @Override
-            public void onCallBack(String data) {
-                GsonUtil json = new GsonUtil(data);
-                int ret = json.getInt("ret",-1);
-                GsonUtil extra = json.getObject("extra", "{}");
-                callback.onGetWResult(ret,extra);
-            }
-        });
-
+        if (!checkInit(callback)) {
+            return;
+        }
+        GsonUtil params = new GsonUtil("{}");
+        JSUtil.getInstance().callJS("getGasPrice", params, callback);
     }
 
     /**
@@ -303,16 +242,12 @@ public class FstWallet implements IFst {
      */
     @Override
     public void getTransactionDetail(String hash, WCallback callback) {
-        mWebview.callHandler("getTransactionDetail", hash, new CallBackFunction() {
-            @Override
-            public void onCallBack(String data) {
-                GsonUtil json = new GsonUtil(data);
-                int ret = json.getInt("ret",-1);
-                GsonUtil extra = json.getObject("extra", "{}");
-                callback.onGetWResult(ret,extra);
-            }
-        });
-
+        if (!checkInit(callback)) {
+            return;
+        }
+        GsonUtil params = new GsonUtil("{}");
+        params.putString("hash",hash);
+        JSUtil.getInstance().callJS("getTransactionDetail", params, callback);
 
     }
 
@@ -323,32 +258,28 @@ public class FstWallet implements IFst {
      */
     @Override
     public void getTransactionReceipt(String hash, WCallback callback) {
-        mWebview.callHandler("getTransactionReceipt", hash, new CallBackFunction() {
-            @Override
-            public void onCallBack(String data) {
-                GsonUtil json = new GsonUtil(data);
-                int ret = json.getInt("ret",-1);
-                GsonUtil extra = json.getObject("extra", "{}");
-                callback.onGetWResult(ret,extra);
-            }
-        });
+        if (!checkInit(callback)) {
+            return;
+        }
+        GsonUtil params = new GsonUtil("{}");
+        params.putString("hash",hash);
+        JSUtil.getInstance().callJS("getTransactionReceipt", params, callback);
     }
 
     /**
      * 签名交易
      * @param data
-     * @param wCallback
+     * @param callback
      */
     @Override
-    public void SignTransaction(GsonUtil data, WCallback wCallback) {
-        mWebview.callHandler("SignTransaction", data.toString(), new CallBackFunction() {
-            @Override
-            public void onCallBack(String data) {
-                GsonUtil json = new GsonUtil(data);
-                int ret = json.getInt("ret",-1);
-                GsonUtil extra = json.getObject("extra", "{}");
-                wCallback.onGetWResult(ret,extra);
-            }
-        });
+    public void SignTransaction(GsonUtil data, WCallback callback) {
+        if (!checkInit(callback)) {
+            return;
+        }
+        JSUtil.getInstance().callJS("SignTransaction", data, callback);
+    }
+
+    private boolean checkInit(WCallback callback) {
+        return JSUtil.getInstance().checkInit(callback);
     }
 }

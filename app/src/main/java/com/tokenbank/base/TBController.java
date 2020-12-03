@@ -4,7 +4,6 @@ package com.tokenbank.base;
 import com.tokenbank.config.AppConfig;
 import com.tokenbank.net.query.QueryDataFromNet;
 import com.tokenbank.net.query.QueryTransaction;
-import com.tokenbank.wallet.FstServer;
 import com.tokenbank.wallet.FstWallet;
 
 import java.util.ArrayList;
@@ -32,7 +31,6 @@ public class TBController {
         mSupportType.add(SWT_INDEX);
         mFstWallet = mFstWallet.getInstance();
         mFstWallet.init(AppConfig.getContext());
-        mFstWallet.initStorm3Provider(FstServer.getInstance().getNode());
         mQueryTransaction = new QueryTransaction();
     }
 

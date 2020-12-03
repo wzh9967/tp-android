@@ -1,12 +1,8 @@
 package com.tokenbank.net.load;
 
-import android.util.Log;
-
 import com.tokenbank.net.apirequest.ApiRequest;
 import com.tokenbank.net.listener.LoadDataListener;
 import com.tokenbank.utils.GsonUtil;
-import com.tokenbank.utils.TLog;
-
 import org.json.JSONException;
 
 public class RequestPresenter {
@@ -19,7 +15,6 @@ public class RequestPresenter {
     public RequestPresenter() {
         this.loadDataModel = new LoadDataImp();
     }
-
 
     public void loadData(final ApiRequest request, boolean shouldCache, final RequestCallback requestCallback) {
         loadDataModel.loadData(request, shouldCache, new LoadDataListener() {
@@ -129,12 +124,42 @@ public class RequestPresenter {
         });
     }
 
+    public void loadFstData(final ApiRequest request, boolean shouldCache, final RequestCallback requestCallback) {
+        loadDataModel.loadData(request, shouldCache, new LoadDataListener() {
+            @Override
+            public void loadSuccess(String result) throws JSONException {
+                if (requestCallback != null) {
+                    //todo
+                    GsonUtil jsonResult = new GsonUtil(result);
+                    requestCallback.onRequesResult(jsonResult.getInt("statusCode", -1), jsonResult);
+                }
+            }
+
+            @Override
+            public void loadFailed(Throwable throwable, int reqId) throws JSONException {
+                if (requestCallback != null) {
+                    //todo
+                    GsonUtil errorMsg = new GsonUtil("{}");
+                    requestCallback.onRequesResult(-1, errorMsg);
+                }
+            }
+
+            @Override
+            public void loadFinish() {
+            }
+        });
+    }
+
     public void loadJcData(ApiRequest request, final RequestCallback requestCallback) {
         loadJcData(request, false, requestCallback);
     }
 
     public void loadJtData(ApiRequest request, final RequestCallback requestCallback) {
         loadJtData(request, false, requestCallback);
+    }
+
+    public void loadFstData(ApiRequest request, final RequestCallback requestCallback) {
+        loadFstData(request, false, requestCallback);
     }
 
     public void loadEthplorerData(ApiRequest request, final RequestCallback requestCallback) {

@@ -95,7 +95,8 @@ public class JSUtil {
             if (callback != null) {
                 GsonUtil reason = new GsonUtil("{}");
                 reason.putString("reason", "page not init, make sure call loadJs and page loadData success");
-                callback.onGetWResult(-1, reason);
+                // -101 表示page还未初始化，延时直到 onPageFinished执行
+                callback.onGetWResult(-101, reason);
             }
             return false;
         } else {

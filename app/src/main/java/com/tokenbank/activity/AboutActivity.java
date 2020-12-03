@@ -23,7 +23,6 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     private RelativeLayout mLayoutPrivliTerms;
     private RelativeLayout mLayoutCheckUpdate;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

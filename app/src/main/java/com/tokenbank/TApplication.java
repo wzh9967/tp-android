@@ -9,6 +9,7 @@ import com.tokenbank.base.TBController;
 import com.tokenbank.config.AppConfig;
 import com.tokenbank.utils.LanguageUtil;
 import com.tokenbank.wallet.FstServer;
+import com.tokenbank.wallet.JSUtil;
 import com.tokenbank.wallet.WalletInfoManager;
 
 import java.util.ArrayList;
@@ -28,8 +29,9 @@ public class TApplication extends Application {
         FstServer.getInstance().initNode();
         CrashHandler crashHandler = CrashHandler.getInstance();
         crashHandler.init(getApplicationContext());
-        TBController.getInstance().init();
+        JSUtil.getInstance().init();
         WalletInfoManager.getInstance().init();
+        TBController.getInstance().init();
     }
 
     public void addActivity(BaseActivity activity) {
@@ -46,7 +48,7 @@ public class TApplication extends Application {
 
     public void clearActivity() {
         for (BaseActivity activity : mActivities
-                ) {
+        ) {
             if (!activity.isFinishing()) {
                 activity.finish();
             }

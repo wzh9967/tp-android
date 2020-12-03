@@ -62,7 +62,12 @@
     <string name="toast_wallet_address_copied">Wallet address has been copied to the clipboard</string>
     <string name="toast_password_incorrect">Password Incorrect</string>
     <string name="titleBar_save">Done</string>
+    <string name="wallet_import_false">import wallet false</string>
+    <string name="wallet_import_success">import wallet success</string>
+    <string name="sign_transation_false">sign transaction false</string>
+    <string name="sign_transation_success">sign transaction success</string>
     <string name="dialog_title_warning">Warning</string>
+    <string name="dialog_node_warning">Node exception！</string>
     <string name="dialog_content_no_wallet_backup">The wallet is not backed up. Deleting the wallet will cause the wallet cannot be retrieved.</string>
     <string name="dialog_btn_backup">Backup Now</string>
     <string name="dialog_btn_delete">Delete Now</string>

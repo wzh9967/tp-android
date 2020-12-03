@@ -32,6 +32,8 @@ public class Constant {
 
     public final static String MOC_Hash_SERVER = "http://dao.moacchain.net/transaction/";
 
+    public final static  String FST_JS = "file:///android_asset/fst_storm3.html";
+
     //activity requestCode
     public final static int CHOOSE_BLOCK_REQUEST_CODE = 1001;
     public final static int CHOOSE_IMPORTWAY_CODE = 1002;

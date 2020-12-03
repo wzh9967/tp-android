@@ -10,17 +10,22 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 import com.just.agentweb.AgentWeb;
 import com.tokenbank.R;
 import com.tokenbank.activity.ImportWalletActivity;
+import com.tokenbank.base.TBController;
+import com.tokenbank.base.WCallback;
 import com.tokenbank.config.AppConfig;
 import com.tokenbank.dialog.MsgDialog;
+import com.tokenbank.dialog.PwdDialog;
 import com.tokenbank.utils.DeviceUtil;
 import com.tokenbank.utils.FileUtil;
 import com.tokenbank.utils.GsonUtil;
+import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.wallet.FstServer;
 import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.wallet.WalletInfoManager;
@@ -52,13 +57,12 @@ public class JsNativeBridge {
     private IWebCallBack mWebCallBack;
     private WalletInfoManager.WData mCurrentWallet;
     private FstWallet mFstWallet;
-
     public JsNativeBridge(AgentWeb agent, Context context, IWebCallBack callback) {
         this.mAgentWeb = agent;
         this.mContext = context;
         this.mWebCallBack = callback;
         this.mWalletManager = WalletInfoManager.getInstance();
-
+        this.mFstWallet = TBController.getInstance().getFstWallet();
     }
 
     @JavascriptInterface
@@ -156,9 +160,45 @@ public class JsNativeBridge {
                 break;
 
             case "sign":
+                GsonUtil SignParam = new GsonUtil(params);
+                Log.d(TAG, "callHandler: "+mCurrentWallet.waddress.toLowerCase() );
+                Log.d(TAG, "callHandler: "+SignParam.getString("address","").toLowerCase() );
+                if(!mCurrentWallet.waddress.toLowerCase().equals(SignParam.getString("address",""))){
+                    result.putString("err","has no this wallet");
+                    notifySignResult(result,callbackId);
+                    return;
+                }
+                SignParam.putString("secret",mCurrentWallet.wpk);
+                AppConfig.postOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        new PwdDialog(mContext, new PwdDialog.PwdResult() {
+                            @Override
+                            public void authPwd(String tag, boolean flag) {
+                                if (TextUtils.equals(tag, "transaction")) {
+                                    if (flag) {
+                                        //执行
+                                        mFstWallet.SignTransaction(SignParam, new WCallback() {
+                                            @Override
+                                            public void onGetWResult(int ret, GsonUtil extra) {
+                                                String raw = extra.getString("raw","");
+                                                if(raw.equals("")){
+                                                    result.putString("err",extra.getString("err",""));
+                                                } else {
+                                                    result.putString("raw",raw);
+                                                }
+                                                notifySignResult(result,callbackId);
+                                            }
+                                        });
+                                    } else {
+                                        ToastUtil.toast(AppConfig.getContext(), AppConfig.getContext().getString(R.string.toast_order_password_incorrect));
+                                    }
+                                }
+                            }
+                        }, mCurrentWallet.whash, "transaction").show();
+                    }
+                });
 
-
-                Log.d(TAG, "sign: ");
                 break;
             case "transfer":
 
@@ -182,7 +222,7 @@ public class JsNativeBridge {
                 break;
 
             case "importWallet":
-                ImportWalletActivity.startImportWalletActivity(AppConfig.getContext());
+                ImportWalletActivity.startImportWalletActivity(mContext,0);
                 break;
 
             case "setMenubar":
@@ -208,6 +248,7 @@ public class JsNativeBridge {
                         inputStream.close();
                         //保存图片
                         FileUtil.saveBitmap(AppConfig.getContext(),mBitmap);
+                        new MsgDialog(AppConfig.getContext(), mContext.getString(R.string.picture_save_success)).show();
                     } catch (Exception e) {
                         Log.d(TAG, "callHandler: 保存失败");
                         AppConfig.postOnUiThread(new Runnable() {
@@ -243,12 +284,75 @@ public class JsNativeBridge {
                 result.putString("msg", MSG_SUCCESS);
                 this.mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + result.toString() + "')");
                 break;
+            case "sendTransaction":
+                GsonUtil TransactionParam = new GsonUtil(params);
+                if(!mCurrentWallet.waddress.toLowerCase().equals(TransactionParam.getString("address",""))){
+                    result.putString("err","has no this wallet");
+                    notifySignResult(result,callbackId);
+                    return;
+                }
+                String contract = TransactionParam.getString("contract","");
+                TransactionParam.putString("secret",mCurrentWallet.wpk);
 
+
+                AppConfig.postOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        new PwdDialog(mContext, new PwdDialog.PwdResult() {
+                            @Override
+                            public void authPwd(String tag, boolean flag) {
+                                if (TextUtils.equals(tag, "transaction")) {
+                                    if (flag) {
+                                        if(contract.equals("")){
+                                            mFstWallet.sendTransaction(TransactionParam, new WCallback() {
+                                                @Override
+                                                public void onGetWResult(int ret, GsonUtil extra) {
+                                                    String hash = extra.getString("hash","");
+                                                    if(hash.equals("")){
+                                                        result.putString("err",extra.getString("err",""));
+                                                    } else {
+                                                        result.putString("hash",hash);
+                                                    }
+                                                    notifySignResult(result,callbackId);
+                                                }
+                                            });
+                                        } else {
+                                            mFstWallet.sendErc20Transaction(TransactionParam, new WCallback() {
+                                                @Override
+                                                public void onGetWResult(int ret, GsonUtil extra) {
+                                                    String hash = extra.getString("hash","");
+                                                    if(hash.equals("")){
+                                                        result.putString("err",extra.getString("err",""));
+                                                    } else {
+                                                        result.putString("hash",hash);
+                                                    }
+                                                    notifySignResult(result,callbackId);
+
+                                                }
+                                            });
+                                        }
+                                    } else {
+                                        ToastUtil.toast(AppConfig.getContext(), AppConfig.getContext().getString(R.string.toast_order_password_incorrect));
+                                    }
+                                }
+                            }
+                        }, mCurrentWallet.whash, "transaction").show();
+
+
+                    }
+                });
+
+
+
+                break;
             default:
                 Log.e(TAG, "callHandler: no such method : "+methodName);
                 break;
         }
+    }
 
+    private void notifySignResult(GsonUtil result,String callbackId) {
+        this.mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + result.toString() + "')");
     }
 
 

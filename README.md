@@ -51,7 +51,7 @@ This is a tp-android based Android ink fst Wallet tool. We can use it to manage 
 > ```
 > 注意：
 > 
-> *关于GasPrice 无论社区链节点还是联盟链节点 通过getGasPrice 得到的值均为 10 * 10 。和联盟链默认的GasPrice 相同。故默认交易相关的GasPrice为 通过storm3.fst.getGasPrice()获取的值。
+> *关于GasPrice 无论社区链节点还是联盟链节点 通过getGasPrice 得到的值均为 10 ^ 10 。和联盟链默认的GasPrice 相同。故默认交易相关的GasPrice为 通过storm3.fst.getGasPrice()获取的值。
 > *和链的交互通过storm3实现，js放置在assert目录下。
 > ```
 

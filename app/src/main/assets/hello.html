@@ -33,7 +33,6 @@
             }
             alert("isConnected: " + isConnected);
 
-            /*
             //获取app版本
             dappApi.getAppInfo().then((result) =>{
                  showElement("获取app版本        result = " +JSON.stringify(result));
@@ -51,6 +50,22 @@
                  showElement("获取节点url        result = " +JSON.stringify(result));
             })
 
+             //交易签名
+            let paramsjson = new Object();
+            paramsjson.address = '0x981d4bc976c221b3b42270be6dcab72d37d2e0cd'
+            paramsjson.to = "0xb4860ef01adae0f0714776d1c35e7ad4b0937b79"
+            paramsjson.value = "1000000000000000000"
+            paramsjson.gasPrice = "10000000000"
+            paramsjson.gasLimit = "23000"
+            paramsjson.data = ""
+            dappApi.sign(JSON.stringify(paramsjson)).then((result)=>{
+              showElement("result = " +JSON.stringify(result))
+            })
+
+
+
+
+            /*
             //跳转到导入钱包页面
             dappApi.importWallet()
 
@@ -81,31 +96,29 @@
               showElement("ret = "+ret + "        result = " +JSON.stringify(result))
             }
 
+            let params = new Object();
+            params.address = "0x981d4bc976c221b3b42270be6dcab72d37d2e0cd"
+            params.to = "0xb4860ef01adae0f0714776d1c35e7ad4b0937b79"
+            params.value = "1000000000000000"
+            params.gasPrice = "10000000000"
+            params.gasLimit = "24000"
+            params.data = ""
+            dappApi.sendTransaction(JSON.stringify(params)).then((hash) =>{
+             showElement("       hash = " +JSON.stringify(hash))
+            })
+
             //设置导航条
             dappApi.setMenubar()
 
             //禁止webview自带的左滑手势触发goback
             dappApi.forwardNavigationGesturesEnable()
 
-
-            */
-
-            //保存图片
+            //保存图片 通过url保存
             dappApi.saveImage("http://www.baidu.com/img/flexible/logo/pc/result.png")
 
 
-
-
-
-            /*
-
-            //交易签名
-            dappApi.sign((ret,result)=>{
-              showElement("ret = "+ret + "        result = " +JSON.stringify(result))
-            })
-
-
             */
+
         }
 
         function showElement(msg) {

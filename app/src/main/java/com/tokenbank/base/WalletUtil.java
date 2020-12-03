@@ -3,7 +3,7 @@ package com.tokenbank.base;
 
 import com.tokenbank.utils.GsonUtil;
 
-public interface IFst {
+public interface WalletUtil {
 
     void createWallet(WCallback callback);
 

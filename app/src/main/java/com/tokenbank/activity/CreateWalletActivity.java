@@ -27,7 +27,6 @@ import com.tokenbank.view.TitleBar;
 public class CreateWalletActivity extends BaseActivity implements View.OnClickListener {
 
     public final static String TAG = "CreateWalletActivity";
-    public static final String BLOCK = "BLOCK";
     private TitleBar mTitleBar;
     private EditText mEdtWalletName, mEdtWalletPwd, mEdtWalletPwdConfirm, mEdtWalletTips;
     private ImageView mImgServiceTerms;
@@ -42,7 +41,6 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
         initView();
         mFstWallet =TBController.getInstance().getFstWallet();
     }
-
 
     private void initView() {
         mTitleBar = findViewById(R.id.title_bar);

@@ -1,5 +1,6 @@
 package com.tokenbank.wallet;
 
+import com.tokenbank.base.TBController;
 import com.tokenbank.config.Constant;
 import com.tokenbank.utils.GsonUtil;
 
@@ -10,6 +11,7 @@ public class FstServer {
     private static String node ;
     private static FstServer instance;
     private static int index = -1;
+    private FstWallet mFstWallet;
     private FstServer() {
     }
     public static FstServer getInstance() {
@@ -31,5 +33,7 @@ public class FstServer {
     public void setNode(GsonUtil node){
         this.node = node.getString("node", "");
         this.index = node.getInt("position", 0);
+        mFstWallet = TBController.getInstance().getFstWallet();
+        mFstWallet.initStorm3(this.node);
     }
 }

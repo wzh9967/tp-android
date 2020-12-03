@@ -42,6 +42,8 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
     private TextView mTvImportWallet;
     private TextView mTvAboutPrivateKey;
     private FstWallet mFstWallet;
+    private Bundle bundle;
+    private int flag;
     public static BaseFragment newInstance() {
         PKFragment fragment = new PKFragment();
         return fragment;
@@ -51,6 +53,8 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mFstWallet =TBController.getInstance().getFstWallet();
+        bundle = this.getArguments();
+        flag = bundle.getInt("flag");
     }
 
     @Nullable
@@ -189,7 +193,13 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
                               final String address) {
         long walletId = System.currentTimeMillis();
         storeWallet(walletId, name, address, hash, privateKey);
-        gotoMainActivity();
+        if(flag == -1){
+            gotoMainActivity();
+        } else {
+            SplashActivity.instance.finish();
+            getActivity().finish();
+            ToastUtil.toast(getActivity(),getString(R.string.wallet_import_success));
+        }
     }
 
     private void gotoMainActivity() {

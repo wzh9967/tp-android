@@ -13,12 +13,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokenbank.R;
-import com.tokenbank.wallet.WalletInfoManager;
 import com.tokenbank.config.AppConfig;
 import com.tokenbank.utils.DeviceUtil;
 import com.tokenbank.utils.NetUtil;
 import com.tokenbank.utils.PermissionUtil;
 import com.tokenbank.utils.ToastUtil;
+import com.tokenbank.wallet.WalletInfoManager;
 
 public class SplashActivity extends BaseActivity implements View.OnClickListener {
 
@@ -27,7 +27,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
     private LinearLayout mLayoutSplashBtn;
     private TextView mTvCreateWallet;
     private TextView mTvImportWallet;
-    private int BackFlag = -1;
+    private static int BACK_FLAG = -1;
 
     public static SplashActivity instance = null;
 
@@ -47,7 +47,6 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
         if (!NetUtil.isNetworkAvailable(this)) {
             ToastUtil.toast(this, getString(R.string.toast_no_network));
         }
-//
 //        checkUpgrade();
         checkPermission();
     }
@@ -63,15 +62,15 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onBackPressed() {
-        if(BackFlag == 0){
-            BackFlag--;
+        if(BACK_FLAG == 0){
+            BACK_FLAG--;
             AppConfig.getContext().clearActivity();
             this.finish();
             return;
         }
-        if(BackFlag == -1){
+        if(BACK_FLAG == -1){
             ToastUtil.toast(SplashActivity.this, getString(R.string.toast_Confirm_exit));
-            BackFlag++;
+            BACK_FLAG++;
         }
     }
 
@@ -86,7 +85,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void gotoImportWallet() {
-        ImportWalletActivity.startImportWalletActivity(SplashActivity.this);
+        ImportWalletActivity.startImportWalletActivity(SplashActivity.this,-1);
     }
 
     private void checkPermission() {

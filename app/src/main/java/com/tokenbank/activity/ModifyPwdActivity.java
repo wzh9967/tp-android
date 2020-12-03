@@ -21,13 +21,11 @@ import com.tokenbank.view.TitleBar;
 //不用动
 public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBarClickListener, View.OnClickListener {
 
-
     private TitleBar mTitleBar;
 
     private EditText mEdtOldPwd;
     private EditText mEdtNewPwd;
     private EditText mEdtReaptNewPwd;
-
     private TextView mTvForgetPwdTips;
     private WalletInfoManager.WData mWalletData;
 
@@ -139,6 +137,6 @@ public class ModifyPwdActivity extends BaseActivity implements TitleBar.TitleBar
     }
 
     private void gotoImportPrivateKeyFragment() {
-        ImportWalletActivity.startImportWalletActivity(ModifyPwdActivity.this);
+        ImportWalletActivity.startImportWalletActivity(ModifyPwdActivity.this,-1);
     }
 }

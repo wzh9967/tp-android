@@ -48,6 +48,9 @@ public class AppConfig {
         handler.postDelayed(task, delayMillis);
     }
 
+    public static boolean isMainThread() {
+        return Looper.getMainLooper() == Looper.myLooper();
+    }
 
     public static void execute(Runnable task) {
         if (es != null && !es.isShutdown()) {
