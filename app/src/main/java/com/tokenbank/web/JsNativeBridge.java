@@ -38,6 +38,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 
+import cn.sharesdk.onekeyshare.OnekeyShare;
+
 import static com.tokenbank.activity.CreateWalletActivity.TAG;
 
 
@@ -121,7 +123,7 @@ public class JsNativeBridge {
                 break;
 
             case "shareToSNS":
-                /*
+
                 GsonUtil tx = new GsonUtil(params);
                 String mTitle = tx.getString("title", "");
                 String mUrl = tx.getString("url", "").toUpperCase();
@@ -141,7 +143,6 @@ public class JsNativeBridge {
                 oks.setUrl(mUrl);
                 // 启动分享GUI
                 oks.show(mContext);
-                 */
                 break;
 
             case "invokeQRScanner":
