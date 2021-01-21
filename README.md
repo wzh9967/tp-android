@@ -99,7 +99,9 @@ This is a tp-android based Android ink fst Wallet tool. We can use it to manage 
 
 
 
+### Dapp
 
+> 发现模块支持Dapp使用，其接口格式请参考[这里](https://github.com/TP-Lab/tp-js-sdk#MOAC)。
 
 
 

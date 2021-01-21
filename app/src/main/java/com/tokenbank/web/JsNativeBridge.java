@@ -55,7 +55,7 @@ public class JsNativeBridge {
     private Context mContext;
     private WalletInfoManager mWalletManager;
     private Handler mHandler = new Handler(Looper.getMainLooper());
-    private String mFrom, mTo, mValue, mToken, mIssuer, mGas, mMemo,mGasPrice;
+    private String name, mFrom, mTo, mValue, mToken, mIssuer, mGas, mMemo,mGasPrice;
     private IWebCallBack mWebCallBack;
     private WalletInfoManager.WData mCurrentWallet;
     private FstWallet mFstWallet;
@@ -74,7 +74,7 @@ public class JsNativeBridge {
         switch (methodName) {
             case "getAppInfo":
                 String version = "";
-                String name = "";
+                name = "";
                 PackageManager packageManager = mContext.getPackageManager();
                 PackageInfo packageInfo = null;
                 try {
@@ -104,8 +104,8 @@ public class JsNativeBridge {
                 for (int i = 0; i < wallets.size(); i++) {
                     GsonUtil wallet = new GsonUtil("{}");
                     String address = wallets.get(i).waddress;
-                    String name1 = wallets.get(i).wname;
-                    wallet.putString("name", name1);
+                    name = wallets.get(i).wname;
+                    wallet.putString("name", name);
                     wallet.putString("address", address);
                     data1.put(wallet);
                 }
