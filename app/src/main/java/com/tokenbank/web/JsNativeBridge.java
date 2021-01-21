@@ -68,13 +68,10 @@ public class JsNativeBridge {
     }
 
     @JavascriptInterface
-    public void callHandler(String methodName, String params, String callbackId) {
+    public void callMessage(String methodName, String params, String callbackId) {
         mCurrentWallet = mWalletManager.getCurrentWallet();
         GsonUtil result = new GsonUtil("{}");
         switch (methodName) {
-            case "isConnected":
-
-                break;
             case "getAppInfo":
                 String version = "";
                 String name = "";
@@ -160,7 +157,6 @@ public class JsNativeBridge {
                 data.putString("blockchain","moac");
                 result.putBoolean("result", true);
                 result.put("data", data);
-
                 result.putString("msg", MSG_SUCCESS);
                 this.mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + result.toString() + "')");
                 break;
