@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebResourceRequest;
@@ -40,16 +41,25 @@ public class WebActivity extends BaseActivity implements IWebCallBack {
                 .setAgentWebParent(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))
                 .useDefaultIndicator()
                 .setWebChromeClient(mWebChromeClient)
-                .setWebViewClient(mWebViewClient)
-                .setMainFrameErrorView(R.layout.agentweb_error_page, -1)
-                .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
-                .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)
-                .interceptUnkownUrl()
-                .createAgentWeb()
-                .ready()
-                .go(getUrl());
+                .setWebViewClient(mWebViewClient)//WebViewClient ， 与 WebView 使用一致 ，但是请勿获取WebView调用setWebViewClient(xx)方法了,会覆盖AgentWeb DefaultWebClient,同时相应的中间件也会失效。
+                .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK) //严格模式 Android 4.2.2 以下会放弃注入对象 ，使用AgentWebView没影响。
+                .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的布局，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
+                .additionalHttpHeader(getUrl(), "cookie", "41bc7ddf04a26b91803f6b11817a5a1c")
+                .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他页面时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
+                .interceptUnkownUrl() //拦截找不到相关页面的Url AgentWeb 3.0.0 加入。
+                .createAgentWeb()//创建AgentWeb。
+                .ready()//设置 WebSettings。
+                .go(getUrl()); //WebView载入该url地址的页面并显示。
+
+        // AgentWeb 没有把WebView的功能全面覆盖 ，所以某些设置 AgentWeb 没有提供 ， 请从WebView方面入手设置。
+        mAgentWeb.getWebCreator().getWebView().setOverScrollMode(WebView.OVER_SCROLL_NEVER);//禁用手势滑动的动画效果
+       // mAgentWeb.getAgentWebSettings().getWebSettings().setUseWideViewPort(true); //将图片调整到适合webview的大小
+       // mAgentWeb.getAgentWebSettings().getWebSettings().setLoadWithOverviewMode(true); // 缩放至屏幕的大小
+        //mAgentWeb.getWebCreator().getWebView().all
+        // mAgentWeb.getWebCreator().getWebView()  获取WebView .
         mJsNativeBridge = new JsNativeBridge(mAgentWeb, this, this);
-        mAgentWeb.getJsInterfaceHolder().addJavaObject("JsNativeBridge", mJsNativeBridge);
+        //mAgentWeb.getJsInterfaceHolder().addJavaObject("JsNativeBridge", mJsNativeBridge);
+        mAgentWeb.getJsInterfaceHolder().addJavaObject("TPJSBrigeClient", mJsNativeBridge);
     }
 
     private com.just.agentweb.WebViewClient mWebViewClient = new com.just.agentweb.WebViewClient() {

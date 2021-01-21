@@ -8,19 +8,18 @@
   <meta name="Generator" content="Cocoa HTML Writer">
   <meta name="CocoaVersion" content="1504.76">
   <style type="text/css">
-        p.p1 {
-            margin: 0.0px 0.0px 0.0px 0.0px;
-            font: 12.0px Helvetica
-        }
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    body{
+        padding:0;
+        margin:0;
+    }
 
-        body {
-            padding: 0;
-            margin: 0;
-        }
     </style>
   <link rel="stylesheet" type="text/css" href="./button.css">
   <script type="text/javascript" src="./dapp_api.min.js"></script>
   <script>
+
+
 
         test();
         function test() {
@@ -34,19 +33,19 @@
             alert("isConnected: " + isConnected);
 
             //获取app版本
-            dappApi.getAppInfo().then((result) =>{
+            tp.getAppInfo().then((result) =>{
                  showElement("获取app版本        result = " +JSON.stringify(result));
             })
 
-            dappApi.getDevice().then((result) =>{
+            tp.getDeviceId().then((result) =>{
               showElement("获取设备号        result = " +JSON.stringify(result));
             })
 
-            dappApi.getCurrentWallet().then((result) =>{
+            tp.getCurrentWallet().then((result) =>{
                  showElement("获取当前交易钱包        result = " +JSON.stringify(result));
             })
 
-            dappApi.getNodeUrl().then((result) =>{
+            tp.getNodeUrl().then((result) =>{
                  showElement("获取节点url        result = " +JSON.stringify(result));
             })
 
@@ -58,7 +57,7 @@
             paramsjson.gasPrice = "10000000000"
             paramsjson.gasLimit = "23000"
             paramsjson.data = ""
-            dappApi.sign(JSON.stringify(paramsjson)).then((result)=>{
+            tp.sign(JSON.stringify(paramsjson)).then((result)=>{
               showElement("result = " +JSON.stringify(result))
             })
 
@@ -67,32 +66,32 @@
 
             /*
             //跳转到导入钱包页面
-            dappApi.importWallet()
+            tp.importWallet()
 
             //打开扫描
-            dappApi.invokeQRScanner().then((result) =>{
+            tp.invokeQRScanner().then((result) =>{
                  showElement("扫描结果        result = " +JSON.stringify(result));
             })
 
             //分享
-            dappApi.shareToSNS().then((ret,result)=>{
+            tp.shareNewsToSNS().then((ret,result)=>{
               showElement("ret = "+ret + "        result = " +JSON.stringify(result))
             })
 
             //全屏  params   true (全屏)/ false（关闭）
-            dappApi.fullScreen(true)
+            tp.fullScreen(true)
 
             //关闭Dapp
-            dappApi.close()
+            tp.close()
 
             //返回
-            dappApi.back();
+            tp.back();
 
             //横屏
-            dappApi.rollHorizontal()
+            tp.rollHorizontal()
 
             //禁止iOS自带的左滑手势返回，对安卓无影响
-            dappApi.popGestureRecognizerEnable(ret,result)=>{
+            tp.popGestureRecognizerEnable(ret,result)=>{
               showElement("ret = "+ret + "        result = " +JSON.stringify(result))
             }
 
@@ -103,18 +102,18 @@
             params.gasPrice = "10000000000"
             params.gasLimit = "24000"
             params.data = ""
-            dappApi.sendTransaction(JSON.stringify(params)).then((hash) =>{
+            tp.sendMoacTransaction(JSON.stringify(params)).then((hash) =>{
              showElement("       hash = " +JSON.stringify(hash))
             })
 
             //设置导航条
-            dappApi.setMenubar()
+            tp.setMenubar()
 
             //禁止webview自带的左滑手势触发goback
-            dappApi.forwardNavigationGesturesEnable()
+            tp.forwardNavigationGesturesEnable()
 
             //保存图片 通过url保存
-            dappApi.saveImage("http://www.baidu.com/img/flexible/logo/pc/result.png")
+            tp.saveImage("http://www.baidu.com/img/flexible/logo/pc/result.png")
 
 
             */
@@ -132,8 +131,11 @@
 </head>
 
 <body style="width: 100%;height: 100%;padding: 0px">
+
 <div id="div_box"
      style="width: 100%;min-height: 100%;position: absolute;background: #0ff;margin-top: -50px;margin: 0px">
+
+
 </div>
 </body>
 

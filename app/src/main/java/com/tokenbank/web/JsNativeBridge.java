@@ -72,6 +72,9 @@ public class JsNativeBridge {
         mCurrentWallet = mWalletManager.getCurrentWallet();
         GsonUtil result = new GsonUtil("{}");
         switch (methodName) {
+            case "isConnected":
+
+                break;
             case "getAppInfo":
                 String version = "";
                 String name = "";
@@ -115,14 +118,14 @@ public class JsNativeBridge {
                 this.mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + result.toString() + "')");
                 break;
 
-            case "getDevice":
+            case "getDeviceId":
                 String deviceId = DeviceUtil.generateDeviceUniqueId();
                 result.putString("deviceId", deviceId);
                 result.putString("msg", MSG_SUCCESS);
                 this.mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + result.toString() + "')");
                 break;
 
-            case "shareToSNS":
+            case "shareNewsToSNS":
 
                 GsonUtil tx = new GsonUtil(params);
                 String mTitle = tx.getString("title", "");
@@ -154,8 +157,10 @@ public class JsNativeBridge {
                 GsonUtil data = new GsonUtil("{}");
                 data.putString("address", mCurrentWallet.waddress);
                 data.putString("name",walletName);
+                data.putString("blockchain","moac");
                 result.putBoolean("result", true);
                 result.put("data", data);
+
                 result.putString("msg", MSG_SUCCESS);
                 this.mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + result.toString() + "')");
                 break;
@@ -201,7 +206,7 @@ public class JsNativeBridge {
                 });
 
                 break;
-            case "transfer":
+            case "moacTokenTransfer":
 
                 break;
             case "back":
@@ -278,14 +283,16 @@ public class JsNativeBridge {
             case "forwardNavigationGesturesEnable":
 
                 break;
+            case "signMoacTransaction":
 
+                break;
             case "getNodeUrl":
                 String node = FstServer.getInstance().getNode();
                 result.putString("node", node);
                 result.putString("msg", MSG_SUCCESS);
                 this.mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + result.toString() + "')");
                 break;
-            case "sendTransaction":
+            case "sendMoacTransaction":
                 GsonUtil TransactionParam = new GsonUtil(params);
                 if(!mCurrentWallet.waddress.toLowerCase().equals(TransactionParam.getString("address",""))){
                     result.putString("err","has no this wallet");
