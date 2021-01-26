@@ -1,9 +1,15 @@
 package com.tokenbank.base;
 
 
+import android.content.Context;
+
 import com.tokenbank.utils.GsonUtil;
 
 public interface WalletUtil {
+
+    void init(Context context, String node,WCallback callback);
+
+    void initContract(String contract,String address,String node);
 
     void createWallet(WCallback callback);
 

@@ -19,6 +19,7 @@ import com.tokenbank.R;
 import com.tokenbank.activity.ImportWalletActivity;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
+import com.tokenbank.base.WalletUtil;
 import com.tokenbank.config.AppConfig;
 import com.tokenbank.dialog.MsgDialog;
 import com.tokenbank.dialog.PwdDialog;
@@ -55,10 +56,11 @@ public class JsNativeBridge {
     private Context mContext;
     private WalletInfoManager mWalletManager;
     private Handler mHandler = new Handler(Looper.getMainLooper());
-    private String name, mFrom, mTo, mValue, mToken, mIssuer, mGas, mMemo,mGasPrice;
+    private String version,name,address;
+    private String mFrom, mTo, mValue, mToken, mIssuer, mGas, mMemo,mGasPrice;
     private IWebCallBack mWebCallBack;
     private WalletInfoManager.WData mCurrentWallet;
-    private FstWallet mFstWallet;
+    private WalletUtil mFstWallet;
     public JsNativeBridge(AgentWeb agent, Context context, IWebCallBack callback) {
         this.mAgentWeb = agent;
         this.mContext = context;
@@ -73,8 +75,6 @@ public class JsNativeBridge {
         GsonUtil result = new GsonUtil("{}");
         switch (methodName) {
             case "getAppInfo":
-                String version = "";
-                name = "";
                 PackageManager packageManager = mContext.getPackageManager();
                 PackageInfo packageInfo = null;
                 try {
@@ -103,7 +103,7 @@ public class JsNativeBridge {
                 GsonUtil data1 = new GsonUtil("[]");
                 for (int i = 0; i < wallets.size(); i++) {
                     GsonUtil wallet = new GsonUtil("{}");
-                    String address = wallets.get(i).waddress;
+                    address = wallets.get(i).waddress;
                     name = wallets.get(i).wname;
                     wallet.putString("name", name);
                     wallet.putString("address", address);
@@ -345,9 +345,6 @@ public class JsNativeBridge {
 
                     }
                 });
-
-
-
                 break;
             default:
                 Log.e(TAG, "callHandler: no such method : "+methodName);

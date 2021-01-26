@@ -14,6 +14,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.tokenbank.R;
+import com.tokenbank.base.WalletUtil;
 import com.tokenbank.wallet.FstServer;
 import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
@@ -42,7 +43,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     private Button mBtnNext;
     private Double mGasPrice;
     private Double SettingGasPrice;
-    private FstWallet mFstWallet;
+    private WalletUtil mFstWallet;
     private WalletInfoManager.WData mWalletData;
     private String mContractAddress ="";
     private String mOriginAddress = "";

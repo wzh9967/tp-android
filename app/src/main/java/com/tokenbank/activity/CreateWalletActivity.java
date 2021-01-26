@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokenbank.R;
+import com.tokenbank.base.WalletUtil;
 import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
@@ -32,7 +33,7 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
     private ImageView mImgServiceTerms;
     private TextView mTvServiceTerms;
     private Button mBtnConfirm;
-    private FstWallet mFstWallet;
+    private WalletUtil mFstWallet;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

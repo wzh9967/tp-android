@@ -33,7 +33,7 @@ public class JSUtil {
         return instance;
     }
 
-    public void init() {
+    public void init(WCallback wCallback) {
         mWebView = new TBWebView(AppConfig.getContext());
         mWebView.addJavascriptInterface(this, "client");
         mWebView.setWebViewClient(new WebViewClient() {
@@ -50,6 +50,7 @@ public class JSUtil {
                 super.onPageFinished(view, url);
                 if (TextUtils.equals(Constant.base_web3_url, url)) {
                     isInit = true;
+                    wCallback.onGetWResult(0,new GsonUtil(""));
                 }
             }
         });

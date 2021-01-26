@@ -1,9 +1,13 @@
 package com.tokenbank.base;
 
 
+import android.util.Log;
+
 import com.tokenbank.config.AppConfig;
 import com.tokenbank.net.query.QueryDataFromNet;
 import com.tokenbank.net.query.QueryTransaction;
+import com.tokenbank.utils.GsonUtil;
+import com.tokenbank.wallet.FstServer;
 import com.tokenbank.wallet.FstWallet;
 
 import java.util.ArrayList;
@@ -15,6 +19,7 @@ public class TBController {
     private final static String TAG = "TBController";
     public final static int SWT_INDEX = 2;
     private FstWallet mFstWallet;
+    private WalletUtil walletUtil;
     private static TBController sInstance = new TBController();
     private  List<Integer> mSupportType = new ArrayList<>();
     private QueryDataFromNet mQueryTransaction;
@@ -30,12 +35,22 @@ public class TBController {
     public void init() {
         mSupportType.add(SWT_INDEX);
         mFstWallet = mFstWallet.getInstance();
-        mFstWallet.init(AppConfig.getContext());
+        mFstWallet.init(AppConfig.getContext(), FstServer.getInstance().getNode(), new WCallback() {
+            @Override
+            public void onGetWResult(int ret, GsonUtil extra) {
+                if(ret != 0){
+                    //节点无效 初始化失败
+                    
+
+                }
+            }
+        });
         mQueryTransaction = new QueryTransaction();
     }
 
-    public FstWallet getFstWallet() {
-        return mFstWallet;
+    public WalletUtil getFstWallet() {
+        walletUtil = mFstWallet;
+        return walletUtil;
     }
 
     public QueryDataFromNet getmQueryTransaction(){

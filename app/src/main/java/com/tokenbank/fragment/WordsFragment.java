@@ -15,6 +15,7 @@ import com.tokenbank.R;
 import com.tokenbank.activity.MainActivity;
 import com.tokenbank.activity.SplashActivity;
 import com.tokenbank.activity.WebBrowserActivity;
+import com.tokenbank.base.WalletUtil;
 import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
@@ -38,7 +39,7 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
     private ImageView mImgboxTerms;
     private TextView mTvTerms;
     private TextView mTvImportWallet;
-    private FstWallet mFstWallet;
+    private WalletUtil mFstWallet;
     private Bundle bundle;
     private int flag;
     public static WordsFragment newInstance() {

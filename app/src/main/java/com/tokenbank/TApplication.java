@@ -3,10 +3,13 @@ package com.tokenbank;
 import android.app.Application;
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 
 import com.tokenbank.activity.BaseActivity;
 import com.tokenbank.base.TBController;
+import com.tokenbank.base.WCallback;
 import com.tokenbank.config.AppConfig;
+import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.LanguageUtil;
 import com.tokenbank.wallet.FstServer;
 import com.tokenbank.wallet.JSUtil;
@@ -26,12 +29,18 @@ public class TApplication extends Application {
     public void onCreate() {
         super.onCreate();
         AppConfig.init(this);
-        FstServer.getInstance().initNode();
+        WalletInfoManager.getInstance().init();
         CrashHandler crashHandler = CrashHandler.getInstance();
         crashHandler.init(getApplicationContext());
-        JSUtil.getInstance().init();
-        WalletInfoManager.getInstance().init();
-        TBController.getInstance().init();
+        FstServer.getInstance().initNode();
+        JSUtil.getInstance().init(new WCallback() {
+            @Override
+            public void onGetWResult(int ret, GsonUtil extra) {
+                if(ret == 0){
+                    TBController.getInstance().init();
+                }
+            }
+        });
     }
 
     public void addActivity(BaseActivity activity) {

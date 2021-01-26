@@ -2,6 +2,7 @@ package com.tokenbank;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import com.tokenbank.base.WalletUtil;
 import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
@@ -28,7 +29,7 @@ public class FstWalletUtilTest extends TestCase {
     final private static String IBAN = "XE703KOMUB7RABL33RE06B2925QKY3B63K3";
     final private static String words = "follow horror traffic pipe ladder relief glare emotion thumb equip script tornado";
     private static GsonUtil TxData;
-    private FstWallet mFstWalletUtil;
+    private WalletUtil mFstWalletUtil;
 
 
     @Before

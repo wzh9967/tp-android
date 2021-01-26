@@ -1,11 +1,9 @@
 package com.tokenbank.wallet;
 
 import android.content.Context;
-
 import com.github.lzyzsd.jsbridge.BridgeWebView;
 import com.tokenbank.base.WalletUtil;
 import com.tokenbank.base.WCallback;
-import com.tokenbank.config.Constant;
 import com.tokenbank.utils.GsonUtil;
 
 
@@ -26,15 +24,13 @@ public class FstWallet implements WalletUtil {
      * 初始化 BridgeWebView
      * @param context
      */
-    public void init(Context context) {
+    public void init(Context context,String node,WCallback callback) {
         mWebview = new BridgeWebView(context);
-        mWebview.loadUrl(Constant.FST_JS);
-    }
-
-    public void initStorm3(String node){
+        mWebview.loadUrl(node);
         GsonUtil params = new GsonUtil("{}");
         params.putString("node",node);
-        JSUtil.getInstance().callJS("init", params, null);
+
+        JSUtil.getInstance().callJS("init", params, callback);
     }
 
     /**

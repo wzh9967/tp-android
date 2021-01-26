@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.google.zxing.WriterException;
 import com.tokenbank.R;
+import com.tokenbank.base.WalletUtil;
 import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
@@ -54,7 +55,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private boolean isTransaction = true;
     private GsonUtil transactionData;
     private int DelayMills = 1;
-    private FstWallet mFstWallet;
+    private WalletUtil mFstWallet;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

@@ -12,8 +12,16 @@
     function init(params){
         let paramsjson = JSON.parse(params);
         let node = paramsjson.node;
+        let callid = paramsjson.callid;
+        let result = new Object();
         fstInstance = new transaction.fst_transaction(node)
-        fstInstance.init();
+        fstInstance.init((result) =>{
+            if(result){
+                notifyClient(callid, 0, result);
+            } else {
+                notifyClient(callid, -1, result);
+            }
+        })
     }
 
     function initContract(params){
@@ -317,7 +325,13 @@
 
     function initStorm3(node){
         fstInstance = new transaction.fst_transaction(node)
-        fstInstance.init();
+        fstInstance.init((result) =>{
+            if(result){
+                notifyClient(callid, 0, result);
+            } else {
+                notifyClient(callid, -1, result);
+            }
+        })
         console.log("initStorm3 over")
     }
 

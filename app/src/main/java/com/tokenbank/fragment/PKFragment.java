@@ -18,6 +18,7 @@ import com.tokenbank.activity.SplashActivity;
 import com.tokenbank.activity.WebBrowserActivity;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
+import com.tokenbank.base.WalletUtil;
 import com.tokenbank.config.Constant;
 import com.tokenbank.utils.FileUtil;
 import com.tokenbank.utils.FstWalletUtil;
@@ -41,7 +42,7 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
     private TextView mTvTerms;
     private TextView mTvImportWallet;
     private TextView mTvAboutPrivateKey;
-    private FstWallet mFstWallet;
+    private WalletUtil mFstWallet;
     private Bundle bundle;
     private int flag;
     public static BaseFragment newInstance() {

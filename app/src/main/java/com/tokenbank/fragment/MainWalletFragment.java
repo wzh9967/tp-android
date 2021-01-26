@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import com.tokenbank.activity.TokenReceiveActivity;
 import com.tokenbank.activity.TokenTransferActivity;
 import com.tokenbank.adapter.BaseRecycleAdapter;
 import com.tokenbank.adapter.BaseRecyclerViewHolder;
+import com.tokenbank.base.WalletUtil;
 import com.tokenbank.config.AppConfig;
 import com.tokenbank.wallet.FstServer;
 import com.tokenbank.wallet.FstWallet;
@@ -52,7 +54,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         SwipeRefreshLayout.OnRefreshListener,
         BaseRecycleAdapter.OnDataLodingFinish {
 
-
     private Context context;
     private Toolbar mToolbar;
     private View mEmptyView;
@@ -67,11 +68,10 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private String amount;
     private String unit = "¥";
     private double mTotalAsset = 0.0f;
-    private FstWallet mFstWallet;
+    private WalletUtil mFstWallet;
     private WalletMenuPop walletMenuPop;
     private WalletActionPop walletActionPop;
     private boolean isAssetVisible = false;
-    private boolean isViewCreated = false;
     private GsonUtil currency = new GsonUtil("{}");
 
     public static MainWalletFragment newInstance() {
@@ -81,8 +81,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return ViewUtil.inflatView(inflater, container, R.layout.fragment_main_wallet_new, false);
     }
 
@@ -92,8 +91,11 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     }
 
     private void initView(View view) {
+        this.context = getActivity().getApplicationContext();
         mFstWallet = TBController.getInstance().getFstWallet();
+        currency =new GsonUtil(FileUtil.getConfigFile(this.context, "currency.json"));
         isAssetVisible = FileUtil.getBooleanFromSp(getContext(), Constant.common_prefs, Constant.asset_visible_key, true);
+
         mSwipteRefreshLayout = view.findViewById(R.id.swiperefreshlayout);
         mSwipteRefreshLayout.setOnRefreshListener(this);
 
@@ -101,15 +103,17 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mAppbarLayout.addOnOffsetChangedListener(mOnOffsetChangedListener);
 
         mToolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+
         mWalletAction = view.findViewById(R.id.wallet_menu_action);
         mTvWalletName = view.findViewById(R.id.tv_wallet_name);
-        setWalletName();
-        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+
         mEmptyView = view.findViewById(R.id.empty_view);
 
         //我的资产
         mTvWalletUnit = view.findViewById(R.id.wallet_unit);
         mTvWalletUnit.setOnClickListener(this);
+
         mRecycleView = view.findViewById(R.id.mainwallet_recycleview);
         mRecycleView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -124,6 +128,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
         mAdapter = new MainTokenRecycleViewAdapter();
         mAdapter.setDataLoadingListener(this);
+
         mRecycleView.addItemDecoration(
                 new DefaultItemDecoration(getResources().getDimensionPixelSize(R.dimen.dimen_line)));
         mRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -137,9 +142,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         view.findViewById(R.id.wallet_action_receive).setOnClickListener(this);
         view.findViewById(R.id.wallet_action_transfer).setOnClickListener(this);
         view.findViewById(R.id.wallet_action_transfer1).setOnClickListener(this);
-        isViewCreated = true;
-        this.context = getActivity().getApplicationContext();
-        currency =new GsonUtil(FileUtil.getConfigFile(this.context, "currency.json"));
+
+        setWalletName();
     }
 
     @Override
@@ -196,8 +200,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
     private void refreshWallet() {
         setWalletName();
-        refresh();
         mFstWallet = TBController.getInstance().getFstWallet();
+        refresh();
     }
 
     /**
@@ -414,6 +418,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             if (mDataLoadingListener != null) {
                 mDataLoadingListener.onDataLoadingFinish(params, false, loadmore);
             }
+            Log.d(TAG, "init: +++++++++++++++++2");
             mFstWallet.getGasPrice(new WCallback() {
                 @Override
                 public void onGetWResult(int ret, GsonUtil extra) {

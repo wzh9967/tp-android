@@ -26,6 +26,9 @@ import com.tokenbank.utils.GsonUtil;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+/**
+ * 浏览器功能
+ */
 public class WebActivity extends BaseActivity implements IWebCallBack {
 
     protected AgentWeb mAgentWeb;
