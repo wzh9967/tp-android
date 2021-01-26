@@ -68,6 +68,7 @@
     <string name="dialog_node_warning">节点异常！</string>
     <string name="dialog_content_no_wallet_backup">钱包未备份，删除钱包将导致钱包无法找回</string>
     <string name="dialog_btn_backup">去备份</string>
+    <string name="dialog_btn_setting_node">去设置节点</string>
     <string name="dialog_btn_delete">继续删除</string>
     <string name="dialog_content_no_key_backup">钱包未备份，删除钱包将导致钱包无法找回，请备份私钥</string>
     <string name="toast_cant_backup">没有助记词，无法备份</string>
@@ -180,7 +181,7 @@
     <string name="enter_hint_transfer_gas">请选择矿工费</string>
     <string name="btn_manage_wallet">管理钱包</string>
     <string name="btn_transactions">交易记录</string>
-
+    <string name="dialog_all_node_invalid">发生了一些错误，请联系管理员或者自行设置可用节点。</string>
     <string name="btn_node_setting">节点设置</string>
     <string name="btn_message_center">消息中心</string>
     <string name="btn_contacts">联系人</string>

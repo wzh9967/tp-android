@@ -40,6 +40,7 @@
     <string name="dialog_content_no_verify_password">Enter the verify password</string>
     <string name="dialog_content_passwords_unmatch">The new passwords unmatch, please re-enter.</string>
     <string name="dialog_content_short_password">Passwords must be at least 8 characters</string>
+    <string name="dialog_all_node_invalid">Some error happened,Please contact the administrator or set the available nodes by yourself.</string>
     <string name="dialog_content_no_read_service">You have not read and agreed to the Terms and Privacy</string>
     <string name="toast_wallet_created">Wallet create successfully</string>
     <string name="btn_creating_wallet">Creating Wallet</string>
@@ -70,6 +71,7 @@
     <string name="dialog_node_warning">Node exception！</string>
     <string name="dialog_content_no_wallet_backup">The wallet is not backed up. Deleting the wallet will cause the wallet cannot be retrieved.</string>
     <string name="dialog_btn_backup">Backup Now</string>
+    <string name="dialog_btn_setting_node">Setting Node Now</string>
     <string name="dialog_btn_delete">Delete Now</string>
     <string name="dialog_content_no_key_backup">The wallet is not backed up. Deleting the wallet will cause the wallet cannot be retrieved.</string>
     <string name="toast_cant_backup">No mnemonic, no backup</string>

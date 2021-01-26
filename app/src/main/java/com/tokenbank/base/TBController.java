@@ -1,9 +1,7 @@
 package com.tokenbank.base;
 
 
-import android.util.Log;
 
-import com.tokenbank.config.AppConfig;
 import com.tokenbank.net.query.QueryDataFromNet;
 import com.tokenbank.net.query.QueryTransaction;
 import com.tokenbank.utils.GsonUtil;
@@ -12,6 +10,9 @@ import com.tokenbank.wallet.FstWallet;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.tokenbank.config.AppConfig.getContext;
+
 public class TBController {
 
 
@@ -23,7 +24,7 @@ public class TBController {
     private static TBController sInstance = new TBController();
     private  List<Integer> mSupportType = new ArrayList<>();
     private QueryDataFromNet mQueryTransaction;
-
+    private Boolean isValidNode = true;
     private TBController() {
 
     }
@@ -34,14 +35,13 @@ public class TBController {
 
     public void init() {
         mSupportType.add(SWT_INDEX);
-        mFstWallet = mFstWallet.getInstance();
-        mFstWallet.init(AppConfig.getContext(), FstServer.getInstance().getNode(), new WCallback() {
+        mFstWallet = mFstWallet.getInstance();;
+        mFstWallet.init(getContext(), FstServer.getInstance().getNode(), new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
                 if(ret != 0){
                     //节点无效 初始化失败
-                    
-
+                    isValidNode = false;
                 }
             }
         });
@@ -54,11 +54,19 @@ public class TBController {
     }
 
     public QueryDataFromNet getmQueryTransaction(){
+
         return mQueryTransaction;
+
+    }
+
+    public boolean getNodeStatus(){
+        return isValidNode;
     }
 
     public List<Integer> getSupportType() {
+
         return mSupportType;
+
     }
 
 }

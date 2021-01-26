@@ -56,6 +56,7 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
     private TitleBar mTitleBar;
     private RecyclerView mNodeRecyclerView;
     private int mSelectedItem = -1;
+    private int InvalidNodeCount = 0;
     private GsonUtil publicNodes = new GsonUtil("{}");
     private NodeRecordAdapter mAdapter;
     private Button mBtnAddNode;
@@ -87,6 +88,13 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
         mNodeRecyclerView.setAdapter(mAdapter);
         getPublicNode();
         compositeDisposable = new CompositeDisposable();
+        checkAllNodeStatus();
+    }
+
+    private void checkAllNodeStatus() {
+        if(InvalidNodeCount == publicNodes.getLength()){
+            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_all_node_invalid), "OK");
+        }
     }
 
     @Override
@@ -299,12 +307,18 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
                 }
                 @Override
                 public void onError(Throwable e) {
+                    InvalidNodeCount++;
                     holder.mLayoutItem.setClickable(false);
+                    holder.mRadioSelected.setEnabled(false);
                     holder.mTvNodePing.setText("---");
                     holder.mTvNodePing.setTextColor(getResources().getColor(R.color.color_ping_low));
                     holder.mTvNodePing.setVisibility(View.VISIBLE);
                     holder.mImgLoad.setVisibility(View.GONE);
                     holder.mProgressDrawable.stop();
+                    //最后一条也错误时，有可能全部节点不可用
+                    if(getItemCount() == position +1){
+                        checkAllNodeStatus();
+                    }
                 }
 
                 @Override

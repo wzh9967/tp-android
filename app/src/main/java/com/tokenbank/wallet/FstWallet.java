@@ -29,7 +29,6 @@ public class FstWallet implements WalletUtil {
         mWebview.loadUrl(node);
         GsonUtil params = new GsonUtil("{}");
         params.putString("node",node);
-
         JSUtil.getInstance().callJS("init", params, callback);
     }
 

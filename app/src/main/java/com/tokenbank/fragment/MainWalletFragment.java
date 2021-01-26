@@ -2,6 +2,7 @@ package com.tokenbank.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.tokenbank.R;
+import com.tokenbank.activity.NodeSettingActivity;
 import com.tokenbank.activity.TokenDetailsActivity;
 import com.tokenbank.activity.TokenReceiveActivity;
 import com.tokenbank.activity.TokenTransferActivity;
@@ -30,6 +32,7 @@ import com.tokenbank.adapter.BaseRecycleAdapter;
 import com.tokenbank.adapter.BaseRecyclerViewHolder;
 import com.tokenbank.base.WalletUtil;
 import com.tokenbank.config.AppConfig;
+import com.tokenbank.dialog.MsgDialog;
 import com.tokenbank.wallet.FstServer;
 import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
@@ -87,6 +90,19 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        if(!TBController.getInstance().getNodeStatus()){
+            ViewUtil.showSysAlertDialog(getContext(), getString(R.string.dialog_title_warning), getString(R.string.dialog_node_warning),getString(R.string.dialog_btn_setting_node), new DialogInterface.OnClickListener(){
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    NodeSettingActivity.startNodeSettingActivity(getActivity());
+                }
+            },getString(R.string.dialog_btn_cancel),new DialogInterface.OnClickListener(){
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+        }
         initView(view);
     }
 
@@ -377,6 +393,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         return Color.argb(alpha, red, green, blue);
     }
 
+
+    //TODO 修改为一个ERC20钱包加载的模板类型空间，不仅限制于某个钱包，而是WalletUtil
     class MainTokenRecycleViewAdapter extends BaseRecycleAdapter<String, RecyclerView.ViewHolder> {
         private static final String TAG = "MainTokenAdapter";
         private boolean mHasMore = true;
@@ -418,7 +436,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             if (mDataLoadingListener != null) {
                 mDataLoadingListener.onDataLoadingFinish(params, false, loadmore);
             }
-            Log.d(TAG, "init: +++++++++++++++++2");
             mFstWallet.getGasPrice(new WCallback() {
                 @Override
                 public void onGetWResult(int ret, GsonUtil extra) {
