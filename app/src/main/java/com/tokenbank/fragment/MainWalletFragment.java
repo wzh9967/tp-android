@@ -14,7 +14,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,9 +31,7 @@ import com.tokenbank.adapter.BaseRecycleAdapter;
 import com.tokenbank.adapter.BaseRecyclerViewHolder;
 import com.tokenbank.base.WalletUtil;
 import com.tokenbank.config.AppConfig;
-import com.tokenbank.dialog.MsgDialog;
 import com.tokenbank.wallet.FstServer;
-import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
 import com.tokenbank.wallet.WalletInfoManager;
@@ -145,8 +142,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         mAdapter = new MainTokenRecycleViewAdapter();
         mAdapter.setDataLoadingListener(this);
 
-        mRecycleView.addItemDecoration(
-                new DefaultItemDecoration(getResources().getDimensionPixelSize(R.dimen.dimen_line)));
+        mRecycleView.addItemDecoration(new DefaultItemDecoration(getResources().getDimensionPixelSize(R.dimen.dimen_line)));
         mRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecycleView.setAdapter(mAdapter);
 
@@ -328,7 +324,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
     private void refresh() {
         mAdapter.refresh();
-        mSwipteRefreshLayout.setRefreshing(true);
+        //mSwipteRefreshLayout.setRefreshing(true);
     }
 
     private boolean isReadyForPullEnd() {
@@ -436,12 +432,12 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             if (mDataLoadingListener != null) {
                 mDataLoadingListener.onDataLoadingFinish(params, false, loadmore);
             }
+            handleTokenRequestResult(params, loadmore, currency);
             mFstWallet.getGasPrice(new WCallback() {
                 @Override
                 public void onGetWResult(int ret, GsonUtil extra) {
                     if(ret == 0){
-                        handleTokenRequestResult(params, loadmore, currency);
-                        mSwipteRefreshLayout.setRefreshing(false);
+                       // mSwipteRefreshLayout.setRefreshing(false);
                     } else if(ret == -101) {
                         //申请不通过时有可能是
                         AppConfig.postDelayOnUiThread(new Runnable() {
