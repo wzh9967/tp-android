@@ -14,7 +14,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,6 @@ import com.tokenbank.activity.TokenTransferActivity;
 import com.tokenbank.adapter.BaseRecycleAdapter;
 import com.tokenbank.adapter.BaseRecyclerViewHolder;
 import com.tokenbank.base.WalletUtil;
-import com.tokenbank.config.AppConfig;
 import com.tokenbank.wallet.FstServer;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
@@ -69,7 +67,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     private String amount;
     private String unit = "¥";
     private double mTotalAsset = 0.0f;
-    private WalletUtil mFstWallet;
+    private WalletUtil walletUtil;
     private WalletMenuPop walletMenuPop;
     private WalletActionPop walletActionPop;
     private boolean isAssetVisible = false;
@@ -110,7 +108,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
     private void initView(View view) {
         this.context = getActivity().getApplicationContext();
-        mFstWallet = TBController.getInstance().getFstWallet();
+        walletUtil = TBController.getInstance().getFstWallet();
         currency =new GsonUtil(FileUtil.getConfigFile(this.context, "currency.json"));
         isAssetVisible = FileUtil.getBooleanFromSp(getContext(), Constant.common_prefs, Constant.asset_visible_key, true);
 
@@ -217,7 +215,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
     private void refreshWallet() {
         setWalletName();
-        mFstWallet = TBController.getInstance().getFstWallet();
+        walletUtil = TBController.getInstance().getFstWallet();
         refresh();
     }
 
@@ -295,7 +293,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
         String finalContract = contract;
         //合约为 000000  为原生转账，
         if(contract.startsWith("0000000")){
-            mFstWallet.getBalance(WalletInfoManager.getInstance().getWAddress(), new WCallback() {
+            walletUtil.getBalance(WalletInfoManager.getInstance().getWAddress(), new WCallback() {
                 @Override
                 public void onGetWResult(int ret, GsonUtil extra) {
                     String value = Util.toValue(Constant.DefaultDecimal,extra.getString("balance",""));
@@ -307,8 +305,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             int decimal = Integer.parseInt(FstWalletUtil.getDataByContract(contract,"decimal"));
             String tokenName = FstWalletUtil.getDataByContract(contract,"name");
             String address = WalletInfoManager.getInstance().getWAddress();
-            mFstWallet.initContract(contract, address, FstServer.getInstance().getNode());
-            mFstWallet.getErc20Balance(contract, address, new WCallback() {
+            walletUtil.initContract(contract, address, FstServer.getInstance().getNode());
+            walletUtil.getErc20Balance(contract, address, new WCallback() {
                 @Override
                 public void onGetWResult(int ret, GsonUtil extra) {
                     String value = Util.toValue(decimal,extra.getString("balance",""));
@@ -439,7 +437,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 mDataLoadingListener.onDataLoadingFinish(params, false, loadmore);
             }
             handleTokenRequestResult(params, loadmore, currency);
-            mFstWallet.getGasPrice(new WCallback() {
+            walletUtil.getGasPrice(new WCallback() {
                 @Override
                 public void onGetWResult(int ret, GsonUtil extra) {
                     ToastUtil.toast(getContext(), getString(R.string.toast_getBalance_err));
@@ -491,7 +489,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             String contract = data.getString("contract","");
             String address = WalletInfoManager.getInstance().getWAddress();
             if(contract.equals("")){
-                mFstWallet.getBalance(address,new WCallback() {
+                walletUtil.getBalance(address,new WCallback() {
                     @Override
                     public void onGetWResult(int ret, GsonUtil extra) {
                         if(ret == 0){
@@ -505,8 +503,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                     }
                 });
             } else {
-                mFstWallet.initContract(contract,address, FstServer.getInstance().getNode());
-                mFstWallet.getErc20Balance(contract,address,new WCallback() {
+                walletUtil.initContract(contract,address, FstServer.getInstance().getNode());
+                walletUtil.getErc20Balance(contract,address,new WCallback() {
                     @Override
                     public void onGetWResult(int ret, GsonUtil extra) {
                         if(ret == 0){

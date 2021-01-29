@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.tokenbank.R;
 import com.tokenbank.base.WalletUtil;
-import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
 import com.tokenbank.wallet.WalletInfoManager;
@@ -33,14 +32,14 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
     private ImageView mImgServiceTerms;
     private TextView mTvServiceTerms;
     private Button mBtnConfirm;
-    private WalletUtil mFstWallet;
+    private WalletUtil walletUtil;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_wallet_new);
         initView();
-        mFstWallet =TBController.getInstance().getFstWallet();
+        walletUtil =TBController.getInstance().getFstWallet();
     }
 
     private void initView() {
@@ -138,7 +137,7 @@ public class CreateWalletActivity extends BaseActivity implements View.OnClickLi
 
     private void createMocWallet(final String walletName, final String walletPwd) {
         setBtnStateToCreating();
-        mFstWallet.createWallet(new WCallback() {
+        walletUtil.createWallet(new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
                 if(ret == 0){

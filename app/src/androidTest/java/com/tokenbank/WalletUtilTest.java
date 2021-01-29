@@ -3,7 +3,6 @@ package com.tokenbank;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.tokenbank.base.WalletUtil;
-import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
 import com.tokenbank.utils.GsonUtil;
@@ -19,7 +18,7 @@ import java.util.concurrent.CountDownLatch;
 
 //测试时 发送erc20交易和原生交易将会导致重复发送。仅一个会被确认。分开测试可以解决这个问题。
 @RunWith(AndroidJUnit4.class)
-public class FstWalletUtilTest extends TestCase {
+public class WalletUtilTest extends TestCase {
     final private static String node = "http://101.200.174.239:7545";
     private static final String hash = "0x2bbf4c21249467f8541689c2bde773d2729da1d4d1daa08bf0c38e3524ef7c93";
     final private static String address = "0x1e99e9720409355B64A7c9582975d2a73f594e83";
@@ -29,12 +28,12 @@ public class FstWalletUtilTest extends TestCase {
     final private static String IBAN = "XE703KOMUB7RABL33RE06B2925QKY3B63K3";
     final private static String words = "follow horror traffic pipe ladder relief glare emotion thumb equip script tornado";
     private static GsonUtil TxData;
-    private WalletUtil mFstWalletUtil;
+    private WalletUtil walletUtil;
 
 
     @Before
     public void setUp() {
-        mFstWalletUtil = TBController.getInstance().getFstWallet();;
+        walletUtil = TBController.getInstance().getFstWallet();;
         TxData = new GsonUtil("");
     }
 
@@ -46,7 +45,7 @@ public class FstWalletUtilTest extends TestCase {
     @Test
     public void testCreateWallet() {
         final CountDownLatch latch = new CountDownLatch(1);
-        mFstWalletUtil.createWallet(new WCallback() {
+        walletUtil.createWallet(new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil data) {
                 Assert.assertEquals(ret, 0);
@@ -67,7 +66,7 @@ public class FstWalletUtilTest extends TestCase {
     @Test
     public void testIsValidAddress() {
         final CountDownLatch latch = new CountDownLatch(1);
-        mFstWalletUtil.isValidAddress(address, new WCallback() {
+        walletUtil.isValidAddress(address, new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil data) {
                 Assert.assertEquals(ret, 0);
@@ -86,7 +85,7 @@ public class FstWalletUtilTest extends TestCase {
     @Test
     public void testIsValidSecret() {
         final CountDownLatch latch = new CountDownLatch(1);
-        mFstWalletUtil.isValidSecret(secret, new WCallback() {
+        walletUtil.isValidSecret(secret, new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil data) {
                 Assert.assertEquals(ret, 0);
@@ -105,7 +104,7 @@ public class FstWalletUtilTest extends TestCase {
     @Test
     public void testImportSecret() {
         final CountDownLatch latch = new CountDownLatch(1);
-        mFstWalletUtil.importSecret(secret,password, new WCallback() {
+        walletUtil.importSecret(secret,password, new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil data) {
                 Assert.assertEquals(ret, 0);
@@ -125,7 +124,7 @@ public class FstWalletUtilTest extends TestCase {
     @Test
     public void testImportWords() {
         final CountDownLatch latch = new CountDownLatch(1);
-        mFstWalletUtil.importWords(words,password, new WCallback() {
+        walletUtil.importWords(words,password, new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil data) {
                 Assert.assertEquals(ret, 0);
@@ -146,7 +145,7 @@ public class FstWalletUtilTest extends TestCase {
     @Test
     public void testToIban() {
         final CountDownLatch latch = new CountDownLatch(1);
-        mFstWalletUtil.toIban(address, new WCallback() {
+        walletUtil.toIban(address, new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil data) {
                 Assert.assertEquals(ret, 0);
@@ -166,7 +165,7 @@ public class FstWalletUtilTest extends TestCase {
     @Test
     public void testFromIban() {
         final CountDownLatch latch = new CountDownLatch(1);
-        mFstWalletUtil.fromIban(IBAN, new WCallback() {
+        walletUtil.fromIban(IBAN, new WCallback() {
             @Override
             public void onGetWResult(int ret , GsonUtil data) {
                 Assert.assertEquals(ret, 0);
@@ -186,7 +185,7 @@ public class FstWalletUtilTest extends TestCase {
     @Test
     public void testGetBalance() {
         final CountDownLatch latch = new CountDownLatch(1);
-        mFstWalletUtil.getBalance(address,new WCallback() {
+        walletUtil.getBalance(address,new WCallback() {
             @Override
             public void onGetWResult(int ret , GsonUtil data) {
                 Assert.assertEquals(ret, 0);
@@ -215,7 +214,7 @@ public class FstWalletUtilTest extends TestCase {
         data2.putDouble("gasPrice",10000000000.0);
         data2.putString("data","");
         data2.putString("contract",contract);
-        mFstWalletUtil.sendErc20Transaction(data2,new WCallback() {
+        walletUtil.sendErc20Transaction(data2,new WCallback() {
             @Override
             public void onGetWResult(int ret , GsonUtil data) {
                 Assert.assertEquals(ret, 0);
@@ -244,7 +243,7 @@ public class FstWalletUtilTest extends TestCase {
         data.putString("gasLimit","22000");
         data.putDouble("gasPrice",10000000000.0);
         data.putString("data","");
-        mFstWalletUtil.sendTransaction(data,new WCallback() {
+        walletUtil.sendTransaction(data,new WCallback() {
             @Override
             public void onGetWResult(int ret , GsonUtil data) {
                 Assert.assertEquals(ret, 0);
@@ -272,7 +271,7 @@ public class FstWalletUtilTest extends TestCase {
         data.putString("gasLimit","22000");
         data.putDouble("gasPrice",10000000000.0);
         data.putString("data","");
-        mFstWalletUtil.SignTransaction(data,new WCallback() {
+        walletUtil.SignTransaction(data,new WCallback() {
             @Override
             public void onGetWResult(int ret , GsonUtil data) {
                 Assert.assertEquals(ret, 0);
@@ -292,7 +291,7 @@ public class FstWalletUtilTest extends TestCase {
     @Test
     public void testGetErc20Balance(){
         final CountDownLatch latch = new CountDownLatch(1);
-        mFstWalletUtil.getErc20Balance(contract,address,new WCallback() {
+        walletUtil.getErc20Balance(contract,address,new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil data) {
                 Assert.assertEquals(ret, 0);
@@ -311,7 +310,7 @@ public class FstWalletUtilTest extends TestCase {
     @Test
     public void testGetGasPrice() {
         final CountDownLatch latch = new CountDownLatch(1);
-        mFstWalletUtil.getGasPrice(new WCallback() {
+        walletUtil.getGasPrice(new WCallback() {
             @Override
             public void onGetWResult(int ret , GsonUtil data) {
                 Assert.assertEquals(ret, 0);
@@ -331,7 +330,7 @@ public class FstWalletUtilTest extends TestCase {
     @Test
     public void testGetTransactionDetail() {
         final CountDownLatch latch = new CountDownLatch(1);
-        mFstWalletUtil.getTransactionDetail(hash,new WCallback() {
+        walletUtil.getTransactionDetail(hash,new WCallback() {
             @Override
             public void onGetWResult(int ret , GsonUtil data) {
                 Assert.assertEquals(ret, 0);
@@ -351,7 +350,7 @@ public class FstWalletUtilTest extends TestCase {
     @Test
     public void testGetTransactionReceipt() {
         final CountDownLatch latch = new CountDownLatch(1);
-        mFstWalletUtil.getTransactionReceipt(hash,new WCallback() {
+        walletUtil.getTransactionReceipt(hash,new WCallback() {
             @Override
             public void onGetWResult(int ret , GsonUtil data) {
                 Assert.assertEquals(ret, 0);

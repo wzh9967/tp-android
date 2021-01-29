@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.google.zxing.WriterException;
 import com.tokenbank.R;
 import com.tokenbank.base.WalletUtil;
-import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
 import com.tokenbank.config.Constant;
@@ -55,7 +54,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     private boolean isTransaction = true;
     private GsonUtil transactionData;
     private int DelayMills = 1;
-    private WalletUtil mFstWallet;
+    private WalletUtil walletUtil;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,8 +64,8 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
     }
 
     private void initData() {
-        mFstWallet = TBController.getInstance().getFstWallet();
-        if (mFstWallet == null) {
+        walletUtil = TBController.getInstance().getFstWallet();
+        if (walletUtil == null) {
             this.finish();
             return;
         }
@@ -81,7 +80,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
             return;
         }
         //通过hash 从链上获取交易细节
-        mFstWallet.getTransactionDetail(mHash, new WCallback() {
+        walletUtil.getTransactionDetail(mHash, new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
                 if(ret == 0){
@@ -159,7 +158,7 @@ public class TransactionDetailsActivity extends BaseActivity implements View.OnC
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mFstWallet.getTransactionReceipt(mHash, new WCallback() {
+                walletUtil.getTransactionReceipt(mHash, new WCallback() {
                     @Override
                     public void onGetWResult(int ret, GsonUtil extra) {
                         if(ret == 0){

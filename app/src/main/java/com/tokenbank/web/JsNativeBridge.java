@@ -28,7 +28,6 @@ import com.tokenbank.utils.FileUtil;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.wallet.FstServer;
-import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.wallet.WalletInfoManager;
 import com.zxing.activity.CaptureActivity;
 
@@ -60,13 +59,13 @@ public class JsNativeBridge {
     private String mFrom, mTo, mValue, mToken, mIssuer, mGas, mMemo,mGasPrice;
     private IWebCallBack mWebCallBack;
     private WalletInfoManager.WData mCurrentWallet;
-    private WalletUtil mFstWallet;
+    private WalletUtil walletUtil;
     public JsNativeBridge(AgentWeb agent, Context context, IWebCallBack callback) {
         this.mAgentWeb = agent;
         this.mContext = context;
         this.mWebCallBack = callback;
         this.mWalletManager = WalletInfoManager.getInstance();
-        this.mFstWallet = TBController.getInstance().getFstWallet();
+        this.walletUtil = TBController.getInstance().getFstWallet();
     }
 
     @JavascriptInterface
@@ -180,7 +179,7 @@ public class JsNativeBridge {
                                 if (TextUtils.equals(tag, "transaction")) {
                                     if (flag) {
                                         //执行
-                                        mFstWallet.SignTransaction(SignParam, new WCallback() {
+                                        walletUtil.SignTransaction(SignParam, new WCallback() {
                                             @Override
                                             public void onGetWResult(int ret, GsonUtil extra) {
                                                 String raw = extra.getString("raw","");
@@ -297,8 +296,6 @@ public class JsNativeBridge {
                 }
                 String contract = TransactionParam.getString("contract","");
                 TransactionParam.putString("secret",mCurrentWallet.wpk);
-
-
                 AppConfig.postOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -308,7 +305,7 @@ public class JsNativeBridge {
                                 if (TextUtils.equals(tag, "transaction")) {
                                     if (flag) {
                                         if(contract.equals("")){
-                                            mFstWallet.sendTransaction(TransactionParam, new WCallback() {
+                                            walletUtil.sendTransaction(TransactionParam, new WCallback() {
                                                 @Override
                                                 public void onGetWResult(int ret, GsonUtil extra) {
                                                     String hash = extra.getString("hash","");
@@ -321,7 +318,7 @@ public class JsNativeBridge {
                                                 }
                                             });
                                         } else {
-                                            mFstWallet.sendErc20Transaction(TransactionParam, new WCallback() {
+                                            walletUtil.sendErc20Transaction(TransactionParam, new WCallback() {
                                                 @Override
                                                 public void onGetWResult(int ret, GsonUtil extra) {
                                                     String hash = extra.getString("hash","");

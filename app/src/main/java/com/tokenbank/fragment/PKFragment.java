@@ -25,7 +25,6 @@ import com.tokenbank.utils.FstWalletUtil;
 import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.utils.ToastUtil;
 import com.tokenbank.utils.ViewUtil;
-import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.wallet.WalletInfoManager;
 
 import java.util.List;
@@ -42,7 +41,7 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
     private TextView mTvTerms;
     private TextView mTvImportWallet;
     private TextView mTvAboutPrivateKey;
-    private WalletUtil mFstWallet;
+    private WalletUtil walletUtil;
     private Bundle bundle;
     private int flag;
     public static BaseFragment newInstance() {
@@ -53,7 +52,7 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFstWallet =TBController.getInstance().getFstWallet();
+        walletUtil =TBController.getInstance().getFstWallet();
         bundle = this.getArguments();
         flag = bundle.getInt("flag");
     }
@@ -167,7 +166,7 @@ public class PKFragment extends BaseFragment implements View.OnClickListener {
     private void importWallet() {
         final String secret = mEdtWalletPrivateKey.getText().toString();
         final String password = mEdtWalletPwd.getText().toString();
-        mFstWallet.importSecret(secret, "",new WCallback() {
+        walletUtil.importSecret(secret, "",new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
                 if(ret == 0){

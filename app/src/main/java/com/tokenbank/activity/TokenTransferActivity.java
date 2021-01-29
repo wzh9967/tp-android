@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.tokenbank.R;
 import com.tokenbank.base.WalletUtil;
 import com.tokenbank.wallet.FstServer;
-import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
 import com.tokenbank.wallet.WalletInfoManager;
@@ -43,7 +42,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
     private Button mBtnNext;
     private Double mGasPrice;
     private Double SettingGasPrice;
-    private WalletUtil mFstWallet;
+    private WalletUtil walletUtil;
     private WalletInfoManager.WData mWalletData;
     private String mContractAddress ="";
     private String mOriginAddress = "";
@@ -84,7 +83,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
             this.finish();
             return;
         }
-        mFstWallet = TBController.getInstance().getFstWallet();
+        walletUtil = TBController.getInstance().getFstWallet();
 
         if(!mContractAddress.equals("")){
             this.mDecimal = Integer.parseInt(FstWalletUtil.getDataByContract(mContractAddress,"decimal"));
@@ -177,7 +176,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         }
     }
     private void getGasPrice(){
-        mFstWallet.getGasPrice(new WCallback() {
+        walletUtil.getGasPrice(new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
                 if(ret == 0){
@@ -225,7 +224,7 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         data.putString("gasLimit",mGasLimit);
         data.putDouble("gasPrice",SettingGasPrice);
         data.putString("data",note);
-        mFstWallet.sendTransaction(data,new WCallback(){
+        walletUtil.sendTransaction(data,new WCallback(){
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
                 if(ret == 0){
@@ -261,8 +260,8 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         data.putString("gasLimit",mGasLimit);
         data.putString("data",note);
         data.putDouble("gasPrice",SettingGasPrice);
-        mFstWallet.initContract(contract,address, FstServer.getInstance().getNode());
-        mFstWallet.sendErc20Transaction(data,new WCallback(){
+        walletUtil.initContract(contract,address, FstServer.getInstance().getNode());
+        walletUtil.sendErc20Transaction(data,new WCallback(){
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
                 if(ret == 0){

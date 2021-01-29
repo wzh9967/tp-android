@@ -34,6 +34,7 @@ public class TBController {
     }
 
     public void init() {
+        //TODO JSUtil的初始化可以通过回调，后期钱包初始化需要多个init 需要一个通用的消息传递机制来实现初始化模块。
         mSupportType.add(SWT_INDEX);
         mFstWallet = mFstWallet.getInstance();;
         mFstWallet.init(getContext(), FstServer.getInstance().getNode(), new WCallback() {

@@ -16,7 +16,6 @@ import com.tokenbank.activity.MainActivity;
 import com.tokenbank.activity.SplashActivity;
 import com.tokenbank.activity.WebBrowserActivity;
 import com.tokenbank.base.WalletUtil;
-import com.tokenbank.wallet.FstWallet;
 import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
 import com.tokenbank.wallet.WalletInfoManager;
@@ -39,7 +38,7 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
     private ImageView mImgboxTerms;
     private TextView mTvTerms;
     private TextView mTvImportWallet;
-    private WalletUtil mFstWallet;
+    private WalletUtil walletUtil;
     private Bundle bundle;
     private int flag;
     public static WordsFragment newInstance() {
@@ -50,7 +49,7 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFstWallet =TBController.getInstance().getFstWallet();
+        walletUtil =TBController.getInstance().getFstWallet();
         bundle = this.getArguments();
         flag = bundle.getInt("flag");
     }
@@ -141,7 +140,7 @@ public class WordsFragment extends BaseFragment implements View.OnClickListener 
     private void importWallet() {
         final String words = mEdtWalletWords.getText().toString();
         final String password = mEdtWalletPwd.getText().toString();
-        mFstWallet.importWords(words,"", new WCallback() {
+        walletUtil.importWords(words,"", new WCallback() {
             @Override
             public void onGetWResult(int ret, GsonUtil extra) {
                 if(ret == 0){
