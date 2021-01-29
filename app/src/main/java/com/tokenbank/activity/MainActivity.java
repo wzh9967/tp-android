@@ -3,6 +3,7 @@ package com.tokenbank.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokenbank.R;
+import com.tokenbank.base.TBController;
+import com.tokenbank.base.WCallback;
+import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.wallet.WalletInfoManager;
 import com.tokenbank.fragment.DappFragment;
 import com.tokenbank.fragment.MainUserFragment;
@@ -44,7 +48,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initView();
+
+        if(TBController.getInstance().getNodeStatus() == null){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    initView();
+                }
+            }, 500);
+        } else {
+            initView();
+        }
     }
 
     @Override

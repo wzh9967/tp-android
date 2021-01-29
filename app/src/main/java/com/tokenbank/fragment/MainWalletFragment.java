@@ -93,7 +93,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     }
 
     private void checkNodeStatus() {
-        if(!TBController.getInstance().getNodeStatus()){
+        if(TBController.getInstance().getNodeStatus() != null && !TBController.getInstance().getNodeStatus()){
             ViewUtil.showSysAlertDialog(getContext(), getString(R.string.dialog_title_warning), getString(R.string.dialog_node_warning),getString(R.string.dialog_btn_setting_node), new DialogInterface.OnClickListener(){
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -166,7 +166,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onResume() {
         super.onResume();
-        checkNodeStatus();
         refreshWallet();
     }
 

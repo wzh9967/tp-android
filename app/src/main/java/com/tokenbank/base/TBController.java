@@ -24,7 +24,7 @@ public class TBController {
     private static TBController sInstance = new TBController();
     private  List<Integer> mSupportType = new ArrayList<>();
     private QueryDataFromNet mQueryTransaction;
-    private Boolean isValidNode = true;
+    private Boolean isValidNode = null;
     private TBController() {
 
     }
@@ -59,7 +59,7 @@ public class TBController {
 
     }
 
-    public boolean getNodeStatus(){
+    public Boolean getNodeStatus(){
         return isValidNode;
     }
 
