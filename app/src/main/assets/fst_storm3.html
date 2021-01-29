@@ -62,15 +62,12 @@
            initStorm3(node)
         }
         var result = new Object();
-        fstInstance.getGasPrice().then((GasPrice ,err) =>{
-            if(!err){
-                result.GasPrice = GasPrice;
-                notifyClient(callid, 0, result);
-            } else {
-                result.err = err;
-                console.log(err)
-                notifyClient(callid, -1, result);
-            }
+        fstInstance.getGasPrice().then((GasPrice) =>{
+            result.GasPrice = GasPrice;
+            notifyClient(callid, 0, result);
+        }).catch((err)=>{
+            result.err = err;
+            notifyClient(callid, -1, result);
         })
     }
 

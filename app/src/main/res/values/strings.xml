@@ -77,6 +77,7 @@
     <string name="toast_enter_amount">请输入正确数目</string>
     <string name="toast_collect_code_err">生成收款码错误, 请检查参数</string>
     <string name="titleBar_transfer">转账</string>
+    <string name="toast_getBalance_err">获取余额失败</string>
     <string name="toast_order_password_incorrect">密码错误，请重新确认订单，并输入正确密码</string>
     <string name="toast_insufficient_balance">余额不足，转账失败:</string>
     <string name="toast_transfer_failed">转账失败, 错误码:</string>

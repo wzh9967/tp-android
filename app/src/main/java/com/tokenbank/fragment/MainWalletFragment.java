@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,6 +88,11 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        checkNodeStatus();
+        initView(view);
+    }
+
+    private void checkNodeStatus() {
         if(!TBController.getInstance().getNodeStatus()){
             ViewUtil.showSysAlertDialog(getContext(), getString(R.string.dialog_title_warning), getString(R.string.dialog_node_warning),getString(R.string.dialog_btn_setting_node), new DialogInterface.OnClickListener(){
                 @Override
@@ -100,7 +106,6 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
                 }
             });
         }
-        initView(view);
     }
 
     private void initView(View view) {
@@ -161,6 +166,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onResume() {
         super.onResume();
+        checkNodeStatus();
         refreshWallet();
     }
 
@@ -241,6 +247,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
     @Override
     public void onRefresh() {
+        checkNodeStatus();
         mAdapter.refresh();
     }
 
@@ -324,7 +331,7 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
 
     private void refresh() {
         mAdapter.refresh();
-        //mSwipteRefreshLayout.setRefreshing(true);
+        mSwipteRefreshLayout.setRefreshing(true);
     }
 
     private boolean isReadyForPullEnd() {
@@ -436,19 +443,8 @@ public class MainWalletFragment extends BaseFragment implements View.OnClickList
             mFstWallet.getGasPrice(new WCallback() {
                 @Override
                 public void onGetWResult(int ret, GsonUtil extra) {
-                    if(ret == 0){
-                       // mSwipteRefreshLayout.setRefreshing(false);
-                    } else if(ret == -101) {
-                        //申请不通过时有可能是
-                        AppConfig.postDelayOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                refreshWallet();
-                            }
-                        }, 500);
-                    } else {
-                        ToastUtil.toast(getContext(), getString(R.string.toast_transfer_failed)+ret);
-                    }
+                    ToastUtil.toast(getContext(), getString(R.string.toast_getBalance_err));
+                    mSwipteRefreshLayout.setRefreshing(false);
                 }
             });
         }
