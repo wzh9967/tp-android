@@ -1,8 +1,7 @@
 package com.tokenbank.activity;
 
 import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.tokenbank.R;
 
@@ -19,10 +18,6 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class SplashActivityTest {
-
-
-    @Rule
-    public ActivityTestRule<SplashActivity> mActivityRule = new ActivityTestRule(SplashActivity.class);
 
     @Test
     public void StartActivity(){

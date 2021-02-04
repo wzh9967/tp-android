@@ -23,6 +23,7 @@ import com.stealthcopter.networktools.PortScan;
 import com.stealthcopter.networktools.ping.PingResult;
 import com.stealthcopter.networktools.ping.PingStats;
 import com.tokenbank.R;
+import com.tokenbank.config.AppConfig;
 import com.tokenbank.wallet.FstServer;
 import com.tokenbank.config.Constant;
 import com.tokenbank.dialog.NodeCustomDialog;
@@ -92,9 +93,9 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void checkAllNodeStatus() {
-        if(InvalidNodeCount == publicNodes.getLength()){
-            ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_all_node_invalid), "OK");
-        }
+            if(InvalidNodeCount == publicNodes.getLength()){
+                ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_all_node_invalid), "OK");
+            }
     }
 
     @Override
@@ -119,12 +120,14 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onRightClick(View view) {
-
+        saveNode();
+        this.finish();
     }
 
     @Override
     public void onMiddleClick(View view) {
-
+        saveNode();
+        this.finish();
     }
 
     public static void startNodeSettingActivity(Context from) {
@@ -317,7 +320,9 @@ public class NodeSettingActivity extends BaseActivity implements View.OnClickLis
                     holder.mProgressDrawable.stop();
                     //最后一条也错误时，有可能全部节点不可用
                     if(getItemCount() == position +1){
-                        checkAllNodeStatus();
+                        if(!isFinishing()){
+                            checkAllNodeStatus();
+                        }
                     }
                 }
 

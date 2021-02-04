@@ -3,12 +3,12 @@ package com.tokenbank.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.tokenbank.R;
 import com.tokenbank.base.TBController;
+import com.tokenbank.config.AppConfig;
 import com.tokenbank.wallet.WalletInfoManager;
 import com.tokenbank.fragment.DappFragment;
 import com.tokenbank.fragment.MainUserFragment;
@@ -47,9 +48,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         if(TBController.getInstance().getNodeStatus() == null){
-            new Handler().postDelayed(new Runnable() {
+            AppConfig.postDelayOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     if(TBController.getInstance().getNodeStatus() == null){
@@ -57,7 +57,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     }
                     initView();
                 }
-            }, 3000);
+            }, 1500);
         } else {
             initView();
         }
