@@ -19,13 +19,13 @@
         android:paddingLeft="@dimen/dimen_content_padding"
         android:paddingRight="@dimen/dimen_content_padding">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/nodesetting_ecycleview"
             android:layout_width="match_parent"
             android:layout_height="514dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        </android.support.v7.widget.RecyclerView>
+        </androidx.recyclerview.widget.RecyclerView>
 
         <Button
             android:id="@+id/btn_node_setting"

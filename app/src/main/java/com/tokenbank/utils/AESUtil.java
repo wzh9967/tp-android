@@ -2,7 +2,7 @@ package com.tokenbank.utils;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 
 import com.tokenbank.base.ICallBack;
 

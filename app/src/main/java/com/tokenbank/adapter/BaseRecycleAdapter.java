@@ -1,10 +1,8 @@
 package com.tokenbank.adapter;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokenbank.utils.GsonUtil;
-import com.tokenbank.utils.TLog;
-
 
 
 public abstract class BaseRecycleAdapter<T, H extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<H> {

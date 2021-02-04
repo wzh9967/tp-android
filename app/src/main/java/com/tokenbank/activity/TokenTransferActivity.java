@@ -4,7 +4,7 @@ package com.tokenbank.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -132,16 +132,20 @@ public class TokenTransferActivity extends BaseActivity implements View.OnClickL
         switch (view.getId()) {
             case R.id.btn_next:
                 mValue = mEdtTransferNum.getText().toString();
-                if (paramCheck()) {
-                    OrderDetailDialog orderDetailDialog = new OrderDetailDialog(TokenTransferActivity.this,
-                            new OrderDetailDialog.onConfirmOrderListener() {
-                                @Override
-                                public void onConfirmOrder() {
-                                    verifyPwd();
-                                }
-                            }, mWalletData.waddress, mEdtWalletAddress.getText().toString(),
-                            mDecimal ,SettingGasPrice, mGasLimit, Util.parseDouble(mValue), mTokenSymbol);
-                    orderDetailDialog.show();
+                if(TBController.getInstance().getNodeStatus() == false){
+                    if (paramCheck()) {
+                        OrderDetailDialog orderDetailDialog = new OrderDetailDialog(TokenTransferActivity.this,
+                                new OrderDetailDialog.onConfirmOrderListener() {
+                                    @Override
+                                    public void onConfirmOrder() {
+                                        verifyPwd();
+                                    }
+                                }, mWalletData.waddress, mEdtWalletAddress.getText().toString(),
+                                mDecimal ,SettingGasPrice, mGasLimit, Util.parseDouble(mValue), mTokenSymbol);
+                        orderDetailDialog.show();
+                    }
+                } else {
+                    ViewUtil.showSysAlertDialog(this, getString(R.string.dialog_node_warning), "OK");
                 }
                 break;
         }

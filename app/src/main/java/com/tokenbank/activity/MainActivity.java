@@ -4,11 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,8 +17,6 @@ import android.widget.TextView;
 
 import com.tokenbank.R;
 import com.tokenbank.base.TBController;
-import com.tokenbank.base.WCallback;
-import com.tokenbank.utils.GsonUtil;
 import com.tokenbank.wallet.WalletInfoManager;
 import com.tokenbank.fragment.DappFragment;
 import com.tokenbank.fragment.MainUserFragment;
@@ -53,9 +52,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    if(TBController.getInstance().getNodeStatus() == null){
+                        Log.d("TAG", "run: err !");
+                    }
                     initView();
                 }
-            }, 500);
+            }, 3000);
         } else {
             initView();
         }

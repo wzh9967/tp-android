@@ -3,7 +3,6 @@ package com.tokenbank;
 import android.app.Application;
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 
 import com.tokenbank.activity.BaseActivity;
 import com.tokenbank.base.TBController;
