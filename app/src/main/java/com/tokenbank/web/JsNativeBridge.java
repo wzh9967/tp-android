@@ -21,7 +21,6 @@ import com.tokenbank.base.TBController;
 import com.tokenbank.base.WCallback;
 import com.tokenbank.base.WalletUtil;
 import com.tokenbank.config.AppConfig;
-import com.tokenbank.dialog.MsgDialog;
 import com.tokenbank.dialog.PwdDialog;
 import com.tokenbank.utils.DeviceUtil;
 import com.tokenbank.utils.FileUtil;
@@ -122,7 +121,6 @@ public class JsNativeBridge {
                 break;
 
             case "shareNewsToSNS":
-
                 GsonUtil tx = new GsonUtil(params);
                 String mTitle = tx.getString("title", "");
                 String mUrl = tx.getString("url", "").toUpperCase();
@@ -227,17 +225,23 @@ public class JsNativeBridge {
                 break;
 
             case "setMenubar":
-                //未开发导航栏
-                //导航栏隐藏与否
+                //1 - open, 0 - close(default)
+                if (mWebCallBack != null) {
+                    final GsonUtil Show_flag = new GsonUtil(params);
+                    switch (Show_flag.getInt("",0)){
+                        case 1 :  mWebCallBack.setMenubar(true); break;
+                        case 0 :  mWebCallBack.setMenubar(false); break;
+                    }
+                }
                 break;
 
             case "saveImage":
                 Log.d(TAG, "callHandler: 开始保存图片 url = "+params);
-                String picUrl = params;
+                final GsonUtil picUrl = new GsonUtil(params);
                 if(!picUrl.equals("")){
                     try {
                         //通过url获取图片
-                        URL iconUrl=new URL(picUrl);
+                        URL iconUrl=new URL(picUrl.getString("url",""));
                         URLConnection connection=iconUrl.openConnection();
                         HttpURLConnection httpURLConnection= (HttpURLConnection) connection;
                         int length = httpURLConnection.getContentLength();
@@ -249,13 +253,18 @@ public class JsNativeBridge {
                         inputStream.close();
                         //保存图片
                         FileUtil.saveBitmap(AppConfig.getContext(),mBitmap);
-                        new MsgDialog(AppConfig.getContext(), mContext.getString(R.string.picture_save_success)).show();
+                        AppConfig.postOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ToastUtil.toast(AppConfig.getContext(), AppConfig.getContext().getString(R.string.picture_save_success)+"相册");
+                            }
+                        });
                     } catch (Exception e) {
                         Log.d(TAG, "callHandler: 保存失败");
                         AppConfig.postOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                new MsgDialog(AppConfig.getContext(), mContext.getString(R.string.picture_save_false)).show();
+                                ToastUtil.toast(AppConfig.getContext(), AppConfig.getContext().getString(R.string.picture_save_false));
                             }
                         });
                         e.printStackTrace();

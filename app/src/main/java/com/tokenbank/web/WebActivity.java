@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
@@ -22,6 +23,7 @@ import com.tokenbank.activity.BaseActivity;
 import com.tokenbank.config.AppConfig;
 import com.tokenbank.config.Constant;
 import com.tokenbank.utils.GsonUtil;
+import com.tokenbank.view.TitleBar;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -29,16 +31,24 @@ import org.greenrobot.eventbus.ThreadMode;
 /**
  * 浏览器功能
  */
-public class WebActivity extends BaseActivity implements IWebCallBack {
+public class WebActivity extends BaseActivity  implements View.OnClickListener, TitleBar.TitleBarClickListener,IWebCallBack {
 
     protected AgentWeb mAgentWeb;
     private LinearLayout mLinearLayout;
     private JsNativeBridge mJsNativeBridge;
+    private TitleBar mTitleBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
+
+        mTitleBar = (TitleBar) findViewById(R.id.title_bar);
+        mTitleBar.setLeftDrawable(R.drawable.ic_back);
+        mTitleBar.setTitle(getString(R.string.titleBar_dapp));
+        mTitleBar.setRightTextColor(R.color.white);
+        mTitleBar.setTitleBarClickListener(this);
+
         mLinearLayout = (LinearLayout) this.findViewById(R.id.container);
         mAgentWeb = AgentWeb.with(this)
                 .setAgentWebParent(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))
@@ -206,5 +216,34 @@ public class WebActivity extends BaseActivity implements IWebCallBack {
                 }
             }
         });
+    }
+
+    @Override
+    public void setMenubar(boolean isShow) {
+        if(isShow){
+            mTitleBar.setVisibility(View.VISIBLE);
+        } else {
+            mTitleBar.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
+    @Override
+    public void onLeftClick(View view) {
+        this.finish();
+    }
+
+    @Override
+    public void onRightClick(View view) {
+
+    }
+
+    @Override
+    public void onMiddleClick(View view) {
+
     }
 }
