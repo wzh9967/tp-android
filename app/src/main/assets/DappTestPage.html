@@ -23,13 +23,12 @@
         Connected();
         function Connected(){
             let isConnected;
-            if(window.JsNativeBridge!=null&&typeof(window.JsNativeBridge)!="undefined"){
+            if(window.TPJSBrigeClient!=null&&typeof(window.TPJSBrigeClient)!="undefined"){
                 isConnected = "true"
             }else{
-                alert(typeof(window.android));
                 isConnected = "false"
             }
-            alert("isConnected:  1  " + isConnected);
+            alert("isConnected:   " + isConnected);
         }
 
         function testClick(FunctionName) {
@@ -57,16 +56,20 @@
                     break;
                 case "sign" :
                     //交易签名
-                    let paramsjson = new Object();
-                    paramsjson.address = '0x981d4bc976c221b3b42270be6dcab72d37d2e0cd'
-                    paramsjson.to = "0xb4860ef01adae0f0714776d1c35e7ad4b0937b79"
-                    paramsjson.value = "1000000000000000000"
-                    paramsjson.gasPrice = "10000000000"
-                    paramsjson.gasLimit = "23000"
-                    paramsjson.data = ""
-                    tp.sign(JSON.stringify(paramsjson)).then((result) => {
-                        showElement("result = " + JSON.stringify(result))
+                    tp.getCurrentWallet().then((result) => {
+                          tp.sign({
+                           address: result.data.address,
+                            to: '0xb4860ef01adae0f0714776d1c35e7ad4b0937b79',
+                            value: '1000000000000000000',
+                           gasPrice: '10000000000',
+                            gasLimit: '23000',
+                            data: ''
+
+                          }).then((result) => {
+                              showElement("result = " + JSON.stringify(result))
+                          })
                     })
+
                     break;
                 case "importWallet" :
                     //跳转到导入钱包页面
@@ -80,7 +83,11 @@
                     break;
                 case "shareNewsToSNS" :
                     //分享
-                    tp.shareNewsToSNS().then((ret, result) => {
+                    tp.shareNewsToSNS({
+                      title: 'TokenPocket',
+                      desc: 'Your Universal Wallet',
+                      url: 'https://www.mytokenpocket.vip/',
+                      previewImage: 'https://www.mytokenpocket.vip/images/index/logo.png'}).then((ret, result) => {
                         showElement("ret = " + ret + "        result = " + JSON.stringify(result))
                     })
                     break;
@@ -107,16 +114,18 @@
                     })
                     break;
                 case "sendMoacTransaction" :
-                    let params = new Object();
-                    params.address = "0x981d4bc976c221b3b42270be6dcab72d37d2e0cd"
-                    params.to = "0xb4860ef01adae0f0714776d1c35e7ad4b0937b79"
-                    params.value = "1000000000000000"
-                    params.gasPrice = "10000000000"
-                    params.gasLimit = "24000"
-                    params.data = ""
-                    tp.sendMoacTransaction(JSON.stringify(params)).then((hash) => {
-                        showElement("       hash = " + JSON.stringify(hash))
-                    })
+                        tp.getCurrentWallet().then((result) => {
+                        tp.sendMoacTransaction({
+                           address: result.data.address,
+                            to: '0xb4860ef01adae0f0714776d1c35e7ad4b0937b79',
+                            value: '1000000000000000000',
+                           gasPrice: '10000000000',
+                            gasLimit: '23000',
+                            data: ''
+                          }).then((hash) => {
+                            showElement("       hash = " + JSON.stringify(hash))
+                        })
+                   })
                     break;
                 case "setMenubar" :
                     //设置导航条
@@ -161,10 +170,8 @@
 <p><input type="button" class = "button" id="enter12" value="close" onclick="testClick('close');"/></p>
 <p><input type="button" class = "button" id="enter13" value="back" onclick="testClick('back');"/></p>
 <p><input type="button" class = "button" id="enter14" value="rollHorizontal" onclick="testClick('rollHorizontal');"/></p>
-<p><input type="button" class = "button" id="enter15" value="popGestureRecognizerEnable" onclick="testClick('popGestureRecognizerEnable');"/></p>
 <p><input type="button" class = "button" id="enter16" value="sendMoacTransaction" onclick="testClick('sendMoacTransaction');"/></p>
 <p><input type="button" class = "button" id="enter17" value="setMenubar" onclick="testClick('setMenubar');"/></p>
-<p><input type="button" class = "button" id="enter18" value="forwardNavigationGesturesEnable" onclick="testClick('forwardNavigationGesturesEnable');"/></p>
 <p><input type="button" class = "button" id="enter19" value="saveImage" onclick="testClick('saveImage');"/></p>
 </body>
 

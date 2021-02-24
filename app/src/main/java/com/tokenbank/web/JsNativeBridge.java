@@ -96,25 +96,9 @@ public class JsNativeBridge {
                 this.mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + result.toString() + "')");
                 break;
 
-            case "getWallets":
-                List<WalletInfoManager.WData> wallets = mWalletManager.getAllWallet();
-                GsonUtil data1 = new GsonUtil("[]");
-                for (int i = 0; i < wallets.size(); i++) {
-                    GsonUtil wallet = new GsonUtil("{}");
-                    address = wallets.get(i).waddress;
-                    name = wallets.get(i).wname;
-                    wallet.putString("name", name);
-                    wallet.putString("address", address);
-                    data1.put(wallet);
-                }
-                result.putBoolean("result", true);
-                result.put("data", data1);
-                result.putString("msg", MSG_SUCCESS);
-                this.mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + result.toString() + "')");
-                break;
-
             case "getDeviceId":
                 String deviceId = DeviceUtil.generateDeviceUniqueId();
+                Log.d(TAG, "callMessage: "+deviceId);
                 result.putString("deviceId", deviceId);
                 result.putString("msg", MSG_SUCCESS);
                 this.mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + result.toString() + "')");
@@ -161,8 +145,8 @@ public class JsNativeBridge {
             case "sign":
                 GsonUtil SignParam = new GsonUtil(params);
                 Log.d(TAG, "callHandler: "+mCurrentWallet.waddress.toLowerCase() );
-                Log.d(TAG, "callHandler: "+SignParam.getString("address","").toLowerCase() );
-                if(!mCurrentWallet.waddress.toLowerCase().equals(SignParam.getString("address",""))){
+                Log.d(TAG, "callHandler: "+SignParam.toString());
+                if(!mCurrentWallet.waddress.toLowerCase().equals(SignParam.getString("address","").toLowerCase())){
                     result.putString("err","has no this wallet");
                     notifySignResult(result,callbackId);
                     return;
