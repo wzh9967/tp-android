@@ -77,8 +77,8 @@
                     break;
                 case "invokeQRScanner" :
                     //打开扫描
-                    tp.invokeQRScanner().then((result) => {
-                        showElement("扫描结果        result = " + JSON.stringify(result));
+                    tp.invokeQRScanner().then((ret, result) =>{
+                        showElement("扫描结果 ret=" + ret + " result=" + result)
                     })
                     break;
                 case "shareNewsToSNS" :

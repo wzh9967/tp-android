@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebResourceRequest;
@@ -27,6 +26,8 @@ import com.tokenbank.view.TitleBar;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import static com.tokenbank.activity.CreateWalletActivity.TAG;
 
 /**
  * 浏览器功能
@@ -66,8 +67,8 @@ public class WebActivity extends BaseActivity  implements View.OnClickListener, 
 
         // AgentWeb 没有把WebView的功能全面覆盖 ，所以某些设置 AgentWeb 没有提供 ， 请从WebView方面入手设置。
         mAgentWeb.getWebCreator().getWebView().setOverScrollMode(WebView.OVER_SCROLL_NEVER);//禁用手势滑动的动画效果
-       // mAgentWeb.getAgentWebSettings().getWebSettings().setUseWideViewPort(true); //将图片调整到适合webview的大小
-       // mAgentWeb.getAgentWebSettings().getWebSettings().setLoadWithOverviewMode(true); // 缩放至屏幕的大小
+        mAgentWeb.getAgentWebSettings().getWebSettings().setUseWideViewPort(true); //将图片调整到适合webview的大小
+        mAgentWeb.getAgentWebSettings().getWebSettings().setLoadWithOverviewMode(true); // 缩放至屏幕的大小
         //mAgentWeb.getWebCreator().getWebView().all
         // mAgentWeb.getWebCreator().getWebView()  获取WebView .
         mJsNativeBridge = new JsNativeBridge(mAgentWeb, this, this);
@@ -157,8 +158,9 @@ public class WebActivity extends BaseActivity  implements View.OnClickListener, 
         String msg = jsEvent.getMsg();
         String callbackId = jsEvent.getCallBackId();
         GsonUtil result = new GsonUtil("{}");
-        result.putString("result",msg);
-        mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + result.toString() + "')");
+        result.putString("qrResult",msg);
+        Log.d(TAG, "onEvent: "+result.toString());
+        this.mAgentWeb.getJsAccessEntrace().callJs("javascript:" + callbackId + "('" + result.toString() + "')");
     }
 
     @Override
